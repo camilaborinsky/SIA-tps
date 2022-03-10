@@ -1,4 +1,7 @@
-from TP1.library import State
+
+
+from classes.state import State
+
 
 def solve(initial_state: State):
     print()
