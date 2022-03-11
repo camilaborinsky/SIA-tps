@@ -20,8 +20,7 @@ class Point:
     return movements
     
   def move(self, movement: Movement):
-    self.x += movement.value[0]
-    self.y += movement.value[1]
+    return Point(self.x + movement.value[0], self.y+movement.value[1])
 
   def __str__(self):
     return "Point: ( " + str(self.x) + ", " + str(self.y) + ")"
