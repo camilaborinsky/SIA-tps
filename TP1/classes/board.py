@@ -12,7 +12,7 @@ class Board:
       new_board = self.positions.copy()
       new_board[move_from] = new_board[move_to]
       new_board[move_to] = 0
-      return new_board
+      return new_board,empty.move(movement)
 
 
   def __str__(self):
