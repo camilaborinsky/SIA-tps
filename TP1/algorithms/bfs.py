@@ -33,7 +33,7 @@ def solve(initial_state: State):
         else:
             expanded_count +=1
             for movement in current_empty_space.get_movements():
-                new_node = Node(to_expand, State(current_board.move(movement, current_empty_space)))
+                new_node = Node(to_expand, State(current_board.move(movement, current_empty_space), current_empty_space.move(movement)))
                 if not new_node in explored:
                     to_visit.append(new_node)
                     explored.add(new_node)

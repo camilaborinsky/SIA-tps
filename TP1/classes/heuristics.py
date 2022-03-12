@@ -1,4 +1,5 @@
 
+from utils import count_inversions
 from classes.state import State
 
 
@@ -25,10 +26,10 @@ class Heuristics:
                 sum += abs(target_pos_x - current_pos_x) + abs(target_pos_y-current_pos_y)
         return sum
 
-    # def inversions(self, state:State):
-    #     count = 0
-    #     for idx, val in enumerate(state.board.positions):
-    #         if(val != 0):
+    def inversions(self, state:State):
+        positions = filter(lambda n : (n != 0) ,state.board.positions.copy())
+        return count_inversions(positions, len(positions))
 
 
+    
 
