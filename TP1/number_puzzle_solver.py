@@ -1,5 +1,6 @@
-from classes.search_algorithm import SearchAlgorithm
-from classes import board, point, state, node, movement
+import sys
+from constants import SearchAlgorithm
+from classes import board, point, state, node
 import config_parser
 import time
 
@@ -30,7 +31,25 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State):
     #print metrics
 
 
-board, algorithm, heuristic,empty_space = config_parser.import_config()
-solve_puzzle(algorithm, state.State(board, empty_space))
+def main(config_file_path: str):
+    board, algorithm, heuristic,empty_space = config_parser.import_config()
+    solve_puzzle(algorithm, state.State(board, empty_space))
+
+
+
+
+
+if __name__ == "__main__":
+    argv = sys.argv
+
+    config_file: str = 'config.json'
+    if len(argv) > 1:
+        config_file = argv[1]
+
+    try:
+        main(config_file)
+    except FileNotFoundError:
+        print("error")
+
 
  

@@ -1,5 +1,5 @@
 from classes.point import Point
-from classes.movement import Movement
+from constants import Movement
 
 
 class Board:

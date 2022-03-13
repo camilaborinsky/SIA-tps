@@ -3,6 +3,7 @@
 from collections import deque
 import queue
 from typing import Set
+from constants import Movement
 from classes.board import Board
 from classes.point import Point
 from classes.node import Node
@@ -32,6 +33,7 @@ def solve(initial_state: State):
             break
         else:
             expanded_count +=1
+            movement: Movement
             for movement in current_empty_space.get_movements():
                 new_node = Node(to_expand, State(current_board.move(movement, current_empty_space), current_empty_space.move(movement)))
                 if not new_node in explored:
