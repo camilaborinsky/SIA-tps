@@ -45,6 +45,6 @@ def solve(initial_state: State)-> SearchOutput:
                     explored_nodes.appendleft(new_node)
     
     if solved:
-        return SearchOutput(expanded_count, len(to_visit), True, explored_nodes)
+        return SearchOutput(expanded_count, to_visit, True, to_expand, explored_nodes)
     else:
-        return SearchOutput(expanded_count, len(to_visit), False, explored_nodes)
+        return SearchOutput(expanded_count, to_visit, False, None, explored_nodes)

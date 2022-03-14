@@ -54,11 +54,9 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristi
 def main(config_file_path: str):
     config: config_parser.Config = config_parser.import_config(config_file_path)
     output = solve_puzzle(config.algorithm, state.State(config.board, config.empty_space), config.heuristic)
-    if output.found_solution:
-        print("nodos explotados: ", output.expanded_nodes)
-        print("nodos frontera: ", output.frontier_nodes)
+    if output is not None and output.found_solution:
         # if len(output.solution) < 100:
-        # render_tree(output.solution)
+        render_tree(output)
 
 
 
