@@ -1,5 +1,6 @@
 import sys
-from constants import SearchAlgorithm
+from classes.heuristics import Heuristics
+from constants import Heuristic, SearchAlgorithm
 from classes import board, point, state, node
 import config_parser
 import time
@@ -19,7 +20,7 @@ empty_space = point.Point(2,2)
 
     
 
-def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State):
+def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristic: Heuristics):
     #start timer
     initial_timestamp = time.time()
     print("Starting algorithm ", algorithm)
@@ -30,13 +31,13 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State):
     elif algorithm == SearchAlgorithm.DFS.value:
         dfs.solve(initial_state)
     elif algorithm == SearchAlgorithm.A_STAR.value:
-        a_star.solve(initial_state)
+        a_star.solve(initial_state, heuristic)
     # elif algorithm == SearchAlgorithm.GGS.value:
-    #     a_star.solve(initial_state)
+    #     ggs.solve(initial_state, heuristic)
     elif algorithm == SearchAlgorithm.LGS.value:
-        a_star.solve(initial_state)
+        vds.solve(initial_state)
     elif algorithm == SearchAlgorithm.VDS.value:
-        a_star.solve(initial_state)
+        lgs.solve(initial_state, heuristic)
     
 
     #end timer
@@ -47,7 +48,7 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State):
 
 def main(config_file_path: str):
     config: config_parser.Config = config_parser.import_config(config_file_path)
-    solve_puzzle(config.algorithm, state.State(config.board, config.empty_space))
+    solve_puzzle(config.algorithm, state.State(config.board, config.empty_space), config.heuristic)
 
 
 

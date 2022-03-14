@@ -11,8 +11,10 @@ class State:
 
   def is_final(self):
     for idx, val in enumerate(self.board.positions):
-        print(idx, val)
         if (idx+1 < 9 and val != idx+1) or (idx+1 == 9 and val != 0):
           return False
     return True
-    
+
+  def __eq__(self, other):
+        return self.board.positions == other.board.positions
+

@@ -7,7 +7,7 @@ class Heuristics:
     def __init__(self) -> None:
         pass
 
-    def solve(self, state: State)-> int:
+    def calculate(self, state: State)-> int:
         pass
 
     
@@ -28,16 +28,15 @@ class Heuristics:
 
 
 class Hamming(Heuristics):
-    def solve(self, state: State) -> int:
+    def calculate(self, state: State) -> int:
         i = 0
         for idx, val in enumerate(state.board.positions):
-            print(idx, val)
             if val != 0 and (idx+1 < 9 and val != idx+1):
                 i+=1
         return i
 
 class Manhattan(Heuristics):
-    def solve(self, state: State) -> int:
+    def calculate(self, state: State) -> int:
         sum = 0
         for idx, val in enumerate(state.board.positions):
             if val != 0:
@@ -50,7 +49,7 @@ class Manhattan(Heuristics):
 
 
 class Inversions(Heuristics):
-    def solve(self, state: State) -> int:
+    def calculate(self, state: State) -> int:
         positions = filter(lambda n : (n != 0) ,state.board.positions.copy())
         return count_inversions(positions, len(positions))
 

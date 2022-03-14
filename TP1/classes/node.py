@@ -10,4 +10,14 @@ class Node:
       self.depth = 0
     else:
       self.depth = self.parent.depth +1
+
+class HeuristicNode(Node):
+  def __init__(self, parent, state: State,f):
+    self.state = state
+    self.parent = parent
+    self.f = f
+    if(self.parent is None):
+      self.depth = 0
+    else:
+      self.depth = self.parent.depth +1
     
