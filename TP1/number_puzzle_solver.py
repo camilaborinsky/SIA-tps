@@ -3,6 +3,14 @@ from constants import SearchAlgorithm
 from classes import board, point, state, node
 import config_parser
 import time
+import algorithms.bfs as bfs
+import algorithms.dfs as dfs
+import algorithms.a_star as a_star
+import algorithms.vds as vds
+# import algorithms.ggs as ggs
+import algorithms.lgs as lgs
+
+
 
 
 board = board.Board([1,2,3, 4, 6, 5, 7,8,0])
@@ -16,13 +24,19 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State):
     initial_timestamp = time.time()
     print("Starting algorithm ", algorithm)
     # call solve method for corresponding algorithm
-    
-    # p1 = point.Point(3,3)
-    # print(p1.get_movements(3,3))
-    # p1.move(movement.Movement.Right)
-    # print(p1)
-    incorrect_state = state.State(board, empty_space)
-    print(incorrect_state.is_final())
+
+    if algorithm == SearchAlgorithm.BFS.value:
+        bfs.solve(initial_state)
+    elif algorithm == SearchAlgorithm.DFS.value:
+        dfs.solve(initial_state)
+    elif algorithm == SearchAlgorithm.A_STAR.value:
+        a_star.solve(initial_state)
+    # elif algorithm == SearchAlgorithm.GGS.value:
+    #     a_star.solve(initial_state)
+    elif algorithm == SearchAlgorithm.LGS.value:
+        a_star.solve(initial_state)
+    elif algorithm == SearchAlgorithm.VDS.value:
+        a_star.solve(initial_state)
     
 
     #end timer
@@ -32,8 +46,8 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State):
 
 
 def main(config_file_path: str):
-    board, algorithm, heuristic,empty_space = config_parser.import_config()
-    solve_puzzle(algorithm, state.State(board, empty_space))
+    config: config_parser.Config = config_parser.import_config(config_file_path)
+    solve_puzzle(config.algorithm, state.State(config.board, config.empty_space))
 
 
 

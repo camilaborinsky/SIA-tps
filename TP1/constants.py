@@ -16,11 +16,16 @@ class Movement(enum.Enum):
    Left = [-1, 0]
    Right = [1, 0]
 
+class Heuristic(enum.Enum):
+    hamming = 'hamming'
+    manhattan = 'manhattan'
+    inversions = 'inversions'
+
 
 class SearchAlgorithm(enum.Enum):
-    DFS = 'DFS',
-    BFS = 'BFS',
-    VDS = 'VDS',  #Variable Depth Search
-    GGS = 'GGS',  #Global greedy search
+    DFS = 'DFS'
+    BFS = 'BFS'
+    VDS = 'VDS'  #Variable Depth Search
+    GGS = 'GGS'  #Global greedy search
     LGS = 'LGS'   #Local greedy search
     A_STAR = 'A*'

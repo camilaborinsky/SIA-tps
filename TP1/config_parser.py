@@ -1,14 +1,16 @@
 import json
 import numpy as np
-from constants import ConfigParams, SearchAlgorithm
+from classes.heuristics import Hamming, Inversions, Manhattan
+from classes.point import Point
+from constants import ConfigParams, Heuristic, SearchAlgorithm
 
 from classes.board import Board
 
 class Config:
-    def __init__(self, algorithm, board, empty_space, heuristic):
+    def __init__(self, algorithm, board: Board, empty_space: Point, heuristic):
         self.algorithm = algorithm
-        self.board = board,
-        self.empty_space = empty_space,
+        self.board = board
+        self.empty_space = empty_space
         self.heuristic = heuristic
 
 def find_blank(board: Board):
@@ -20,7 +22,7 @@ def import_config(config_file_path: str)-> Config:
     try:
         file = open(config_file_path)
     except FileNotFoundError:
-        raise ValueError(f'Configuration file not found. Please ensure "{config_file_path}" exists.')
+        raise FileNotFoundError(f'Configuration file not found. Please ensure "{config_file_path}" exists.')
 
     config = json.load(file)
         
@@ -39,9 +41,16 @@ def import_config(config_file_path: str)-> Config:
     empty_space = find_blank(board)
     heuristic = None
     if algorithm == SearchAlgorithm.A_STAR or algorithm == SearchAlgorithm.LGS or algorithm == SearchAlgorithm.GGS:
-        if config[ConfigParams.HEURISTIC.value] is None:
-            missing_argument_message(ConfigParams.HEURISTIC.value)
-        heuristic = config[ConfigParams.HEURISTIC.value]
+        heuristic_name = config[ConfigParams.HEURISTIC.value]
+        if heuristic_name == Heuristic.hamming.value:
+            heuristic = Hamming()
+        elif heuristic_name == Heuristic.manhattan:
+            heuristic = Manhattan()
+        elif heuristic_name == Heuristic.inversions:
+            heuristic = Inversions()
+        if heuristic is None:
+            file.close()
+            missing_argument_message(ConfigParams.HEURISTIC.value) 
    
     file.close()
     return Config(algorithm, board, empty_space, heuristic)
