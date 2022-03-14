@@ -7,8 +7,8 @@ class Board:
       self.positions = positions  # matrix = [[0,0,0],[0,0,0],[0,0,0]]
 
   def move(self, movement:Movement, empty: Point):
-      move_from = empty.y*3+ empty.x
-      move_to = (empty.y + movement.value[1])*3+ empty.x+movement.value[0]
+      move_from: int = empty.y*3+ empty.x
+      move_to: int = (empty.y + movement.value[1])*3+ empty.x+movement.value[0]
       new_board = self.positions.copy()
       new_board[move_from] = new_board[move_to]
       new_board[move_to] = 0
@@ -16,4 +16,4 @@ class Board:
 
 
   def __str__(self):
-      return "Board: "+ self.positions
+      return "Board: "+ str(self.positions)

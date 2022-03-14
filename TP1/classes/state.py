@@ -1,5 +1,6 @@
 
 
+from utils import count_inversions
 from classes.board import Board
 from classes.point import Point
 
@@ -15,6 +16,13 @@ class State:
           return False
     return True
 
+  def is_solvable(self):
+    return count_inversions(self.board.positions, len(self.board.positions)) % 2 == 0
+
   def __eq__(self, other):
-        return self.board.positions == other.board.positions
+        return self.__hash__ == other.__hash__
+
+  def __hash__(self):
+        return hash(str(frozenset(self.board.positions)))
+  
 

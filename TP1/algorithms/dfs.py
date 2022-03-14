@@ -3,6 +3,7 @@ from classes import state,node
 import copy
 
 from classes.board import Board
+from output.search_output import SearchOutput
 Node  = node.Node
 State = state.State
 
@@ -20,7 +21,7 @@ def expand(node: Node,leaf_nodes,explored):
 
 
 
-def run(initial_state: State):
+def solve(initial_state: State) -> SearchOutput:
 
     initial_node = Node(None, initial_state)
 

@@ -16,7 +16,7 @@ class Config:
 def find_blank(board: Board):
     for idx, val in enumerate(board.positions):
         if val == 0:
-            return idx
+            return Point(int(idx%3), int(idx/3))
 
 def import_config(config_file_path: str)-> Config:
     try:

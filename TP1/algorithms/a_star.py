@@ -4,6 +4,7 @@ import copy
 
 from classes.board import Board
 from classes.heuristics import Heuristics
+from output.search_output import SearchOutput
 State = state.State
 HeuristicNode = node.HeuristicNode
 
@@ -28,7 +29,7 @@ def expand(node: HeuristicNode,leaf_nodes,explored,heuristic: Heuristics):
 
 
 
-def solve(initial_state: State,heuristic: Heuristics):
+def solve(initial_state: State,heuristic: Heuristics)-> SearchOutput:
 
     initial_node = HeuristicNode(None, initial_state,0)
     # Crear A, F y Ex inicialmente vacios

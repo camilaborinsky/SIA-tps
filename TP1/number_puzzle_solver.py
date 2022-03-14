@@ -10,6 +10,7 @@ import algorithms.a_star as a_star
 import algorithms.vds as vds
 # import algorithms.ggs as ggs
 import algorithms.lgs as lgs
+from output.visualization import render_tree
 
 
 
@@ -22,12 +23,14 @@ empty_space = point.Point(2,2)
 
 def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristic: Heuristics):
     #start timer
+    if not initial_state.is_solvable():
+        print("No solution")
     initial_timestamp = time.time()
     print("Starting algorithm ", algorithm)
     # call solve method for corresponding algorithm
 
     if algorithm == SearchAlgorithm.BFS.value:
-        bfs.solve(initial_state)
+        output = bfs.solve(initial_state)
     elif algorithm == SearchAlgorithm.DFS.value:
         dfs.solve(initial_state)
     elif algorithm == SearchAlgorithm.A_STAR.value:
@@ -44,11 +47,14 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristi
     final_timestamp = time.time()
     print("Processing time: ", final_timestamp - initial_timestamp)
     #print metrics
+    return output
 
 
 def main(config_file_path: str):
     config: config_parser.Config = config_parser.import_config(config_file_path)
-    solve_puzzle(config.algorithm, state.State(config.board, config.empty_space), config.heuristic)
+    output = solve_puzzle(config.algorithm, state.State(config.board, config.empty_space), config.heuristic)
+    print(output.found_solution)
+    # render_tree(output.solution)
 
 
 

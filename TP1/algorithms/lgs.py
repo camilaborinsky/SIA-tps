@@ -6,8 +6,10 @@ from classes.heuristics import Heuristics
 from classes.state import State
 from typing import Set
 
+from output.search_output import SearchOutput
 
-def solve(initial_state:State, heuristic: Callable[[State], int]):
+
+def solve(initial_state:State, heuristic: Heuristics)-> SearchOutput:
     root = Node(None, initial_state)
 
     explored = Set[State]
