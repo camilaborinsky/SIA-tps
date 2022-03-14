@@ -50,6 +50,6 @@ class Manhattan(Heuristics):
 
 class Inversions(Heuristics):
     def calculate(self, state: State) -> int:
-        positions = filter(lambda n : (n != 0) ,state.board.positions.copy())
+        positions = list(filter(lambda n : (n != 0) ,state.board.positions.copy()))
         return count_inversions(positions, len(positions))
 

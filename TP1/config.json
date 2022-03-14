@@ -5,5 +5,5 @@
     [0, 8, 6]
   ],
   "algorithm": "LGS",
-  "heuristic": "manhattan"
+  "heuristic": "inversions"
 }
