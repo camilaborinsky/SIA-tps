@@ -14,9 +14,10 @@ def expand(node: Node,leaf_nodes,explored):
         b,p = node.state.board.move(mov,node.state.empty_space)
         n: Node = Node(node,State(b,p))
 
-        if n.state not in explored:
+        current_board = str(n.state.board.positions)
+        if explored.get(current_board) == None:
             leaf_nodes.appendleft(copy.copy(n))
-            explored.append(n.state)
+            explored[current_board] = n
     
 
 
@@ -27,7 +28,7 @@ def solve(initial_state: State) -> SearchOutput:
 
     tree = initial_node
     leaf_nodes = deque()
-    explored = deque()
+    explored = dict()
 
     
     leaf_nodes.append(initial_node)
@@ -36,11 +37,13 @@ def solve(initial_state: State) -> SearchOutput:
     while len(leaf_nodes)>0 :
 
         current_node: Node = leaf_nodes.popleft()
-        if current_node.state not in explored:
-            explored.append(current_node.state)
+        current_board = str(current_node.state.board.positions)
+        if explored.get(current_board) == None:
+            explored[current_board] = current_node
         # Check if current node has an objective state
         if current_node.state.is_final():
             print("Finalized")
+            print(current_node.depth)
             solution  = deque()
             while current_node is not None:
                 solution.appendleft(current_node)
@@ -48,5 +51,3 @@ def solve(initial_state: State) -> SearchOutput:
             return solution
         # Expand current node
         expand(current_node,leaf_nodes,explored)
-          
-
