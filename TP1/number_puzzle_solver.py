@@ -38,10 +38,10 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristi
         a_star.solve(initial_state, heuristic)
     # elif algorithm == SearchAlgorithm.GGS.value:
     #     ggs.solve(initial_state, heuristic)
-    elif algorithm == SearchAlgorithm.LGS.value:
-        vds.solve(initial_state)
     elif algorithm == SearchAlgorithm.VDS.value:
-        lgs.solve(initial_state, heuristic)
+        vds.solve(initial_state)
+    elif algorithm == SearchAlgorithm.LGS.value:
+        output = lgs.solve(initial_state, heuristic)
     
 
     #end timer

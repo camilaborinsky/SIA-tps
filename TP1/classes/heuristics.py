@@ -40,10 +40,10 @@ class Manhattan(Heuristics):
         sum = 0
         for idx, val in enumerate(state.board.positions):
             if val != 0:
-                target_pos_y = (val-1) % 3
-                target_pos_x = (val-1) / 3
-                current_pos_y = (idx-1) % 3
-                current_pos_x = (idx-1) / 3
+                target_pos_y = int((val-1) % 3)
+                target_pos_x = int((val-1) / 3)
+                current_pos_y = int((idx-1) % 3)
+                current_pos_x = int((idx-1) / 3)
                 sum += abs(target_pos_x - current_pos_x) + abs(target_pos_y-current_pos_y)
         return sum
 

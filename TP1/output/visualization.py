@@ -1,5 +1,6 @@
 from turtle import color
 from treelib import Node, Tree
+from algorithms.a_star import HeuristicNode
 from classes.node import Node 
 from pyvis.network import Network
 
@@ -20,7 +21,10 @@ def render_tree(output: SearchOutput):
         solution_node = solution_node.parent
     # tree = Tree()
     aux = explored.pop()
-    nt.add_node(hash(aux.state), str(aux.state), color="red")
+    h=""
+    if isinstance(aux, HeuristicNode):
+        h=str(aux.f)
+    nt.add_node(hash(aux.state), h +str(aux.state), color="red")
     # tree.create_node(str(aux.state.board.positions), hash(aux.state))
     while explored:
         curr_node = explored.pop()
@@ -31,7 +35,11 @@ def render_tree(output: SearchOutput):
             color = "green"
         else:
             color = "blue"
-        nt.add_node(hash(curr_node.state), str(curr_node.state), color=color)
+        if isinstance(curr_node, HeuristicNode):
+            h=str(curr_node.f)
+        else:
+            h=""
+        nt.add_node(hash(curr_node.state), h + '\n'+ str(curr_node.state), color=color)
         nt.add_edge(hash(curr_node.parent.state), hash(curr_node.state), color =color)
 
     # tree.show()

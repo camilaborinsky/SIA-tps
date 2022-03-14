@@ -40,13 +40,13 @@ def import_config(config_file_path: str)-> Config:
     algorithm = config[ConfigParams.ALGORITHM.value]
     empty_space = find_blank(board)
     heuristic = None
-    if algorithm == SearchAlgorithm.A_STAR or algorithm == SearchAlgorithm.LGS or algorithm == SearchAlgorithm.GGS:
+    if algorithm == SearchAlgorithm.A_STAR.value or algorithm == SearchAlgorithm.LGS.value or algorithm == SearchAlgorithm.GGS.value:
         heuristic_name = config[ConfigParams.HEURISTIC.value]
         if heuristic_name == Heuristic.hamming.value:
             heuristic = Hamming()
-        elif heuristic_name == Heuristic.manhattan:
+        elif heuristic_name == Heuristic.manhattan.value:
             heuristic = Manhattan()
-        elif heuristic_name == Heuristic.inversions:
+        elif heuristic_name == Heuristic.inversions.value:
             heuristic = Inversions()
         if heuristic is None:
             file.close()
