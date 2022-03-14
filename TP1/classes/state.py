@@ -20,9 +20,9 @@ class State:
     return count_inversions(self.board.positions, len(self.board.positions)) % 2 == 0
 
   def __eq__(self, other):
-        return self.__hash__ == other.__hash__
+        return hash(self) == hash(other)
 
   def __hash__(self):
-        return hash(str(frozenset(self.board.positions)))
+        return hash(tuple(self.board.positions))
   
 

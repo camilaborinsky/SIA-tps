@@ -36,7 +36,7 @@ def import_config(config_file_path: str)-> Config:
 
   
     board_array = config[ConfigParams.BOARD.value]
-    board = Board(np.array(board_array).flatten()) #Me deja el board como un array 1D
+    board = Board(np.array(board_array).flatten().tolist()) #Me deja el board como un array 1D
     algorithm = config[ConfigParams.ALGORITHM.value]
     empty_space = find_blank(board)
     heuristic = None

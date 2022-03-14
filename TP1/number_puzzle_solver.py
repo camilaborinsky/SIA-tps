@@ -25,6 +25,7 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristi
     #start timer
     if not initial_state.is_solvable():
         print("No solution")
+        return
     initial_timestamp = time.time()
     print("Starting algorithm ", algorithm)
     # call solve method for corresponding algorithm
@@ -53,8 +54,13 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristi
 def main(config_file_path: str):
     config: config_parser.Config = config_parser.import_config(config_file_path)
     output = solve_puzzle(config.algorithm, state.State(config.board, config.empty_space), config.heuristic)
-    print(output.found_solution)
-    # render_tree(output.solution)
+    if output.found_solution:
+        print("nodos explotados: ", output.expanded_nodes)
+        print("nodos frontera: ", output.frontier_nodes)
+        # if len(output.solution) < 100:
+        # render_tree(output.solution)
+
+
 
 
 

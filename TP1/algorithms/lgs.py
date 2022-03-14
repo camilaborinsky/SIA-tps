@@ -12,7 +12,7 @@ from output.search_output import SearchOutput
 def solve(initial_state:State, heuristic: Heuristics)-> SearchOutput:
     root = Node(None, initial_state)
 
-    explored = Set[State]
+    explored: Set[State] = set() 
     explored.add(root)
 
     to_expand = deque()
@@ -21,7 +21,7 @@ def solve(initial_state:State, heuristic: Heuristics)-> SearchOutput:
     solved = False
     expanded_count = 0
 
-    while explored:
+    while to_expand:
         current_node: Node = to_expand.popleft()
         current_state = current_node.state
         current_board = current_state.board

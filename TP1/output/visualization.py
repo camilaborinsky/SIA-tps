@@ -5,11 +5,9 @@ from classes.node import Node
 def render_tree( explored):
     tree = Tree()
     aux = explored.pop()
-    print(len(explored))
-    tree.create_node(str(aux.state.board.positions), str(aux.state.board.positions))
+    tree.create_node(str(aux.state.board.positions), hash(aux.state))
     while explored:
         curr_node = explored.pop()
-        print(len(explored))
-        tree.create_node(str(curr_node.state.board.positions), str(curr_node.state.board.positions), parent=str(curr_node.parent.state.board.positions))
+        tree.create_node(str(curr_node.state.board.positions), hash(curr_node.state), parent=hash(curr_node.parent.state))
 
     tree.show()

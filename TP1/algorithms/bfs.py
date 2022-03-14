@@ -39,7 +39,7 @@ def solve(initial_state: State)-> SearchOutput:
             for movement in current_empty_space.get_movements(3, 3):
                 b,p = current_board.move(movement,current_empty_space)
                 new_node = Node(to_expand, State(b, p)) 
-                if new_node.state not in explored:
+                if (new_node.state not in explored):
                     to_visit.append(new_node)
                     explored.add(new_node.state)
                     explored_nodes.appendleft(new_node)
