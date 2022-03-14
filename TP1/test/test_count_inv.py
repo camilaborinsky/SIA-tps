@@ -5,7 +5,7 @@ from utils import count_inversions
 
 
 
-class TestMergeSort(unittest.TestCase):
+class TestInversionCount(unittest.TestCase):
 
 
     def test_basic(self):

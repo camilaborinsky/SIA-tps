@@ -1,4 +1,4 @@
-from classes.movement import Movement
+from constants import Movement
 
 class Point:
   def __init__(self, x:int, y:int):
