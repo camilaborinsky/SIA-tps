@@ -38,13 +38,14 @@ class Hamming(Heuristics):
 class Manhattan(Heuristics):
     def calculate(self, state: State) -> int:
         sum = 0
+        coordinates = {0:(0,0), 1:(1,0), 2:(2,0),
+               3:(0,1), 4:(1,1), 5:(2,1),
+               6:(0,2), 7:(1,2), 8:(2,2)}
         for idx, val in enumerate(state.board.positions):
             if val != 0:
-                target_pos_y = int((val-1) % 3)
-                target_pos_x = int((val-1) / 3)
-                current_pos_y = int((idx-1) % 3)
-                current_pos_x = int((idx-1) / 3)
-                sum += abs(target_pos_x - current_pos_x) + abs(target_pos_y-current_pos_y)
+                x1,y1 = coordinates[val]
+                x2,y2 = coordinates[idx]
+                sum += abs(x1-x2) + abs(y1-y2)
         return sum
 
 
