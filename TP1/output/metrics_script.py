@@ -20,13 +20,13 @@ boards = [
 informed = [SearchAlgorithm.LGS, SearchAlgorithm.A_STAR, SearchAlgorithm.GGS]
 heuristics = [Heuristic.hamming, Heuristic.inversions, Heuristic.manhattan]
 
-def generate_metrics():
+def generate_metrics(board_number):
     
     non_informed_outputs = dict()
     non_informed_times = dict()
     # for board in boards:
     for alg in non_informed:
-        config = Config(alg.value, boards[0], find_blank(boards[0]), None)
+        config = Config(alg.value, boards[board_number-1], find_blank(boards[board_number-1]), None)
         output, time_diff = solve_puzzle(config.algorithm, State(config.board, config.empty_space), None)
         non_informed_outputs[alg] = output
         non_informed_times[alg] = time_diff
@@ -36,7 +36,7 @@ def generate_metrics():
 
 
 
-def save_graphs(non_informed_outputs, non_informed_times):
+def save_graphs(non_informed_outputs, non_informed_times, board_number):
         colors = ["#fa9a82", "#fcd874", "#827c7a", "#5996f7", "#c48cff"]
 
         labels = list(map(lambda alg: alg.value,non_informed))
@@ -46,43 +46,43 @@ def save_graphs(non_informed_outputs, non_informed_times):
         plt.ylabel('Cantidad de nodos expandidos')
         y = list(map(lambda alg: non_informed_outputs[alg].expanded_nodes, non_informed))
         plt.bar(range(len(y)), y, width=1, edgecolor="white", linewidth=0.7, color= colors[0])
-        plt.savefig(f'output/graphs/board_1_nf_expanded_nodes.png')
+        plt.savefig(f'output/graphs/board_{board_number}_nf_expanded_nodes.png')
         plt.clf()
         plt.xlabel('Algoritmo')
         plt.xticks(range(len(non_informed)), labels)
         plt.ylabel('Cantidad de nodos frontera')
         y = list(map(lambda alg: len(non_informed_outputs[alg].frontier_nodes), non_informed))
         plt.bar(range(len(y)), y, width=1, edgecolor="white", linewidth=0.7, color= colors[1])
-        plt.savefig(f'output/graphs/board_1_nf_frontier_nodes.png')
+        plt.savefig(f'output/graphs/board_{board_number}_nf_frontier_nodes.png')
         plt.clf()
         plt.xlabel('Algoritmo')
         plt.xticks(range(len(non_informed)), labels)
         plt.ylabel('Cantidad de nodos explorados')
         y = list(map(lambda alg: len(non_informed_outputs[alg].explored_nodes), non_informed))
         plt.bar(range(len(y)), y, width=1, edgecolor="white", linewidth=0.7, color= colors[2])
-        plt.savefig(f'output/graphs/board_1_nf_explored_nodes.png')
+        plt.savefig(f'output/graphs/board_{board_number}_nf_explored_nodes.png')
         plt.clf()
         plt.xlabel('Algoritmo')
         plt.xticks(range(len(non_informed)), labels)
         plt.ylabel('Tiempos de ejecución')
         y = list(map(lambda alg: non_informed_times[alg], non_informed))
         plt.bar(range(len(y)), y, width=1, edgecolor="white", linewidth=0.7, color= colors[3])
-        plt.savefig(f'output/graphs/board_1_nf_times.png')
+        plt.savefig(f'output/graphs/board_{board_number}_nf_times.png')
         plt.clf()
         plt.xlabel('Algoritmo')
         plt.xticks(range(len(non_informed)), labels)
         plt.ylabel('Costo de solución')
         y = list(map(lambda alg: non_informed_outputs[alg].final.depth, non_informed))
         plt.bar(range(len(y)), y, width=1, edgecolor="white", linewidth=0.7, color= colors[4])
-        plt.savefig(f'output/graphs/board_1_nf_cost.png')
+        plt.savefig(f'output/graphs/board_{board_number}_nf_cost.png')
 
 
-def generate_informed_metrics():
+def generate_informed_metrics(board_number):
     informed_outputs = dict()
     informed_times = dict()
     # for board in boards:
     for alg in informed:
-        config = Config(alg.value, boards[0], find_blank(boards[0]), None)
+        config = Config(alg.value, boards[board_number-1], find_blank(boards[board_number-1]), None)
         output_hamming, time_diff_hamming = solve_puzzle(config.algorithm, State(config.board, config.empty_space), Hamming())
         output_manhattan, time_diff_manhattan = solve_puzzle(config.algorithm, State(config.board, config.empty_space), Manhattan())
         output_inversions, time_diff_inversions = solve_puzzle(config.algorithm, State(config.board, config.empty_space), Inversions())
@@ -91,7 +91,7 @@ def generate_informed_metrics():
     
     return informed_outputs, informed_times
 
-def save_informed_graphs(informed_outputs, informed_times):
+def save_informed_graphs(informed_outputs, informed_times, board_number):
         colors = ["#fa9a82", "#fcd874", "#827c7a", "#5996f7"]
 
         labels = list(map(lambda alg: alg.value,informed))
@@ -105,10 +105,10 @@ def save_informed_graphs(informed_outputs, informed_times):
         y1 = list(map(lambda alg: informed_outputs[alg][1].expanded_nodes, informed))
         y2 = list(map(lambda alg: informed_outputs[alg][2].expanded_nodes, informed))
         plt.bar(ind, y0, width, edgecolor="white", linewidth=0.7, color= colors[0], label="hamming")
-        # plt.bar(ind+width, y1, width, edgecolor="white", linewidth=0.7, color= colors[1], label="manhattan")
+        plt.bar(ind+width, y1, width, edgecolor="white", linewidth=0.7, color= colors[1], label="manhattan")
         plt.bar(ind+2*width, y2, width, edgecolor="white", linewidth=0.7, color= colors[2], label="inversions")
         plt.legend(loc="best")
-        plt.savefig(f'output/graphs/board_1_expanded_nodes.png')
+        plt.savefig(f'output/graphs/board_{board_number}_expanded_nodes.png')
         plt.clf()
         plt.xlabel('Algoritmo')
         plt.xticks(ind+width/3, labels)
@@ -117,10 +117,10 @@ def save_informed_graphs(informed_outputs, informed_times):
         y1 = list(map(lambda alg: len(informed_outputs[alg][1].explored_nodes), informed))
         y2 = list(map(lambda alg: len(informed_outputs[alg][2].explored_nodes), informed))
         plt.bar(ind, y0, width, edgecolor="white", linewidth=0.7, color= colors[0], label="hamming")
-        # plt.bar(ind+width, y1, width, edgecolor="white", linewidth=0.7, color= colors[1], label="manhattan")
+        plt.bar(ind+width, y1, width, edgecolor="white", linewidth=0.7, color= colors[1], label="manhattan")
         plt.bar(ind+2*width, y2, width, edgecolor="white", linewidth=0.7, color= colors[2], label="inversions")
         plt.legend(loc="best")
-        plt.savefig(f'output/graphs/board_1_explored_nodes.png')
+        plt.savefig(f'output/graphs/board_{board_number}_explored_nodes.png')
         plt.clf()
         
         plt.xlabel('Algoritmo')
@@ -130,10 +130,10 @@ def save_informed_graphs(informed_outputs, informed_times):
         y1 = list(map(lambda alg: len(informed_outputs[alg][1].frontier_nodes), informed))
         y2 = list(map(lambda alg: len(informed_outputs[alg][2].frontier_nodes), informed))
         plt.bar(ind, y0, width, edgecolor="white", linewidth=0.7, color= colors[0], label="hamming")
-        # plt.bar(ind+width, y1, width, edgecolor="white", linewidth=0.7, color= colors[1], label="manhattan")
+        plt.bar(ind+width, y1, width, edgecolor="white", linewidth=0.7, color= colors[1], label="manhattan")
         plt.bar(ind+2*width, y2, width, edgecolor="white", linewidth=0.7, color= colors[2], label="inversions")
         plt.legend(loc="best")
-        plt.savefig(f'output/graphs/board_1_frontier_nodes.png')
+        plt.savefig(f'output/graphs/board_{board_number}_frontier_nodes.png')
         plt.clf()
 
         plt.xlabel('Algoritmo')
@@ -143,10 +143,10 @@ def save_informed_graphs(informed_outputs, informed_times):
         y1 = list(map(lambda alg: informed_times[alg][1], informed))
         y2 = list(map(lambda alg: informed_times[alg][2], informed))
         plt.bar(ind, y0, width, edgecolor="white", linewidth=0.7, color= colors[0], label="hamming")
-        # plt.bar(ind+width, y1, width, edgecolor="white", linewidth=0.7, color= colors[1], label="manhattan")
+        plt.bar(ind+width, y1, width, edgecolor="white", linewidth=0.7, color= colors[1], label="manhattan")
         plt.bar(ind+2*width, y2, width, edgecolor="white", linewidth=0.7, color= colors[2], label="inversions")
         plt.legend(loc="best")
-        plt.savefig(f'output/graphs/board_1_times.png')
+        plt.savefig(f'output/graphs/board_{board_number}_times.png')
         plt.clf()
 
         plt.xlabel('Algoritmo')
@@ -156,17 +156,17 @@ def save_informed_graphs(informed_outputs, informed_times):
         y1 = list(map(lambda alg: informed_outputs[alg][1].final.depth, informed))
         y2 = list(map(lambda alg: informed_outputs[alg][2].final.depth, informed))
         plt.bar(ind, y0, width, edgecolor="white", linewidth=0.7, color= colors[0], label="hamming")
-        # plt.bar(ind+width, y1, width, edgecolor="white", linewidth=0.7, color= colors[1], label="manhattan")
+        plt.bar(ind+width, y1, width, edgecolor="white", linewidth=0.7, color= colors[1], label="manhattan")
         plt.bar(ind+2*width, y2, width, edgecolor="white", linewidth=0.7, color= colors[2], label="inversions")
         plt.legend(loc="best")
-        plt.savefig(f'output/graphs/board_1_cost.png')
+        plt.savefig(f'output/graphs/board_{board_number}_cost.png')
         plt.clf()
     
 
 
 
 if __name__ == "__main__":
-    a, b = generate_metrics()
-    save_graphs(a, b)
-    c, d = generate_informed_metrics()
-    save_informed_graphs(c, d)
+    # a, b = generate_metrics(5)
+    # save_graphs(a, b, 5)
+    c, d = generate_informed_metrics(5)
+    save_informed_graphs(c, d, 5)

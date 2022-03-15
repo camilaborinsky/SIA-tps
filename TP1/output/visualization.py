@@ -1,4 +1,3 @@
-from algorithms.a_star import HeuristicNode
 from classes.node import Node 
 from pyvis.network import Network
 from config_parser import Config
@@ -19,12 +18,13 @@ def render_stats(output:SearchOutput, time_diff):
         print(f"Nodos frontera: {len(output.frontier_nodes)}\n")
 
 def render_tree(output: SearchOutput):
-    explored = output.explored_nodes.copy()
+    explored = output.explored_nodes
     nt = Network(height="900px", width="900px", heading=f"Árbol de búsqueda")
     f = open('output/visualization_options.json')
 
     lines = f.read()
     nt.set_options(lines)
+    f.close()
     solution = set()
     solution_node:Node = output.final
     while solution_node is not None:
@@ -36,16 +36,18 @@ def render_tree(output: SearchOutput):
 
     while explored:
         curr_node = explored.pop()
-        if len(output.explored_nodes) <= 20000 or curr_node.state in solution:
-            if curr_node is output.final:
-                color = "#fa9a82"
-            elif curr_node.state in solution:
-                color = "#fcd874"
-            else:
-                color = "#827c7a"
-            nt.add_node(hash(curr_node.state), str(curr_node), color=color)
-            nt.add_edge(hash(curr_node.parent.state), hash(curr_node.state), color=color)
-
+        if curr_node.depth > output.final.depth:
+            break
+        # if len(output.explored_nodes) <= 20000 or curr_node.state in solution:
+        if curr_node is output.final:
+            color = "#fa9a82"
+        elif curr_node.state in solution:
+            color = "#fcd874"
+        else:
+            color = "#827c7a"
+        curr_hash = hash(curr_node.state)
+        nt.add_node(curr_hash, str(curr_node), color=color)
+        nt.add_edge(hash(curr_node.parent.state), curr_hash, color=color)
     nt.show("dot.html")
 
 def render_config(config: Config):

@@ -27,12 +27,5 @@ class HeuristicNode(Node):
   def __str__(self):
     return f'h={self.f} \n{self.state}'
 
-
-  def __eq__(self, other):
-    if other is None:
-      return False
-    return self.f == other.f
-  
-  def __lt__ (self, other):
-    return self.f < other.f
-    
+  def __lt__(self, other):
+    return self.f <= other.f

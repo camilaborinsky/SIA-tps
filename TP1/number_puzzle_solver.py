@@ -53,6 +53,8 @@ def main(config_file_path: str):
     if output is not None and output.found_solution:
         render_stats(output, time_diff)
         render_tree(output)
+    else:
+        print("No se encontró solución")
 
 
 
