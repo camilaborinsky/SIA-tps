@@ -17,3 +17,11 @@ class Board:
 
   def __str__(self):
       return "Board: "+ str(self.positions)
+
+  def __eq__(self, other):
+      if isinstance(other, Board):
+        return hash(self) == hash(other)
+      return False
+
+  def __hash__(self):
+        return hash(tuple(self.positions))

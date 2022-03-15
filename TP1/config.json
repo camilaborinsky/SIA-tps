@@ -4,6 +4,6 @@
     [1, 7, 4],
     [0, 8, 6]
   ],
-  "algorithm": "LGS",
-  "heuristic": "inversions"
+  "algorithm": "GGS",
+  "heuristic": "manhattan"
 }
