@@ -1,19 +1,22 @@
 from algorithms.a_star import HeuristicNode
 from classes.node import Node 
 from pyvis.network import Network
+from config_parser import Config
 
 from output.search_output import SearchOutput
 
 def render_stats(output:SearchOutput, time_diff):
     if output.found_solution:
         print("Solución encontrada\n")
-        print(f"Nodos expandidos: {output.expanded_nodes}")
-        print(f"Nodos frontera: {len(output.frontier_nodes)}")
-        print(f"Tiempo de ejecución: {time_diff}")
+        print(f"Nodos expandidos: {output.expanded_nodes}\n")
+        print(f"Nodos frontera: {len(output.frontier_nodes)}\n")
+        print(f"Tiempo de ejecución: {time_diff}\n")
+        print(f"Profundidad de solución: {output.final.state.depth}\n")
+        print(f"Costo de la solución: {output.final.state.depth}\n")
     else:
         print("No se encontró solución\n")
-        print(f"Nodos expandidos: {output.expanded_nodes}")
-        print(f"Nodos frontera: {len(output.frontier_nodes)}")
+        print(f"Nodos expandidos: {output.expanded_nodes}\n")
+        print(f"Nodos frontera: {len(output.frontier_nodes)}\n")
 
 def render_tree(output: SearchOutput):
     explored = output.explored_nodes.copy()
@@ -44,3 +47,8 @@ def render_tree(output: SearchOutput):
             nt.add_edge(hash(curr_node.parent.state), hash(curr_node.state), color=color)
 
     nt.show("dot.html")
+
+def render_config(config: Config):
+    print(f"Configuración:\nEstado inicial: \n{config.board}\nAlgoritmo elegido: {config.algorithm}\n")
+    if config.heuristic is not None:
+        print(f"Heurística elegida: {config.heuristic}\n")

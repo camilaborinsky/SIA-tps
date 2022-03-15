@@ -9,15 +9,10 @@ import algorithms.dfs as dfs
 import algorithms.a_star as a_star
 import algorithms.vds as vds
 import algorithms.ggs as ggs
-# import algorithms.ggs as ggs
 import algorithms.lgs as lgs
-from output.visualization import render_stats, render_tree
+from output.visualization import render_config, render_stats, render_tree
 
 
-
-
-board = board.Board([1,2,3, 4, 6, 5, 7,8,0])
-empty_space = point.Point(2,2)
 
 
     
@@ -25,11 +20,9 @@ empty_space = point.Point(2,2)
 def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristic: Heuristics):
     #start timer
     if not initial_state.is_solvable():
-        print("No solution")
+        print("El estado inicial no tiene solución\n")
         return
     initial_timestamp = time.time()
-    print("Starting algorithm ", algorithm)
-    # call solve method for corresponding algorithm
 
     if algorithm == SearchAlgorithm.BFS.value:
         output = bfs.solve(initial_state)
@@ -37,8 +30,6 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristi
         output = dfs.solve(initial_state)
     elif algorithm == SearchAlgorithm.A_STAR.value:
         output = a_star.solve(initial_state, heuristic)
-    # elif algorithm == SearchAlgorithm.GGS.value:
-    #     ggs.solve(initial_state, heuristic)
     elif algorithm == SearchAlgorithm.VDS.value:
         output = vds.solve(initial_state,10) #TODO: hacer que el json reciba el depth inicial y que no este harcodeado 
     elif algorithm == SearchAlgorithm.LGS.value:
@@ -50,17 +41,16 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristi
     #end timer
     final_timestamp = time.time()
     time_diff = final_timestamp - initial_timestamp
-    print("Processing time: ", time_diff)
-    
+    print(f"Finalizada la ejecución de {algorithm}\n")    
     #print metrics
     return output, time_diff
 
 
 def main(config_file_path: str):
     config: config_parser.Config = config_parser.import_config(config_file_path)
+    render_config(config)
     output, time_diff = solve_puzzle(config.algorithm, state.State(config.board, config.empty_space), config.heuristic)
     if output is not None and output.found_solution:
-        # if len(output.solution) < 100:
         render_stats(output, time_diff)
         render_tree(output)
 
@@ -79,8 +69,11 @@ if __name__ == "__main__":
 
     try:
         main(config_file)
-    except FileNotFoundError:
-        print("error")
+    except FileNotFoundError as e:
+        print(e)
+    except ValueError as e:
+        print(e)
+    
 
 
  

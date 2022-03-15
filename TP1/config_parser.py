@@ -22,7 +22,7 @@ def import_config(config_file_path: str)-> Config:
     try:
         file = open(config_file_path)
     except FileNotFoundError:
-        raise FileNotFoundError(f'Configuration file not found. Please ensure "{config_file_path}" exists.')
+        raise FileNotFoundError(f'No se encontro archivo de configuración. Por favor asegurarse de que "{config_file_path}" existe.')
 
     config = json.load(file)
         
@@ -57,4 +57,4 @@ def import_config(config_file_path: str)-> Config:
 
 
 def missing_argument_message(parameter: str):
-    raise ValueError(f'Error parsing arguments. Missing parameter: {parameter}')
+    raise ValueError(f'Error al parsear los parámetros. Falta: {parameter}')

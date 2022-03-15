@@ -1,6 +1,4 @@
 
-
-from cProfile import label
 from matplotlib import pyplot as plt
 import numpy as np
 from classes.board import Board
@@ -32,15 +30,6 @@ def generate_metrics():
         output, time_diff = solve_puzzle(config.algorithm, State(config.board, config.empty_space), None)
         non_informed_outputs[alg] = output
         non_informed_times[alg] = time_diff
-
-    
-    informed_outputs = dict()
-    # for board in boards:
-    #     for alg in informed:
-    #         for heuristic in heuristics:
-    #             config = Config(alg.value, board, find_blank(board), heuristic)
-    #             output = solve_puzzle(config.algorithm.value, State(config.board, config.empty_space), heuristic)
-    #             informed_outputs[(board, alg, heuristic)] = output
     
 
     return non_informed_outputs, non_informed_times
@@ -152,32 +141,12 @@ def save_informed_graphs(informed_outputs, informed_times):
         plt.legend(loc="best")
         plt.savefig(f'output/graphs/board_1_times.png')
         plt.clf()
-        
-        # plt.xlabel('Algoritmo')
-        # plt.xticks(range(len(informed)), labels)
-        # plt.ylabel('Cantidad de nodos frontera')
-        # y = list(map(lambda alg: len(informed_outputs[alg].frontier_nodes), informed))
-        # plt.bar(range(len(y)), y, width=1, edgecolor="white", linewidth=0.7, color= colors[1])
-        # plt.savefig(f'output/graphs/board_1_frontier_nodes.png')
-        # plt.clf()
-        # plt.xlabel('Algoritmo')
-        # plt.xticks(range(len(informed)), labels)
-        # plt.ylabel('Cantidad de nodos explorados')
-        # y = list(map(lambda alg: len(informed_outputs[alg].explored_nodes), informed))
-        # plt.bar(range(len(y)), y, width=1, edgecolor="white", linewidth=0.7, color= colors[2])
-        # plt.savefig(f'output/graphs/board_1_explored_nodes.png')
-        # plt.clf()
-        # plt.xlabel('Algoritmo')
-        # plt.xticks(range(len(informed)), labels)
-        # plt.ylabel('Tiempos de ejecución')
-        # y = list(map(lambda alg: informed_times[alg], informed))
-        # plt.bar(range(len(y)), y, width=1, edgecolor="white", linewidth=0.7, color= colors[3])
-        # plt.savefig(f'output/graphs/board_1_times.png')
+    
 
 
 
 if __name__ == "__main__":
-    # a, b = generate_metrics()
-    # save_graphs(a, b)
+    a, b = generate_metrics()
+    save_graphs(a, b)
     c, d = generate_informed_metrics()
     save_informed_graphs(c, d)

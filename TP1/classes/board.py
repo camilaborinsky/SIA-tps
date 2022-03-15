@@ -16,7 +16,8 @@ class Board:
 
 
   def __str__(self):
-      return "Board: "+ str(self.positions)
+    arr = self.positions
+    return f"{arr[0]} {arr[1]} {arr[2]}\n {arr[3]} {arr[4]} {arr[5]}\n {arr[6]} {arr[7]} {arr[8]}\n"
 
   def __eq__(self, other):
       if isinstance(other, Board):

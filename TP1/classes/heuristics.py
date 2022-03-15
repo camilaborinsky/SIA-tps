@@ -10,6 +10,7 @@ class Heuristics:
     def calculate(self, state: State)-> int:
         pass
 
+
     
     # def manhattan(self, state:State):
     #     sum = 0
@@ -35,6 +36,10 @@ class Hamming(Heuristics):
                 i+=1
         return i
 
+    def __str__(self) -> str:
+        return "hamming"
+        
+
 class Manhattan(Heuristics):
     def calculate(self, state: State) -> int:
         sum = 0
@@ -47,10 +52,16 @@ class Manhattan(Heuristics):
                 x2,y2 = coordinates[idx]
                 sum += abs(x1-x2) + abs(y1-y2)
         return sum
+    
+    def __str__(self) -> str:
+        return "manhattan"
 
 
 class Inversions(Heuristics):
     def calculate(self, state: State) -> int:
         positions = list(filter(lambda n : (n != 0) ,state.board.positions.copy()))
         return count_inversions(positions, len(positions))
+
+    def __str__(self) -> str:
+        return "inversions"
 
