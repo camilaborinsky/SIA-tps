@@ -1,9 +1,7 @@
 {
   "board": [
-    [2, 5, 3],
-    [1, 7, 4],
-    [0, 8, 6]
+    [2, 5, 3],[ 1, 7, 4], [0, 8, 6]
   ],
-  "algorithm": "GGS",
+  "algorithm": "VDS",
   "heuristic": "manhattan"
 }
