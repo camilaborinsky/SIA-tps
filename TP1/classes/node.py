@@ -20,4 +20,10 @@ class HeuristicNode(Node):
       self.depth = 0
     else:
       self.depth = self.parent.depth +1
+
+  def __eq__(self, other):
+    return self.f == other.f
+  
+  def __lt__ (self, other):
+    return self.f < other.f
     

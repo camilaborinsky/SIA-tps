@@ -8,6 +8,7 @@ import algorithms.bfs as bfs
 import algorithms.dfs as dfs
 import algorithms.a_star as a_star
 import algorithms.vds as vds
+import algorithms.ggs as ggs
 # import algorithms.ggs as ggs
 import algorithms.lgs as lgs
 from output.visualization import render_tree
@@ -42,6 +43,8 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristi
         vds.solve(initial_state)
     elif algorithm == SearchAlgorithm.LGS.value:
         output = lgs.solve(initial_state, heuristic)
+    elif algorithm == SearchAlgorithm.GGS.value:
+        output = ggs.solve(initial_state, heuristic)
     
 
     #end timer
