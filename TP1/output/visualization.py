@@ -11,8 +11,8 @@ def render_stats(output:SearchOutput, time_diff):
         print(f"Nodos expandidos: {output.expanded_nodes}\n")
         print(f"Nodos frontera: {len(output.frontier_nodes)}\n")
         print(f"Tiempo de ejecución: {time_diff}\n")
-        print(f"Profundidad de solución: {output.final.state.depth}\n")
-        print(f"Costo de la solución: {output.final.state.depth}\n")
+        print(f"Profundidad de solución: {output.final.depth}\n")
+        print(f"Costo de la solución: {output.final.depth}\n")
     else:
         print("No se encontró solución\n")
         print(f"Nodos expandidos: {output.expanded_nodes}\n")

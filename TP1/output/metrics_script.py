@@ -37,7 +37,7 @@ def generate_metrics():
 
 
 def save_graphs(non_informed_outputs, non_informed_times):
-        colors = ["#fa9a82", "#fcd874", "#827c7a", "#5996f7"]
+        colors = ["#fa9a82", "#fcd874", "#827c7a", "#5996f7", "#c48cff"]
 
         labels = list(map(lambda alg: alg.value,non_informed))
 
@@ -68,6 +68,13 @@ def save_graphs(non_informed_outputs, non_informed_times):
         y = list(map(lambda alg: non_informed_times[alg], non_informed))
         plt.bar(range(len(y)), y, width=1, edgecolor="white", linewidth=0.7, color= colors[3])
         plt.savefig(f'output/graphs/board_1_nf_times.png')
+        plt.clf()
+        plt.xlabel('Algoritmo')
+        plt.xticks(range(len(non_informed)), labels)
+        plt.ylabel('Costo de solución')
+        y = list(map(lambda alg: non_informed_outputs[alg].final.depth, non_informed))
+        plt.bar(range(len(y)), y, width=1, edgecolor="white", linewidth=0.7, color= colors[4])
+        plt.savefig(f'output/graphs/board_1_nf_cost.png')
 
 
 def generate_informed_metrics():
@@ -140,6 +147,19 @@ def save_informed_graphs(informed_outputs, informed_times):
         plt.bar(ind+2*width, y2, width, edgecolor="white", linewidth=0.7, color= colors[2], label="inversions")
         plt.legend(loc="best")
         plt.savefig(f'output/graphs/board_1_times.png')
+        plt.clf()
+
+        plt.xlabel('Algoritmo')
+        plt.xticks(ind+width/3, labels)
+        plt.ylabel('Costo de la solución')
+        y0 = list(map(lambda alg: informed_outputs[alg][0].final.depth, informed))
+        y1 = list(map(lambda alg: informed_outputs[alg][1].final.depth, informed))
+        y2 = list(map(lambda alg: informed_outputs[alg][2].final.depth, informed))
+        plt.bar(ind, y0, width, edgecolor="white", linewidth=0.7, color= colors[0], label="hamming")
+        # plt.bar(ind+width, y1, width, edgecolor="white", linewidth=0.7, color= colors[1], label="manhattan")
+        plt.bar(ind+2*width, y2, width, edgecolor="white", linewidth=0.7, color= colors[2], label="inversions")
+        plt.legend(loc="best")
+        plt.savefig(f'output/graphs/board_1_cost.png')
         plt.clf()
     
 
