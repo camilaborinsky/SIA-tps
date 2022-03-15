@@ -4,9 +4,12 @@ from pyvis.network import Network
 
 from output.search_output import SearchOutput
 
-def render_stats(output:SearchOutput):
+def render_stats(output:SearchOutput, time_diff):
     if output.found_solution:
-        print(output.expanded_nodes)
+        print("Solución encontrada\n")
+        print(f"Nodos expandidos: {output.expanded_nodes}")
+        print(f"Nodos frontera: {len(output.frontier_nodes)}")
+        print(f"Tiempo de ejecución: {time_diff}")
     else:
         print("No se encontró solución\n")
         print(f"Nodos expandidos: {output.expanded_nodes}")

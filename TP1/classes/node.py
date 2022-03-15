@@ -29,6 +29,8 @@ class HeuristicNode(Node):
 
 
   def __eq__(self, other):
+    if other is None:
+      return False
     return self.f == other.f
   
   def __lt__ (self, other):

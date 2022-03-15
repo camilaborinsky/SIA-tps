@@ -34,13 +34,13 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristi
     if algorithm == SearchAlgorithm.BFS.value:
         output = bfs.solve(initial_state)
     elif algorithm == SearchAlgorithm.DFS.value:
-        dfs.solve(initial_state)
+        output = dfs.solve(initial_state)
     elif algorithm == SearchAlgorithm.A_STAR.value:
-        a_star.solve(initial_state, heuristic)
+        output = a_star.solve(initial_state, heuristic)
     # elif algorithm == SearchAlgorithm.GGS.value:
     #     ggs.solve(initial_state, heuristic)
     elif algorithm == SearchAlgorithm.VDS.value:
-        vds.solve(initial_state)
+        output = vds.solve(initial_state,10) #TODO: hacer que el json reciba el depth inicial y que no este harcodeado 
     elif algorithm == SearchAlgorithm.LGS.value:
         output = lgs.solve(initial_state, heuristic)
     elif algorithm == SearchAlgorithm.GGS.value:
@@ -49,17 +49,19 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristi
 
     #end timer
     final_timestamp = time.time()
-    print("Processing time: ", final_timestamp - initial_timestamp)
+    time_diff = final_timestamp - initial_timestamp
+    print("Processing time: ", time_diff)
+    
     #print metrics
-    return output
+    return output, time_diff
 
 
 def main(config_file_path: str):
     config: config_parser.Config = config_parser.import_config(config_file_path)
-    output = solve_puzzle(config.algorithm, state.State(config.board, config.empty_space), config.heuristic)
+    output, time_diff = solve_puzzle(config.algorithm, state.State(config.board, config.empty_space), config.heuristic)
     if output is not None and output.found_solution:
         # if len(output.solution) < 100:
-        render_stats(output)
+        render_stats(output, time_diff)
         render_tree(output)
 
 

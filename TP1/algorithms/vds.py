@@ -1,12 +1,13 @@
 from collections import deque
+from typing import final
 
 from classes.state import State
 from classes.node import Node
 from classes.board import Board
 
+from output.search_output import SearchOutput
+
 import math
-
-
 
 
 def find_solution(init_state: State, max_depth):
@@ -17,6 +18,9 @@ def find_solution(init_state: State, max_depth):
     frontier = deque()
     frontier.append(initial_node)
 
+    explored_nodes = deque()
+    explored_nodes.appendleft(initial_node)
+
     expanded_count = 0
 
     while len(frontier)>0:
@@ -24,7 +28,7 @@ def find_solution(init_state: State, max_depth):
         while current_node.depth >= max_depth:
             if len(frontier) == 0:
                 print("No possible solution with current depth")
-                return None, -1
+                return SearchOutput(expanded_count, frontier, False, None, explored_nodes)
             current_node = frontier.pop()
 
         current_state: State = current_node.state
@@ -42,15 +46,15 @@ def find_solution(init_state: State, max_depth):
 
             #Is this node the solution? 
             if current_node.state.is_final():
-                print("Solution found!")
-                print(current_node.state.board)
+                #print("Solution found!")
                 final_depth = current_node.depth
-                print("Profundidad: ", final_depth, "Con profundidad maxima: ", max_depth)
+                #print("Profundidad: ", final_depth, "Con profundidad maxima: ", max_depth)
                 solution = deque()
+                solution_node = current_node
                 while current_node is not None:
                     solution.append(current_node)
                     current_node = current_node.parent
-                return solution, final_depth
+                return SearchOutput(expanded_count, frontier, True, solution_node, explored_nodes)
             #Go on to expand current node
             expanded_count +=1
             for movement in current_node.state.empty_space.get_movements(3,3):
@@ -58,44 +62,46 @@ def find_solution(init_state: State, max_depth):
                 new_node = Node(current_node, State(new_board, new_empty))
                 #Creo que esta linea es innecesaria por como esta definido depth en Node. 
                 new_node.depth = current_node.depth+1
-                if not new_node in frontier:
+                if new_node not in frontier:
                     frontier.append(new_node)
+                    explored_nodes.append(new_node)
 
-    
-    print("we're out!")
-    return None, -1
+    return SearchOutput(expanded_count, frontier, False, None, explored_nodes)
 
-def run(init_state : State, initial_depth):
+
+
+
+def solve(init_state : State, initial_depth):
+    print("Tried to solve with depth: ", initial_depth, end='')
     previous_depth = 0
     new_depth = initial_depth
-    solution, depth = find_solution(init_state, initial_depth)
+    search_output: SearchOutput = find_solution(init_state, initial_depth)
     
     #busco la primer cota superior
-    while depth == -1:
+    while search_output.found_solution == False:
         previous_depth = new_depth
         new_depth = previous_depth+10
-        print("about to try with depth: ", new_depth)
-        solution, depth = find_solution(init_state, new_depth)
+        
+        search_output = find_solution(init_state, new_depth)
 
+    
     lower_bound = previous_depth #ultima profundidad a la que no consegui solucion
-    upper_bound = depth # primer profundidad a la que consegui solucion
+    upper_bound = search_output.final.depth # primer profundidad a la que consegui solucion
  
-
-    print("Tengo cota inferior: ", lower_bound, " y cota superior: ", upper_bound)
-
+    
     
     while upper_bound - lower_bound > 1:
         mid_point = math.trunc((lower_bound+upper_bound)/2)
-        print("about to try with depth: ", mid_point)
-        solution, depth = find_solution(init_state, mid_point)
-        if depth == -1: #midpoint doesnt find solutions, midpoint becomes new lower bound
+        print(", ", mid_point, end='')
+        search_output = find_solution(init_state, mid_point)
+        if search_output.found_solution == False: #midpoint doesnt find solutions, midpoint becomes new lower bound
             if lower_bound == mid_point: #last case where lower_bound and upper bound are split by one number
-                return solution
+                return search_output
             lower_bound = mid_point
         else: #midpoint finds solution, found depthbecomes new upper bound
-            upper_bound = depth
-    print("La solucion se obtiene de manera optima con la profundidad ", upper_bound)
-    return solution
+            upper_bound = search_output.final.depth
+    print("optimal depth: ", upper_bound)
+    return search_output
 
             
 
