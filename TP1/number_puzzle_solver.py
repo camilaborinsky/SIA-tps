@@ -40,7 +40,7 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristi
     # elif algorithm == SearchAlgorithm.GGS.value:
     #     ggs.solve(initial_state, heuristic)
     elif algorithm == SearchAlgorithm.VDS.value:
-        vds.solve(initial_state)
+        output = vds.solve(initial_state,10) #TODO: hacer que el json reciba el depth inicial y que no este harcodeado 
     elif algorithm == SearchAlgorithm.LGS.value:
         output = lgs.solve(initial_state, heuristic)
     elif algorithm == SearchAlgorithm.GGS.value:
@@ -50,6 +50,7 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristi
     #end timer
     final_timestamp = time.time()
     print("Processing time: ", final_timestamp - initial_timestamp)
+    
     #print metrics
     return output
 
