@@ -34,9 +34,9 @@ def solve_puzzle(algorithm: SearchAlgorithm, initial_state:state.State, heuristi
     if algorithm == SearchAlgorithm.BFS.value:
         output = bfs.solve(initial_state)
     elif algorithm == SearchAlgorithm.DFS.value:
-        dfs.solve(initial_state)
+        output = dfs.solve(initial_state)
     elif algorithm == SearchAlgorithm.A_STAR.value:
-        a_star.solve(initial_state, heuristic)
+        output = a_star.solve(initial_state, heuristic)
     # elif algorithm == SearchAlgorithm.GGS.value:
     #     ggs.solve(initial_state, heuristic)
     elif algorithm == SearchAlgorithm.VDS.value:
