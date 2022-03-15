@@ -11,7 +11,7 @@ import algorithms.vds as vds
 import algorithms.ggs as ggs
 # import algorithms.ggs as ggs
 import algorithms.lgs as lgs
-from output.visualization import render_tree
+from output.visualization import render_stats, render_tree
 
 
 
@@ -59,6 +59,7 @@ def main(config_file_path: str):
     output = solve_puzzle(config.algorithm, state.State(config.board, config.empty_space), config.heuristic)
     if output is not None and output.found_solution:
         # if len(output.solution) < 100:
+        render_stats(output)
         render_tree(output)
 
 

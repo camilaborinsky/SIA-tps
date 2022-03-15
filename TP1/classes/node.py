@@ -10,6 +10,9 @@ class Node:
       self.depth = 0
     else:
       self.depth = self.parent.depth +1
+  
+  def __str__(self):
+    return f'{self.state}'
 
 class HeuristicNode(Node):
   def __init__(self, parent, state: State,f):
@@ -20,6 +23,10 @@ class HeuristicNode(Node):
       self.depth = 0
     else:
       self.depth = self.parent.depth +1
+
+  def __str__(self):
+    return f'h={self.f} \n{self.state}'
+
 
   def __eq__(self, other):
     return self.f == other.f
