@@ -1,0 +1,9 @@
+{
+    "generation_count": 500,
+    "population_size": 300,
+    "mutation_prob": 0.1,
+    "cross_method": "uniform",
+    "mutation_method": "uniform",
+    "selection_method": "elite"
+
+}
