@@ -12,9 +12,9 @@ class GeneticMutation:
 class UniformMutation(GeneticMutation):
     def mutate(self, individual: Individual):
         for x in range(0, len(individual.genotype)):
-            random_number = random.uniform(0,1)
+            random_number = random.rand(0,1)
             if random_number < mutation_constant:
-                individual.genotype[x] = random.uniform(-mutation_a, mutation_a)
+                individual.genotype[x] += random.uniform(-mutation_a, mutation_a)
         return individual
 
 class NormalMutation(GeneticMutation):

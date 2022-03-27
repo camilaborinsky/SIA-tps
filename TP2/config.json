@@ -1,9 +1,17 @@
 {
-    "generation_count": 500,
-    "population_size": 300,
-    "mutation_prob": 0.1,
-    "cross_method": "uniform",
-    "mutation_method": "uniform",
-    "selection_method": "elite"
-
+  "generation_count": 500,
+  "population_size": 300,
+  "cross_method": "uniform",
+  "mutation": {
+    "method": "uniform",
+    "probability": 0.1,
+    "distribution_parameter": 1
+  },
+  "selection_method": "elite",
+  "reagents": [
+    [4.4793, -4.0765, -4.0765],
+    [-4.1793, -4.9218, 1.7664],
+    [-3.9429, -0.7689, 4.883]
+  ],
+  "exact_values": [0, 1, 1]
 }
