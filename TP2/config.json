@@ -1,6 +1,16 @@
 {
-  "generation_count": 500,
   "population_size": 300,
+  "parent_selection_method":"random",
+  "precision_degree": 15, 
+  "break": {
+    "end_criteria":"generation_count",
+    "generation_limit":500,
+    "time_limit": 30,
+    "fixed_fitness": 10
+  },
+
+  "excecution_count":5, 
+  
   "cross_method": "uniform",
   "mutation": {
     "method": "uniform",
