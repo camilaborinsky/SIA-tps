@@ -17,8 +17,10 @@ class Individual:
 
     def calculate_fitness(self, exact_values, sigma):
         W, omega, omega_zero = self.get_genotype_elements()
-        return (-1)* error(W, omega, omega_zero, exact_values,  sigma)
+        return 3- error(W, omega, omega_zero, exact_values,  sigma)
 
+    # def compare_by_fitness(self, other):
+    #     return abs(self.fitness - other.fitness) > PRECISION
 
     def __eq__(self, other):
         if isinstance(other, Individual):

@@ -84,7 +84,7 @@ def solve():
             i+=1
         # Seleccion de individuos
         new_population = genetic_selection.select(new_population, P)
-
+        
         # Intercambio de poblaciones
         current_population = new_population
         generation_count+=1
