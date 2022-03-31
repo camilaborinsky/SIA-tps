@@ -36,19 +36,5 @@ def match_genotypes (genotypes):
     random.shuffle(targets)
     return list(zip(genotypes, targets))
 
-def mean_fitness(population):
-    return sum(list(map(lambda individual: individual.fitness, population)))/len(population)
-
-def min_fitness(population):
-    return min(list(map(lambda individual: individual.fitness, population)))
-
-def max_fitness(population):
-    return max(list(map(lambda individual: individual.fitness, population)))
-
-def fitness_diversity(population):
-    fitness_unique_values = 0
-    # for i in enumerate(population):
-    #     for j in enumerate(population):
-    #         if(abs(i.fitness - j.fitness) > PRECISION ):
 
 
