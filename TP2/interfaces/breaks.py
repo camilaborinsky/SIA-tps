@@ -1,5 +1,5 @@
 class AlgorithmBreak:
-    def checkBreak(self, param):
+    def checkBreak(self, time, generation_metrics):
         return True
 
 
@@ -8,24 +8,24 @@ class GenerationCountBreak(AlgorithmBreak):
         self.generation_count = generation_count
         self.method_name = method_name
 
-    def checkBreak(self, current_generation):
-        return current_generation >= self.generation_count
+    def checkBreak(self, time, current_generation_metrics):
+        return current_generation_metrics.generation_count >= self.generation_count
 
 class TimeBreak(AlgorithmBreak):
     def __init__(self, max_time, method_name):
         self.max_time = max_time
         self.method_name = method_name
 
-    def checkBreak(self, current_time):
-        return current_time >= self.max_time
+    def checkBreak(self, time, current_generation_metrics):
+        return time >= self.max_time
 
 class AcceptableSolutionBreak(AlgorithmBreak):
     def __init__(self, precision, method_name):
         self.precision = precision
         self.method_name = method_name
 
-    def checkBreak(self, max_fitness):
-        return max_fitness <= self.precision
+    def checkBreak(self, time, current_generation_metrics):
+        return abs(current_generation_metrics.max_fitness - 3) <= self.precision
 
 class ConstantSolutionBreak(AlgorithmBreak):
     def __init__(self, precision, fixed_fitness, method_name):
@@ -33,8 +33,8 @@ class ConstantSolutionBreak(AlgorithmBreak):
         self.fixed_fitness = fixed_fitness
         self.method_name = method_name
 
-    def checkBreak(self, max_fitness):
-        return max_fitness <= self.precision
+    def checkBreak(self, time, current_generation_metrics):
+        return current_generation_metrics.max_fitness <= self.precision
 
 def CreateBreak(break_cond, precision_degree):
     method = break_cond["end_criteria"]
@@ -53,3 +53,4 @@ def CreateBreak(break_cond, precision_degree):
     else:
         return ("Error: Invalid break method.")
     return b
+
