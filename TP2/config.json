@@ -2,22 +2,31 @@
   "population_size": 300,
   "parent_selection_method":"random",
   "precision_degree": 15, 
+  "execution_count":5,
+
   "break": {
     "end_criteria":"generation_count",
     "generation_limit":500,
     "time_limit": 30,
     "fixed_fitness": 10
   },
+   
+  "crossbreeding": {
+    "cross_method": "uniform",
+    "multiple_method_n": 3
+  },
 
-  "excecution_count":5, 
-  
-  "cross_method": "uniform",
   "mutation": {
     "method": "uniform",
     "probability": 0.1,
     "distribution_parameter": 1
   },
-  "selection_method": "elite",
+
+  "selection": {
+    "selection_method": "elite",
+    "params": 3
+  },
+
   "reagents": [
     [4.4793, -4.0765, -4.0765],
     [-4.1793, -4.9218, 1.7664],
