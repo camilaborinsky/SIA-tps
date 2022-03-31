@@ -1,4 +1,5 @@
 import random 
+#import config_parser as config
 
 from classes.genotype import Individual
 
@@ -13,26 +14,76 @@ class GeneticCross:
 
 class UniformCross(GeneticCross):
     def cross(self, parent1: Individual, parent2: Individual):
-        return super().cross(parent1, parent2)
+        gen1 = []
+        gen2 = []
+        length = len(parent1.genotype)
+        for x in range(0, length): #range is not inclusive with the second parameter, so range [0,len-1]
+            random_number = random.random()
+            if random_number < 0.5:
+                gen1.append(parent1.genotype[x])
+                gen2.append(parent2.genotype[x])
+            else:
+                gen1.append(parent2.genotype[x])
+                gen2.append(parent1.genotype[x])
+
+        child1 = Individual(gen1, config.config.reagents, config.config.exact_values)
+        child2 = Individual(gen2, config.config.reagents, config.config.exact_values)
+
+        return child1, child2
+
+
+
 
 class MultipleCross(GeneticCross):
-    def cross(self, parent1: Individual, parent2: Individual):
-        return super().cross(parent1, parent2)
 
-    def __init__(super, multiple_method_n, method_name):
+    def __init__(super, method_name, multiple_method_n):
         super.multiple_method_n = multiple_method_n
         super.method_name = method_name
 
+
+    def cross(self, parent1: Individual, parent2: Individual):
+        gen1 = []
+        gen2 = []
+        length = len(parent1.genotype)
+        random_indexes = random.sample(range(0,length-1), self.multiple_method_n)
+        switched = False
+        for x in range(0, length-1):
+            if x in random_indexes:
+                switched = not switched
+            if switched:
+                gen1.append(parent2.genotype[x])
+                gen2.append(parent1.genotype[x])
+            if not switched:
+                gen1.append(parent1.genotype[x])
+                gen2.append(parent2.genotype[x])
+
+        child1 = Individual(gen1, config.config.reagents, config.config.exact_values)
+        child2 = Individual(gen2, config.config.reagents, config.config.exact_values)
+
+        return child1, child2
+
 class SimpleCross(GeneticCross):
     def cross(self, parent1: Individual, parent2: Individual):
-        child1 = parent1
-        child2 = parent2
-        random_index = random.randrange(0,10,1) #11 variable items in genotype: W, omega and omega_zero
-        aux = parent1.genotype
-        for i in range(random_index, 11):
-            child1.genotype[i] = parent2.genotype[i]
-            child2.genotype[i] = aux[i]
+        gen1 = []
+        gen2 = []
+        length = len(parent1.genotype)
+        random_index = random.randint(0, length-1)
+        for x in range(0,length):
+            if x < random_index:
+                gen1.append(parent1.genotype[x])
+                gen2.append(parent2.genotype[x])
+            else:
+                gen1.append(parent2.genotype[x])
+                gen2.append(parent1.genotype[x])
+
+
+        child1 = Individual(gen1, config.config.reagents, config.config.exact_values)
+        child2 = Individual(gen2, config.config.reagents, config.config.exact_values)
+
         return child1, child2
+
+
+
 
 def CreateCross(cross):
     method = cross["cross_method"]
@@ -47,3 +98,9 @@ def CreateCross(cross):
         return("Error: Cross method not valid.")
     return c
         
+
+##Simple test. 
+#parent1 = Individual([1,2,3,4,5,6,7,8,9,10,11], [4.4793, -4.0765, -4.0765,-4.1793, -4.9218, 1.7664,-3.9429, -0.7689, 4.883], [0, 1, 1])
+#parent2 = Individual([12,13,14,15,16,17,18,19,20,21,22], [4.4793, -4.0765, -4.0765,-4.1793, -4.9218, 1.7664,-3.9429, -0.7689, 4.883], [0, 1, 1])
+#cross = SimpleCross("simple")
+#cross.cross(parent1, parent2)

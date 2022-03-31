@@ -25,7 +25,7 @@ def error(W, omega, omega_zero, exact_values,sigma_list):
     error: float = 0
     
     for i in range(0,2):
-        error += pow(exact_values[i]-big_f(W, omega, omega_zero,sigma_list[i]),2)
+        error += pow(exact_values[i]-big_f(W, omega, omega_zero,sigma_list),2)
 
     return error
 

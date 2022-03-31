@@ -49,5 +49,6 @@ def import_config(config_file_path: str)-> Config:
     return Config(population_size, parent_selection_method, precision_degree, break_condition, execution_count, crossbreeding, mutation, selection, reagents, exact_values)
     
 
-
-config = import_config("config.json")
+def init():
+    global config
+    config = import_config("config.json")
