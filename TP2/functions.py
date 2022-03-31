@@ -3,7 +3,6 @@ from math import exp
 import numpy as np 
 import random
 
-from zeroconf import enum
 def g(x):
     return np.exp(x)/(1+np.exp(x))
 

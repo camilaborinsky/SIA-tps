@@ -5,14 +5,14 @@
   "execution_count":5,
 
   "break": {
-    "end_criteria":"generation_count",
+    "end_criteria":"constant_solution",
     "generation_limit":500,
     "time_limit": 30,
     "fixed_fitness": 10
   },
    
   "crossbreeding": {
-    "cross_method": "uniform",
+    "cross_method": "multiple",
     "multiple_method_n": 3
   },
 
@@ -23,8 +23,10 @@
   },
 
   "selection": {
-    "selection_method": "elite",
-    "params": 3
+    "selection_method": "boltzmann",
+    "initial_temperature": 15,
+    "constant_temperature": 20,
+    "k": 0.5
   },
 
   "reagents": [
