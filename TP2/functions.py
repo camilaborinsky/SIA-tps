@@ -5,7 +5,6 @@ import random
 
 from zeroconf import enum
 def g(x):
-    print(x)
     return np.exp(x)/(1+np.exp(x))
 
 def big_f(W, omega, omega_zero, sigma):

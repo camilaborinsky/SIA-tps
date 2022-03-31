@@ -1,5 +1,5 @@
 from classes.genotype import Individual
-import random
+from numpy import random
 
 ##Temporarily hardcoded
 mutation_constant= 0.05
