@@ -9,9 +9,10 @@ class GeneticMutation:
     def mutate(self, genotype : Individual):
         return genotype
 
-    def __init__(self, probability, distribution_parameter):
+    def __init__(self, probability, distribution_parameter, method_name):
         self.probability = probability
         self.distribution_parameter = distribution_parameter
+        self.method_name = method_name
 
 
 class UniformMutation(GeneticMutation):
@@ -34,9 +35,9 @@ def CreateMutation(mutation):
     probability = mutation["probability"]
     distribution_param = mutation["distribution_parameter"]
     if method == "uniform":
-        mut = UniformMutation(probability,distribution_param)
+        mut = UniformMutation(probability,distribution_param, method)
     elif method == "normal":
-        mut = NormalMutation(probability, distribution_param)
+        mut = NormalMutation(probability, distribution_param, method)
     else: 
         return("Error: mutation name not valid")
     

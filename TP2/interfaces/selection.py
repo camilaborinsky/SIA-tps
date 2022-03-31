@@ -10,6 +10,9 @@ dT = 1
 class Selection:
     def select(self, population, pop_size):
         return population
+    
+    def __init__ (self, method_name):
+        self.method_name = method_name
 
 class StochasticSelection(Selection):
     def select(self, population, pop_size, prob):
@@ -128,7 +131,19 @@ class BoltzmannSelection(StochasticSelection):
 
         return selected
 
+    def __init__(self, initial_temperature, constant_temperature, k, method_name):
+        self.initial_temperature = initial_temperature
+        self.constant_temperature = constant_temperature
+        self.k = k
+        self.method_name = method_name
+
+
 class TruncatedSelection(StochasticSelection):
+    
+    def __init__(self, k, method_name):
+        self.k = k
+        self.method_name = method_name
+
     def select(population, pop_size, k):
         population.sort(reverse= True)
         population = population[k:]
@@ -142,3 +157,26 @@ class TruncatedSelection(StochasticSelection):
             length += 1
         
         return pop
+
+def CreateSelection(selection):
+    method = selection["selection_method"]
+    initial_temperature = selection["initial_temperature"]
+    constant_temp = selection["constant_temperature"]
+    k = selection["k"]
+    if method == "stochastic":
+        sel = StochasticSelection(method)
+    elif method == "elite":
+        sel = EliteSelection(method)
+    elif method == "roulette":
+        sel = RouletteSelection(method)
+    elif method == "rank":
+        sel = RankSelection(method)
+    elif method == "tournament":
+        sel = TournamentSelection(method)
+    elif method == "boltzmann":
+        sel = BoltzmannSelection(initial_temperature, constant_temp, k, method)
+    elif method == "truncated":
+        sel = TruncatedSelection(k, method)
+    else:
+        return ("Error: invalid selection method.")
+    return sel
