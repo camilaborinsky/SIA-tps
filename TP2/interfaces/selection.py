@@ -113,13 +113,13 @@ class TournamentSelection(StochasticSelection):
 
 class BoltzmannSelection(StochasticSelection):
     def select(self, population, pop_size, iteration):
-
+        T =  self.constant_temperature + (self.initial_temperature - self.constant_temperature) * exp(-self.k*iteration)
         dict = {}
         new_pop = []
         selected = []
         for p in population:
             new_individual = copy.copy(p)
-            new_individual.fitness  = exp((p.fitness)/(T- dT * iteration))
+            new_individual.fitness  = exp((p.fitness)/T)
             new_pop.append(new_individual)
             dict[hash(tuple(p.genotype))] = p
 
@@ -136,6 +136,7 @@ class BoltzmannSelection(StochasticSelection):
         self.constant_temperature = constant_temperature
         self.k = k
         self.method_name = method_name
+
 
 
 class TruncatedSelection(StochasticSelection):

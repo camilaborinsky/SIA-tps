@@ -7,11 +7,11 @@ from interfaces.selection import CreateSelection
 
 class Config: 
     def __init__(self, population_size, parent_selection_method, precision_degree, break_condition,execution_count, cross_method, mutation, selection, reagents, exact_values):
+        self.population_size = population_size
         self.parent_selection_method = parent_selection_method
         self.precision_degree = precision_degree
         self.break_condition = break_condition
         self.execution_count = execution_count
-        self.population_size = population_size
         self.cross_method = cross_method
         self.mutation = mutation
         self.selection = selection

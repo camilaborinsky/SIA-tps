@@ -83,7 +83,10 @@ def solve():
             new_population.extend([parents[i][0], parents[i][1], m_child_1, m_child_2])
             i+=1
         # Seleccion de individuos
-        new_population = genetic_selection.select(new_population, P)
+        if genetic_selection.method_name == 'boltzmann':
+            new_population = genetic_selection.select(new_population,P, generation_count)
+        else:
+            new_population = genetic_selection.select(new_population, P)
         
         # Intercambio de poblaciones
         current_population = new_population
