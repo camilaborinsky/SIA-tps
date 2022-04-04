@@ -86,10 +86,9 @@ def main():
             generation_count +=1
             # calculo las métricas de generacion
             a  = GenerationMetrics(generation_count, current_population)
-            if generation_count % 1 == 0:
-                print(a.__str__())
+            current_gen_metrics = a
             generation_metrics[execution_count].append(a)
-            # generate_csv_file(f"output/{config_parser.config.selection.method_name}_{config_parser.config.break_condition.method_name}_{config_parser.config.cross_method.method_name}_{config_parser.config.mutation.method_name}_{execution_count}.csv", generation_metrics)
+        generate_csv_file(f"output/{config_parser.config.selection.method_name}_{config_parser.config.break_condition.method_name}_{config_parser.config.cross_method.method_name}_{config_parser.config.mutation.method_name}_{execution_count}.csv", generation_metrics[execution_count])
         execution_count += 1
     
 
