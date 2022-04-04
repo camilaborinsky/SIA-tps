@@ -1,11 +1,10 @@
 import copy
 import random
-from math import exp
+from numpy import exp
 
 
 
-T = 1000
-dT = 1
+
 
 class Selection:
     def select(self, population, pop_size):
@@ -25,8 +24,12 @@ class EliteSelection(Selection):
         selected_individuals = population[n:]
         return selected_individuals
 
-class RouletteSelection(StochasticSelection):
+class RouletteSelection(Selection):
     def select(self, population,pop_size):
+        return GenericRouletteSelection.select(population,pop_size)
+
+class GenericRouletteSelection(Selection):
+    def select(population,pop_size):
         pairs = []
         selected = []
         length = 0
@@ -34,43 +37,48 @@ class RouletteSelection(StochasticSelection):
         
         for p in population:
             total_fitness += p.fitness 
+            # print(p.fitness)
 
         accumulated = 0
         pairs.append((0,None))
         for p in population:
             accumulated += (p.fitness) / total_fitness
             pairs.append((accumulated,p))
+        # for p in pairs:
+        #     print("{} fitness {}".format(p[0],p[1]))
+        
 
         while length < pop_size:
 
             for i in range(len(pairs)-1):
                 
                 r = random.uniform(0,1)
+                
             
                 if pairs[i][0] < r and r <= pairs[i+1][0]:
-                    print("R= {}".format(r))
-                    print("En i={}, pi = {}, pi+1 = {}".format(i,pairs[i][0],pairs[i+1][0]))
+                    # print("R= {}".format(r))
+                    # print("En i={}, pi = {}, pi+1 = {}".format(i,pairs[i][0],pairs[i+1][0]))
                     selected.append(pairs[i+1][1])
                     length += 1
                     
                     
         return selected
 
-class RankSelection(StochasticSelection):
+class RankSelection(Selection):
     def select(self, population,pop_size):
 
         new_pop = []
         population.sort(reverse=True)
         dict = {}
         selected = []
-
-        for idx,p in population:
-            new_individual = copy.copy(p)
+        
+        for idx in range(len(population)):
+            new_individual = copy.copy(population[idx])
             new_individual.fitness = (pop_size - idx -1) / pop_size  # Check -1
             new_pop.append(new_individual)
-            dict[hash(tuple(p.genotype))] = p
+            dict[hash(tuple(population[idx].genotype))] = population[idx]
 
-        new_pop =  RouletteSelection(new_pop,pop_size)
+        new_pop =  GenericRouletteSelection.select(new_pop,pop_size)
         for p in new_pop:
             selected.append(dict[hash(tuple(p.genotype))])
 
@@ -124,7 +132,7 @@ class BoltzmannSelection(StochasticSelection):
             dict[hash(tuple(p.genotype))] = p
 
 
-        new_pop =  RouletteSelection(new_pop,pop_size)
+        new_pop =  GenericRouletteSelection.select(new_pop,pop_size)
 
         for p in new_pop:
             selected.append(dict[hash(tuple(p.genotype))])
