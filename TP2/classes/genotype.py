@@ -13,6 +13,7 @@ class Individual:
         W = self.genotype[0:3]
         omega = self.genotype[3:9]
         omega_zero = self.genotype[9:11]
+        
         return W, omega, omega_zero
 
     def calculate_fitness(self, exact_values, sigma):
@@ -31,7 +32,7 @@ class Individual:
         return hash(self.genotype)
 
     def __lt__(self, other):
-        return self.fitness > other.fitness
+        return self.fitness < other.fitness
     
     def __le__(self, other):
-        return self.fitness >= other.fitness
+        return self.fitness <= other.fitness

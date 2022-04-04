@@ -32,10 +32,12 @@ def import_config(config_file_path: str)-> Config:
     parent_selection_method = config["parent_selection_method"]
     precision_degree = config["precision_degree"]
     execution_count = config["execution_count"]
+    reagents = config["reagents"]
+    exact_values = config["exact_values"]
 
     break_condition = CreateBreak(config["break"], precision_degree)
 
-    crossbreeding = CreateCross(config["crossbreeding"])
+    crossbreeding = CreateCross(config["crossbreeding"],reagents,exact_values)
 
     mutation = CreateMutation(config["mutation"])
 
@@ -43,12 +45,11 @@ def import_config(config_file_path: str)-> Config:
 
     #print(break_condition.method_name, crossbreeding.method_name, mutation.method_name, selection.method_name)
     
-    reagents = config["reagents"]
-    exact_values = config["exact_values"]
+    
 
     return Config(population_size, parent_selection_method, precision_degree, break_condition, execution_count, crossbreeding, mutation, selection, reagents, exact_values)
     
 
-def init():
+def initialize_config():
     global config
     config = import_config("config.json")
