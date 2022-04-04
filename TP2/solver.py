@@ -22,7 +22,7 @@ def create_initial_population(sigma,exact_values, pop_size):
         values = []
         for n in range(11):
             #values.append(random.uniform(-sys.maxsize,sys.maxsize))
-            values.append(random.uniform(-100,100))
+            values.append(random.uniform(-10,10))
         
         W = values[:3]
         omega = values[3:9]
@@ -41,19 +41,25 @@ def main():
     config_parser.initialize_config(config_file_path)
     # generar población inicial
     initial_population = create_initial_population(config_parser.config.reagents, config_parser.config.exact_values, config_parser.config.population_size)
+    # for p in initial_population:
+        # print(p.fitness)
+    
     # sacar del config parseado la cantidad de iteraciones
     execution_count = 0
     starttime = time.time()
     generation_metrics = dict()
     # iterar
-    while execution_count <= config_parser.config.execution_count:
+    
+    # while execution_count <= config_parser.config.execution_count:
+    while execution_count < 1:
         generation_metrics[execution_count] = []
         generation_count = 0
         current_gen_metrics = GenerationMetrics(generation_count, initial_population)
         generation_metrics[execution_count].append(current_gen_metrics)
         current_population = initial_population
-        # while config_parser.config.break_condition.checkBreak(time.time() - starttime, current_gen_metrics):
-        while generation_count < 100:
+        
+        while not config_parser.config.break_condition.checkBreak(time.time() - starttime, current_gen_metrics):
+        #while generation_count < 500:
             new_population = []
             new_population_size = 0
             i = 0
@@ -73,11 +79,15 @@ def main():
                 # incremento indice de padres
                 i+=1
             # selección
-            current_population = config_parser.config.selection.select(current_population + new_population, config_parser.config.population_size)
+            if config_parser.config.selection.method_name == 'boltzmann':
+                current_population = config_parser.config.selection.select(current_population + new_population, config_parser.config.population_size,generation_count+1)
+            else:
+                current_population = config_parser.config.selection.select(current_population + new_population, config_parser.config.population_size)
             generation_count +=1
             # calculo las métricas de generacion
             a  = GenerationMetrics(generation_count, current_population)
-            print(a.__str__())
+            if generation_count % 1 == 0:
+                print(a.__str__())
             generation_metrics[execution_count].append(a)
             # generate_csv_file(f"output/{config_parser.config.selection.method_name}_{config_parser.config.break_condition.method_name}_{config_parser.config.cross_method.method_name}_{config_parser.config.mutation.method_name}_{execution_count}.csv", generation_metrics)
         execution_count += 1

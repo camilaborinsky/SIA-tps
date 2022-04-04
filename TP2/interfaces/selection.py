@@ -153,9 +153,10 @@ class TruncatedSelection(StochasticSelection):
         self.k = k
         self.method_name = method_name
 
-    def select(population, pop_size, k):
+    def select(self,population, pop_size):
         population.sort(reverse= True)
-        population = population[k:]
+        population = population[self.k:]
+        
         
         length = 0
         pop = []
