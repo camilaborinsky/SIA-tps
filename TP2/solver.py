@@ -1,4 +1,5 @@
 
+from utils.generate_csv import generate_csv_file
 from classes.genotype import Individual
 import random 
 import sys
@@ -8,15 +9,15 @@ from classes.population import Population
 from interfaces.cross import SimpleCross
 from interfaces.mutations import UniformMutation
 from interfaces.selection import EliteSelection
+import time
 
+from classes.generation_metrics import GenerationMetrics
+import config_parser
+from functions import match_genotypes
 
-P: int = 100
-
-
-
-def create_initial_population(sigma,exact_values):
+def create_initial_population(sigma,exact_values, pop_size):
     individuals = []
-    for i in range(P):
+    for i in range(pop_size):
         # sys.maxsize
         values = []
         for n in range(11):
@@ -34,64 +35,112 @@ def create_initial_population(sigma,exact_values):
 
     return individuals
 
-def solve():
-    # Receive sigma from input
+def main():
+    config_file_path = 'config.json'
+    # parseo el input
+    config_parser.init(config_file_path)
+    # generar población inicial
+    initial_population = create_initial_population(config_parser.config.reagents, config_parser.config.exact_values, config_parser.config.population_size)
+    # sacar del config parseado la cantidad de iteraciones
+    execution_count = 0
+    starttime = time.time()
+    generation_metrics = dict()
+    # iterar
+    while execution_count <= config_parser.config.execution_count:
+        generation_metrics[execution_count] = []
+        generation_count = 0
+        current_gen_metrics = GenerationMetrics(generation_count, initial_population)
+        generation_metrics[execution_count].append(current_gen_metrics)
+        current_population = initial_population
+        while config_parser.config.break_condition.checkBreak(time.time() - starttime, current_gen_metrics):
+            new_population = []
+            new_population_size = 0
+            i = 0
+            parents = match_genotypes(current_population)
+            while new_population_size < config_parser.config.population_size:
+                # cruza
+                child_1, child_2 = config_parser.config.cross_method.cross(parents[i][0], parents[i][1])
 
-    ## Temporarily Hardcoded ##
-    sigma = [[0 for _ in range(3)] for _ in range(3)]
-    sigma[0][0] = 4.4793
-    sigma[0][1] = -4.0765
-    sigma[0][2] = -4.0765
+                # mutacion
+                m_child_1 = config_parser.config.mutation.mutate(child_1)
+                m_child_2 = config_parser.config.mutation.mutate(child_2)
 
-    sigma[1][0] = -4.1793
-    sigma[1][1] = -4.9218
-    sigma[1][2] = 1.7664
+                # agrego mutaciones ala poblacion nueva
+                new_population.extend([m_child_1, m_child_2])
+                new_population_size +=2
 
-    sigma[2][0] = -3.9429
-    sigma[2][1] = -0.7689
-    sigma[2][2] = 4.8830
+                # incremento indice de padres
+                i+=1
+            # selección
+            current_population = config_parser.config.selection.select(current_population + new_population, config_parser.config.population_size)
+            generation_count +=1
+            # calculo las métricas de generacion
+            generation_metrics[execution_count].append(GenerationMetrics(generation_count, current_population))
+            generate_csv_file(f"output/{config_parser.config.selection.method_name}_{config_parser.config.break_condition.method_name}_{config_parser.config.cross_method.method_name}_{config_parser.config.mutation.method_name}_{execution_count}.csv")
+        execution_count += 1
+    
 
-    exact_values = [0,1,1]
-
-
-    # Create initial population (quantity P) con numero par de indiv. 
-    current_population = create_initial_population(sigma,exact_values)
-    generation_count = 0
-    genetic_cross = SimpleCross()
-    genetic_mutation = UniformMutation()
-    genetic_selection = EliteSelection()
-    # while (condicion corte)
-    while generation_count <= 500:
-        # Create new empty population
-        new_population = []
-        # while new population size < 2P
-        parents = match_genotypes(current_population)
-        print(len(current_population))
-        print('Parent len : {}'.format(len(parents)))
-        i=0
-        while len(new_population) < 2*P:
-            # seleccionar 2 individuos
-            print('I:{}'.format(i))
-            print('new population {}'.format(len(new_population)))
-            # Cruzar los 2 individuos
-            child_1, child_2 = genetic_cross.cross(parents[i][0], parents[i][1])
-            # Mutacion de nuevos individuos
-            m_child_1 = genetic_mutation.mutate(child_1)
-            m_child_2 = genetic_mutation.mutate(child_2)
+# P: int = 100
 
 
-            new_population.extend([parents[i][0], parents[i][1], m_child_1, m_child_2])
-            i+=1
-        # Seleccion de individuos
-        if genetic_selection.method_name == 'boltzmann':
-            new_population = genetic_selection.select(new_population,P, generation_count)
-        else:
-            new_population = genetic_selection.select(new_population, P)
+
+
+
+# def solve():
+#     # Receive sigma from input
+
+#     ## Temporarily Hardcoded ##
+#     sigma = [[0 for _ in range(3)] for _ in range(3)]
+#     sigma[0][0] = 4.4793
+#     sigma[0][1] = -4.0765
+#     sigma[0][2] = -4.0765
+
+#     sigma[1][0] = -4.1793
+#     sigma[1][1] = -4.9218
+#     sigma[1][2] = 1.7664
+
+#     sigma[2][0] = -3.9429
+#     sigma[2][1] = -0.7689
+#     sigma[2][2] = 4.8830
+
+#     exact_values = [0,1,1]
+
+
+#     # Create initial population (quantity P) con numero par de indiv. 
+#     current_population = create_initial_population(sigma,exact_values)
+#     generation_count = 0
+#     genetic_cross = SimpleCross()
+#     genetic_mutation = UniformMutation()
+#     genetic_selection = EliteSelection()
+#     # while (condicion corte)
+#     while generation_count <= 500:
+#         # Create new empty population
+#         new_population = []
+#         # while new population size < 2P
+#         parents = match_genotypes(current_population)
+#         print(len(current_population))
+#         print('Parent len : {}'.format(len(parents)))
+#         i=0
+#         while len(new_population) < 2*P:
+#             # seleccionar 2 individuos
+#             print('I:{}'.format(i))
+#             print('new population {}'.format(len(new_population)))
+#             # Cruzar los 2 individuos
+#             child_1, child_2 = genetic_cross.cross(parents[i][0], parents[i][1])
+#             # Mutacion de nuevos individuos
+#             m_child_1 = genetic_mutation.mutate(child_1)
+#             m_child_2 = genetic_mutation.mutate(child_2)
+
+
+#             new_population.extend([parents[i][0], parents[i][1], m_child_1, m_child_2])
+#             i+=1
+#         # Seleccion de individuos
+#         new_population = genetic_selection.select(new_population, P)
         
-        # Intercambio de poblaciones
-        current_population = new_population
-        generation_count+=1
+#         # Intercambio de poblaciones
+#         current_population = new_population
+#         generation_count+=1
 
 
 if __name__ == '__main__':
-    solve()
+    main()
