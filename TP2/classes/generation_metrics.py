@@ -6,10 +6,10 @@ class GenerationMetrics:
         self.min_fitness = min_fitness(population)
     
     def __str__(self):
-        return f"nr: {self.generation_number} max: {self.max_fitness} min: {self.min_fitness} mean:{self.mean_fitness}"
+        return f"nr: {self.generation_number} max: {self.max_fitness} min: {self.min_fitness} error: {3-self.mean_fitness} mean:{self.mean_fitness}"
 
     def __repr__(self):
-        return f"nr: {self.generation_number} max: {self.max_fitness} min: {self.min_fitness} mean:{self.mean_fitness}"
+        return f"nr: {self.generation_number} max: {self.max_fitness} min: {self.min_fitness} error: {3-self.mean_fitness} mean:{self.mean_fitness}"
 
 def mean_fitness(population):
     return sum(list(map(lambda individual: individual.fitness, population)))/len(population)

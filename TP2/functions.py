@@ -1,13 +1,13 @@
 from operator import ge
 import numpy as np 
-from numpy import exp, nan
+import math
 import random
 
 def g(x):
-    aux : float = np.exp(x)
-    if aux == nan:
+    try:
+        return math.exp(x) / (1 + math.exp(x))
+    except:
         return 1
-    return aux/(1+aux)
 
 def big_f(W, omega, omega_zero, sigma):
     # print("Omega zero")
@@ -21,6 +21,7 @@ def big_f(W, omega, omega_zero, sigma):
         inside_g = g(inside_sum)
         outside_sum += inside_g * W[j+1] #TODO: preguntar si es con j+1
     outside_g = g(outside_sum- W[0])
+    # print("Outside {}".format(outside_g))
     return outside_g
 
             
