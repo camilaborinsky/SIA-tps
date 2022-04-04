@@ -9,7 +9,7 @@ class GenerationCountBreak(AlgorithmBreak):
         self.method_name = method_name
 
     def checkBreak(self, time, current_generation_metrics):
-        return current_generation_metrics.generation_count >= self.generation_count
+        return current_generation_metrics.generation_number >= self.generation_count
 
 class TimeBreak(AlgorithmBreak):
     def __init__(self, max_time, method_name):

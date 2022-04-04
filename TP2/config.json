@@ -1,16 +1,16 @@
 {
   "population_size": 300,
-  "parent_selection_method":"random",
-  "precision_degree": 15, 
-  "execution_count":5,
+  "parent_selection_method": "random",
+  "precision_degree": 15,
+  "execution_count": 1,
 
   "break": {
-    "end_criteria":"constant_solution",
-    "generation_limit":500,
+    "end_criteria": "generation_count",
+    "generation_limit": 100,
     "time_limit": 30,
     "fixed_fitness": 10
   },
-   
+
   "crossbreeding": {
     "cross_method": "multiple",
     "multiple_method_n": 3
@@ -23,7 +23,7 @@
   },
 
   "selection": {
-    "selection_method": "boltzmann",
+    "selection_method": "elite",
     "initial_temperature": 15,
     "constant_temperature": 20,
     "k": 0.5

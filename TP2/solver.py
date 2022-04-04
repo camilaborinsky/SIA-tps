@@ -38,7 +38,7 @@ def create_initial_population(sigma,exact_values, pop_size):
 def main():
     config_file_path = 'config.json'
     # parseo el input
-    config_parser.init(config_file_path)
+    config_parser.initialize_config(config_file_path)
     # generar población inicial
     initial_population = create_initial_population(config_parser.config.reagents, config_parser.config.exact_values, config_parser.config.population_size)
     # sacar del config parseado la cantidad de iteraciones
@@ -52,7 +52,8 @@ def main():
         current_gen_metrics = GenerationMetrics(generation_count, initial_population)
         generation_metrics[execution_count].append(current_gen_metrics)
         current_population = initial_population
-        while config_parser.config.break_condition.checkBreak(time.time() - starttime, current_gen_metrics):
+        # while config_parser.config.break_condition.checkBreak(time.time() - starttime, current_gen_metrics):
+        while generation_count < 100:
             new_population = []
             new_population_size = 0
             i = 0
@@ -75,8 +76,10 @@ def main():
             current_population = config_parser.config.selection.select(current_population + new_population, config_parser.config.population_size)
             generation_count +=1
             # calculo las métricas de generacion
-            generation_metrics[execution_count].append(GenerationMetrics(generation_count, current_population))
-            generate_csv_file(f"output/{config_parser.config.selection.method_name}_{config_parser.config.break_condition.method_name}_{config_parser.config.cross_method.method_name}_{config_parser.config.mutation.method_name}_{execution_count}.csv")
+            a  = GenerationMetrics(generation_count, current_population)
+            print(a.__str__())
+            generation_metrics[execution_count].append(a)
+            # generate_csv_file(f"output/{config_parser.config.selection.method_name}_{config_parser.config.break_condition.method_name}_{config_parser.config.cross_method.method_name}_{config_parser.config.mutation.method_name}_{execution_count}.csv", generation_metrics)
         execution_count += 1
     
 
