@@ -5,6 +5,7 @@ from numpy import random
 mutation_constant= 0.05
 mutation_a= 0.03
 
+
 class GeneticMutation:
     def mutate(self, genotype : Individual):
         return genotype
@@ -23,9 +24,16 @@ class UniformMutation(GeneticMutation):
                 individual.genotype[x] += random.uniform(-mutation_a, mutation_a)
         return individual
 
+
 class NormalMutation(GeneticMutation):
-    def mutate(self, genotype : Individual):
-        return super().mutate(genotype)
+    def mutate(self, individual : Individual):
+        for x in range(0, len(individual.genotype)):
+            random_number = random.rand(0,1)
+            print(random_number)
+            if random_number < mutation_constant:
+                individual.genotype[x] += random.normal(0, mutation_a)
+        print(individual.genotype)
+        return individual
 
 
 
@@ -43,4 +51,9 @@ def CreateMutation(mutation):
     
     return mut
 
+
+##Simple test
+#parent1 = Individual([1,2,3,4,5,6,7,8,9,10,11], [4.4793, -4.0765, -4.0765,-4.1793, -4.9218, 1.7664,-3.9429, -0.7689, 4.883], [0, 1, 1])
+#normalMutation = NormalMutation(0.1, 0.1, "normal")
+#normalMutation.mutate(parent1)
 
