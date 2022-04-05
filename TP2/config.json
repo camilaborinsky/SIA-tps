@@ -2,7 +2,8 @@
   "population_size": 300,
   "parent_selection_method": "random",
   "precision_degree": 15,
-  "execution_count": 1,
+  "execution_count": 5,
+  "execution_variants": 5,
 
   "break": {
     "end_criteria": "generation_count",

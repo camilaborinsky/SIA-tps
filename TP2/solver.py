@@ -1,5 +1,6 @@
 
-from utils.generate_csv import generate_csv_file
+from results import generate_graph
+from utils.generate_csv import average_csv_files, generate_csv_file
 from classes.genotype import Individual
 import random 
 import sys
@@ -40,57 +41,64 @@ def main():
     # parseo el input
     config_parser.initialize_config(config_file_path)
     # generar población inicial
-    initial_population = create_initial_population(config_parser.config.reagents, config_parser.config.exact_values, config_parser.config.population_size)
     # for p in initial_population:
         # print(p.fitness)
     
     # sacar del config parseado la cantidad de iteraciones
-    execution_count = 0
-    starttime = time.time()
-    generation_metrics = dict()
+ 
+   
+    variation_count = 0
     # iterar
     
-    # while execution_count <= config_parser.config.execution_count:
-    while execution_count < 1:
-        generation_metrics[execution_count] = []
-        generation_count = 0
-        current_gen_metrics = GenerationMetrics(generation_count, initial_population)
-        generation_metrics[execution_count].append(current_gen_metrics)
-        current_population = initial_population
-        
-        while not config_parser.config.break_condition.checkBreak(time.time() - starttime, current_gen_metrics):
-        #while generation_count < 500:
-            new_population = []
-            new_population_size = 0
-            i = 0
-            parents = match_genotypes(current_population)
-            while new_population_size < config_parser.config.population_size:
-                # cruza
-                child_1, child_2 = config_parser.config.cross_method.cross(parents[i][0], parents[i][1])
+    while variation_count < config_parser.config.execution_variants:
+        initial_population = create_initial_population(config_parser.config.reagents, config_parser.config.exact_values, config_parser.config.population_size)
+        execution_count = 0
+        generation_metrics = dict()
+        while execution_count < config_parser.config.execution_count:
+            starttime = time.time()            
+            generation_metrics[execution_count] = []
+            generation_count = 0
+            current_gen_metrics = GenerationMetrics(generation_count, initial_population)
+            generation_metrics[execution_count].append(current_gen_metrics)
+            current_population = initial_population
+            
+            while not config_parser.config.break_condition.checkBreak(time.time() - starttime, current_gen_metrics):
+            #while generation_count < 500:
+                new_population = []
+                new_population_size = 0
+                i = 0
+                parents = match_genotypes(current_population)
+                while new_population_size < config_parser.config.population_size:
+                    # cruza
+                    child_1, child_2 = config_parser.config.cross_method.cross(parents[i][0], parents[i][1])
 
-                # mutacion
-                m_child_1 = config_parser.config.mutation.mutate(child_1)
-                m_child_2 = config_parser.config.mutation.mutate(child_2)
+                    # mutacion
+                    m_child_1 = config_parser.config.mutation.mutate(child_1)
+                    m_child_2 = config_parser.config.mutation.mutate(child_2)
 
-                # agrego mutaciones ala poblacion nueva
-                new_population.extend([m_child_1, m_child_2])
-                new_population_size +=2
+                    # agrego mutaciones ala poblacion nueva
+                    new_population.extend([m_child_1, m_child_2])
+                    new_population_size +=2
 
-                # incremento indice de padres
-                i+=1
-            # selección
-            if config_parser.config.selection.method_name == 'boltzmann':
-                current_population = config_parser.config.selection.select(current_population + new_population, config_parser.config.population_size,generation_count+1)
-            else:
-                current_population = config_parser.config.selection.select(current_population + new_population, config_parser.config.population_size)
-            generation_count +=1
-            # calculo las métricas de generacion
-            a  = GenerationMetrics(generation_count, current_population)
-            current_gen_metrics = a
-            generation_metrics[execution_count].append(a)
-        generate_csv_file(f"output/{config_parser.config.selection.method_name}_{config_parser.config.break_condition.method_name}_{config_parser.config.cross_method.method_name}_{config_parser.config.mutation.method_name}_{execution_count}.csv", generation_metrics[execution_count])
-        execution_count += 1
-    
+                    # incremento indice de padres
+                    i+=1
+                # selección
+                if config_parser.config.selection.method_name == 'boltzmann':
+                    current_population = config_parser.config.selection.select(current_population + new_population, config_parser.config.population_size,generation_count+1)
+                else:
+                    current_population = config_parser.config.selection.select(current_population + new_population, config_parser.config.population_size)
+                generation_count +=1
+                # calculo las métricas de generacion
+                a  = GenerationMetrics(generation_count, current_population)
+                current_gen_metrics = a
+                generation_metrics[execution_count].append(a)
+            file_base = f"{config_parser.config.selection.method_name}_{config_parser.config.break_condition.method_name}_{config_parser.config.cross_method.method_name}_{config_parser.config.mutation.method_name}"
+            generate_csv_file(f"output/raw/{variation_count}_{file_base}_{execution_count}.csv", generation_metrics[execution_count])
+            execution_count += 1
+        average_csv_files(f"{variation_count}_{file_base}", config_parser.config.execution_count, config_parser.config.break_condition.generation_count)
+        variation_count+=1
+    generate_graph(file_base, config_parser.config.execution_variants)
+
 
 # P: int = 100
 
