@@ -29,7 +29,7 @@ class Individual:
         return False
 
     def __hash__(self) -> int:
-        return hash(self.genotype)
+        return hash(tuple(self.genotype))
 
     def __lt__(self, other):
         return self.fitness < other.fitness

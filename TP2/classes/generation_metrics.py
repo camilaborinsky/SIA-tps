@@ -4,6 +4,8 @@ class GenerationMetrics:
         self.mean_fitness = mean_fitness(population)
         self.max_fitness = max_fitness(population)
         self.min_fitness = min_fitness(population)
+        self.gen_diversity = invididuals_diversity(population)
+        self.fit_diversity = fitness_diversity_with_precision(population)
     
     def __str__(self):
         return f"nr: {self.generation_number} max: {self.max_fitness} min: {self.min_fitness} error: {3-self.mean_fitness} mean:{self.mean_fitness}"

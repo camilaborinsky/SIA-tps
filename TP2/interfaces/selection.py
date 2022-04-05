@@ -74,7 +74,7 @@ class RankSelection(Selection):
         
         for idx in range(len(population)):
             new_individual = copy.copy(population[idx])
-            new_individual.fitness = (pop_size - idx -1) / pop_size  # Check -1
+            new_individual.fitness = (2*pop_size - idx -1) / (2*pop_size) 
             new_pop.append(new_individual)
             dict[hash(tuple(population[idx].genotype))] = population[idx]
 
@@ -154,7 +154,7 @@ class TruncatedSelection(StochasticSelection):
         self.method_name = method_name
 
     def select(self,population, pop_size):
-        population.sort(reverse= True)
+        population.sort()
         population = population[self.k:]
         
         
