@@ -1,3 +1,5 @@
+diversity_constant = 0.3
+
 class AlgorithmBreak:
     def checkBreak(self, time, generation_metrics):
         return True
@@ -34,7 +36,28 @@ class ConstantSolutionBreak(AlgorithmBreak):
         self.method_name = method_name
 
     def checkBreak(self, time, current_generation_metrics):
-        return current_generation_metrics.max_fitness <= self.precision
+        if len(current_generation_metrics.last_best_solutions) == self.fixed_fitness:
+            value = current_generation_metrics.last_best_solutions[0]
+            for f in current_generation_metrics.last_best_solutions:
+                if f != value:
+                    return False
+            return True     
+        return False
+
+class ConstantDiversityBreak(AlgorithmBreak):
+    def __init__(self, precision, fixed_fitness, method_name):
+        self.precision = precision
+        self.fixed_fitness = fixed_fitness
+        self.method_name = method_name
+
+    def checkBreak(self, time, current_generation_metrics):
+        if len(current_generation_metrics.last_diversities) == self.fixed_fitness:
+            #value = current_generation_metrics.last_diversities[0]
+            for f in current_generation_metrics.last_diversities:
+                if f > diversity_constant:
+                    return False
+            return True     
+        return False
 
 def CreateBreak(break_cond, precision_degree):
     method = break_cond["end_criteria"]
@@ -50,6 +73,8 @@ def CreateBreak(break_cond, precision_degree):
         b = AcceptableSolutionBreak(precision_degree, method)
     elif method == "constant_solution":
         b = ConstantSolutionBreak(precision_degree, fixed_fitness, method)
+    elif method == "constant_diversity":
+        b = ConstantDiversityBreak(precision_degree, fixed_fitness, method)
     else:
         return ("Error: Invalid break method.")
     return b

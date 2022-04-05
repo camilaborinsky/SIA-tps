@@ -1,4 +1,5 @@
 
+from collections import deque
 from results import generate_graph
 from utils.generate_csv import average_csv_files, generate_csv_file
 from classes.genotype import Individual
@@ -40,6 +41,9 @@ def main():
     config_file_path = 'config.json'
     # parseo el input
     config_parser.initialize_config(config_file_path)
+    constant_fitness = config_parser.config.break_condition.fixed_fitness
+    
+    
     # generar población inicial
     # for p in initial_population:
         # print(p.fitness)
@@ -54,11 +58,13 @@ def main():
         initial_population = create_initial_population(config_parser.config.reagents, config_parser.config.exact_values, config_parser.config.population_size)
         execution_count = 0
         generation_metrics = dict()
+        last_best_fitnesses = deque()
+        last_diversities = deque()
         while execution_count < config_parser.config.execution_count:
             starttime = time.time()            
             generation_metrics[execution_count] = []
             generation_count = 0
-            current_gen_metrics = GenerationMetrics(generation_count, initial_population)
+            current_gen_metrics = GenerationMetrics(generation_count, initial_population, constant_fitness,last_best_fitnesses,last_diversities)
             generation_metrics[execution_count].append(current_gen_metrics)
             current_population = initial_population
             
@@ -89,9 +95,10 @@ def main():
                     current_population = config_parser.config.selection.select(current_population + new_population, config_parser.config.population_size)
                 generation_count +=1
                 # calculo las métricas de generacion
-                a  = GenerationMetrics(generation_count, current_population)
+                a  = GenerationMetrics(generation_count, current_population,constant_fitness,last_best_fitnesses,last_diversities)
                 current_gen_metrics = a
                 generation_metrics[execution_count].append(a)
+            
             file_base = f"{config_parser.config.selection.method_name}_{config_parser.config.break_condition.method_name}_{config_parser.config.cross_method.method_name}_{config_parser.config.mutation.method_name}"
             generate_csv_file(f"output/raw/{variation_count}_{file_base}_{execution_count}.csv", generation_metrics[execution_count])
             execution_count += 1
