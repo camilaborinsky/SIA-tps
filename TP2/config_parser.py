@@ -45,8 +45,6 @@ def import_config(config_file_path: str)-> Config:
     mutation = CreateMutation(config["mutation"])
 
     selection = CreateSelection(config["selection"])
-
-    #print(break_condition.method_name, crossbreeding.method_name, mutation.method_name, selection.method_name)
     
     
 

@@ -42,7 +42,7 @@ def main():
     config_file_path = 'config.json'
     # parseo el input
     config_parser.initialize_config(config_file_path)
-    constant_fitness = config_parser.config.break_condition.fixed_fitness
+    # constant_fitness = config_parser.config.break_condition.fixed_fitness
     
     
     # generar población inicial
@@ -65,7 +65,7 @@ def main():
             starttime = time.time()            
             generation_metrics[execution_count] = []
             generation_count = 0
-            current_gen_metrics = GenerationMetrics(generation_count, initial_population, constant_fitness,last_best_fitnesses,last_diversities)
+            current_gen_metrics = GenerationMetrics(generation_count, initial_population, 10,last_best_fitnesses,last_diversities)
             generation_metrics[execution_count].append(current_gen_metrics)
             current_population = initial_population
             
@@ -96,16 +96,16 @@ def main():
                     current_population = config_parser.config.selection.select(current_population + new_population, config_parser.config.population_size)
                 generation_count +=1
                 # calculo las métricas de generacion
-                a  = GenerationMetrics(generation_count, current_population,constant_fitness,last_best_fitnesses,last_diversities)
+                a  = GenerationMetrics(generation_count, current_population,10,last_best_fitnesses,last_diversities)
                 current_gen_metrics = a
                 generation_metrics[execution_count].append(a)
             file_base = get_file_base(config_parser.config.selection.method_name, config_parser.config.break_condition.method_name, config_parser.config.cross_method.method_name, config_parser.config.mutation.method_name, config_parser.config.parent_selection_method.method_name)
-            generate_csv_file(f"output/raw/{variation_count}_{file_base}_{execution_count}.csv", generation_metrics[execution_count])
+            # generate_csv_file(f"output/raw/{variation_count}_{file_base}_{execution_count}.csv", generation_metrics[execution_count])
             insert_best_individual(file_base, execution_count, variation_count, current_population)
             execution_count += 1
-        average_csv_files(f"{variation_count}_{file_base}", config_parser.config.execution_count, config_parser.config.break_condition.generation_count)
+        # average_csv_files(f"{variation_count}_{file_base}", config_parser.config.execution_count, config_parser.config.break_condition.generation_count)
         variation_count+=1
-    generate_graph(file_base, config_parser.config.execution_variants)
+    # generate_graph(file_base, config_parser.config.execution_variants)
 
 
 

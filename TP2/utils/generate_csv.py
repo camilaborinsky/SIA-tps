@@ -24,9 +24,6 @@ def average_csv_files(files_for_avg, file_count, generation_count):
             for i in range(len(sums)):
                 # print(f"row: {row}, j:{j}, i:{i}, lencsv:{len(readers[j][row])}")
                 sums[i]+= float(readers[j][row][i+1])
-
-        for t in range(len(sums)):
-            print(type(sums[t]))
         new_list = map(lambda x: x/len(readers), sums)
         writer.writerow(list(new_list))
     for i in range(0, file_count):

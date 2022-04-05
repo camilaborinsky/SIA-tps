@@ -20,8 +20,6 @@ class StochasticSelection(Selection):
 class EliteSelection(Selection):
     def select(self, population, pop_size):
         population.sort()
-        print(population[-1].genotype)
-        hola = input()
         n = len(population) - pop_size
         selected_individuals = population[n:]
         return selected_individuals

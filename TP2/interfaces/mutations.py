@@ -29,10 +29,8 @@ class NormalMutation(GeneticMutation):
     def mutate(self, individual : Individual):
         for x in range(0, len(individual.genotype)):
             random_number = random.rand(0,1)
-            print(random_number)
             if random_number < mutation_constant:
                 individual.genotype[x] += random.normal(0, mutation_a)
-        print(individual.genotype)
         return individual
 
 

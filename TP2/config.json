@@ -7,7 +7,7 @@
 
   "break": {
     "end_criteria": "generation_count",
-    "generation_limit": 100,
+    "generation_limit": 500,
     "time_limit": 30,
     "fixed_fitness": 10
   },
@@ -24,10 +24,10 @@
   },
 
   "selection": {
-    "selection_method": "elite",
-    "initial_temperature": 15,
-    "constant_temperature": 20,
-    "k": 0.5
+    "selection_method": "boltzmann",
+    "initial_temperature": 70,
+    "constant_temperature": 10,
+    "k": 0.1
   },
 
   "reagents": [

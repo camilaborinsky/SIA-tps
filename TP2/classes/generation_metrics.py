@@ -30,7 +30,6 @@ def insert_last_solutions(fixed_fitness, max_fitness, last_best_solutions):
     if len(last_best_solutions) == fixed_fitness:
         last_best_solutions.popleft()
     last_best_solutions.append(max_fitness)
-    print(last_best_solutions)
     return last_best_solutions
     
 def insert_last_diversities(fixed_fitness, gen_diversity, last_diversities):

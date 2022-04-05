@@ -17,12 +17,10 @@ class RandomSelection(ParentSelection):
 
 
 class SortedSelection(ParentSelection):
-    def myfunction(individual):
-        return individual.fitness
 
     def select (self, population):
         targets = list(population)
-        targets.sort(key = self.myfunction)
+        targets.sort()
         length = len(targets)
         return list(zip(targets[0:length//2], targets[length//2:]))
 
