@@ -7,24 +7,24 @@
 
   "break": {
     "end_criteria": "generation_count",
-    "generation_limit": 500,
+    "generation_limit": 200,
     "time_limit": 30,
     "fixed_fitness": 10
   },
 
   "crossbreeding": {
-    "cross_method": "uniform",
+    "cross_method": "multiple",
     "multiple_method_n": 3
   },
 
   "mutation": {
-    "method": "uniform",
+    "method": "normal",
     "probability": 0.1,
     "distribution_parameter": 1
   },
 
   "selection": {
-    "selection_method": "boltzmann",
+    "selection_method": "tournament",
     "initial_temperature": 70,
     "constant_temperature": 10,
     "k": 0.1

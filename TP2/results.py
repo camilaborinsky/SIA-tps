@@ -21,151 +21,226 @@ parent_selection_labels = ["random", "sorted", "balanced"]
 
 
 def compare_cross(parent_selection, selection):
-    mutation = 'uniform'
-    out_file = f"output/cmp/cmp_cross_{selection}_generation_count_{mutation}_{parent_selection}"
-    gen_axis = range(100)
+    mutation = 'normal'
+    out_file = f"output/graphs/cmp/cmp_cross_{selection}_generation_count_{mutation}_{parent_selection}"
+    gen_axis = range(200)
     plt.figure(1)
     plt.title("Promedio de fitness por generación")
     plt.xlabel("Número de generación")
     plt.ylabel("Promedio de fitness")
     plt.figure(2)
+    plt.title("Máximo fitness por generación")
+    plt.xlabel("Número de generación")
+    plt.ylabel("Máximo fitness")
+    plt.figure(3)
+    plt.title("Mínimo de fitness por generación")
+    plt.xlabel("Número de generación")
+    plt.ylabel("Mínimo de fitness")
+    plt.figure(4)
     plt.title("Diversidad genética por generación")
     plt.xlabel("Número de generación")
     plt.ylabel("Diversidad genética")
-    plt.figure(3)
+    plt.figure(5)
     plt.title("Diversidad de fitness por generación")
     plt.xlabel("Número de generación")
     plt.ylabel("Diversidad de fitness")
- 
-
-    for cr, idx in cross_labels:
+    idx =0
+    for cr in cross_labels:
         fn = f"output/average/0_{get_file_base(selection, 'generation_count', cr, mutation, parent_selection)}_avg.csv"
         f = open(fn)
         r = list(csv.reader(f))
         for i in range(len(r[0])):
-            data = [r[x][i] for x in range(len(r))]
+            data = [float(r[x][i]) for x in range(len(r))]
             plt.figure(i+1)
             plt.plot(gen_axis, data, color=colors[idx], label=f"{cr}")
+        idx+=1
 
     plt.figure(1)
+    plt.legend(cross_labels, loc="best")
     plt.savefig(f"{out_file}_avg.png")
     plt.figure(2)
-    plt.savefig(f"{out_file}_gen-div.png")
+    plt.legend(cross_labels, loc="best")
+    plt.savefig(f"{out_file}_max.png")
     plt.figure(3)
+    plt.legend(cross_labels, loc="best")
+    plt.savefig(f"{out_file}_min.png")
+    plt.figure(4)
+    plt.legend(cross_labels, loc="best")
+    plt.savefig(f"{out_file}_gen-div.png")
+    plt.figure(5)
+    plt.legend(cross_labels, loc="best")
     plt.savefig(f"{out_file}_fit-div.png")
     plt.show()
 
 def compare_selection(parent_selection, cross):
-    mutation = 'uniform'
-    out_file = f"output/cmp/cmp_selection_generation_count_{cross}_{mutation}_{parent_selection}"
-    gen_axis = range(100)
+    plt.cla()
+    mutation = 'normal'
+    out_file = f"output/graphs/cmp/cmp_selection_generation_count_{cross}_{mutation}_{parent_selection}"
+    gen_axis = range(200)
+    plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+
     # figure, axis = plt.subplots(2, 3)
     plt.figure(1)
     plt.title("Promedio de fitness por generación")
     plt.xlabel("Número de generación")
     plt.ylabel("Promedio de fitness")
     plt.figure(2)
+    plt.title("Máximo fitness por generación")
+    plt.xlabel("Número de generación")
+    plt.ylabel("Máximo fitness")
+    plt.figure(3)
+    plt.title("Mínimo de fitness por generación")
+    plt.xlabel("Número de generación")
+    plt.ylabel("Mínimo de fitness")
+    plt.figure(4)
     plt.title("Diversidad genética por generación")
     plt.xlabel("Número de generación")
     plt.ylabel("Diversidad genética")
-    plt.figure(3)
+    plt.figure(5)
     plt.title("Diversidad de fitness por generación")
     plt.xlabel("Número de generación")
     plt.ylabel("Diversidad de fitness")
  
-
-    for sel, idx in selection_labels:
+    idx = 0
+    for sel in selection_labels:
         fn = f"output/average/0_{get_file_base(sel, 'generation_count', cross, mutation, parent_selection)}_avg.csv"
         f = open(fn)
         r = list(csv.reader(f))
         for i in range(len(r[0])):
-            data = [r[x][i] for x in range(len(r))]
+            data = [float(r[x][i]) for x in range(len(r))]
             plt.figure(i+1)
             plt.plot(gen_axis, data, color=colors[idx], label=f"{sel}")
+        idx+=1
 
     plt.figure(1)
+    plt.legend(selection_labels, loc="best")
     plt.savefig(f"{out_file}_avg.png")
     plt.figure(2)
-    plt.savefig(f"{out_file}_gen-div.png")
+    plt.legend(selection_labels, loc="best")
+    plt.savefig(f"{out_file}_max.png")
     plt.figure(3)
+    plt.legend(selection_labels, loc="best")
+    plt.savefig(f"{out_file}_min.png")
+    plt.figure(4)
+    plt.legend(selection_labels, loc="best")
+    plt.savefig(f"{out_file}_gen-div.png")
+    plt.figure(5)
+    plt.legend(selection_labels, loc="best")
     plt.savefig(f"{out_file}_fit-div.png")
     plt.show()
 
 def compare_mutation(selection, parent_selection, cross):
-    out_file = f"output/cmp/cmp_mutation_{selection}_generation_count_{cross}_{parent_selection}"
-    gen_axis = range(100)
+    out_file = f"output/graphs/cmp/cmp_mutation_{selection}_generation_count_{cross}_{parent_selection}"
+    gen_axis = range(200)
     # figure, axis = plt.subplots(2, 3)
     plt.figure(1)
     plt.title("Promedio de fitness por generación")
     plt.xlabel("Número de generación")
     plt.ylabel("Promedio de fitness")
     plt.figure(2)
+    plt.title("Máximo fitness por generación")
+    plt.xlabel("Número de generación")
+    plt.ylabel("Máximo fitness")
+    plt.figure(3)
+    plt.title("Mínimo de fitness por generación")
+    plt.xlabel("Número de generación")
+    plt.ylabel("Mínimo de fitness")
+    plt.figure(4)
     plt.title("Diversidad genética por generación")
     plt.xlabel("Número de generación")
     plt.ylabel("Diversidad genética")
-    plt.figure(3)
+    plt.figure(5)
     plt.title("Diversidad de fitness por generación")
     plt.xlabel("Número de generación")
     plt.ylabel("Diversidad de fitness")
  
-
-    for mut, idx in mutation_labels:
+    idx = 0
+    for mut in mutation_labels:
         fn = f"output/average/0_{get_file_base(selection, 'generation_count', cross, mut, parent_selection)}_avg.csv"
         f = open(fn)
         r = list(csv.reader(f))
         for i in range(len(r[0])):
-            data = [r[x][i] for x in range(len(r))]
+            data = [float(r[x][i]) for x in range(len(r))]
             plt.figure(i+1)
             plt.plot(gen_axis, data, color=colors[idx], label=f"{mut}")
+        idx+=1
 
     plt.figure(1)
+    plt.legend(mutation_labels, loc="best")
     plt.savefig(f"{out_file}_avg.png")
     plt.figure(2)
-    plt.savefig(f"{out_file}_gen-div.png")
+    plt.legend(mutation_labels, loc="best")
+    plt.savefig(f"{out_file}_max.png")
     plt.figure(3)
+    plt.legend(mutation_labels, loc="best")
+    plt.savefig(f"{out_file}_min.png")
+    plt.figure(4)
+    plt.legend(mutation_labels, loc="best")
+    plt.savefig(f"{out_file}_gen-div.png")
+    plt.figure(5)
+    plt.legend(mutation_labels, loc="best")
     plt.savefig(f"{out_file}_fit-div.png")
     plt.show()
 
 def compare_parent_selection(selection, cross):
-    mutation = 'uniform'
-    out_file = f"output/cmp/cmp_parent_selection_{selection}_generation_count_{cross}_{mutation}"
-    gen_axis = range(100)
+    mutation = 'normal'
+    out_file = f"output/graphs/cmp/cmp_parent_selection_{selection}_generation_count_{cross}_{mutation}"
+    gen_axis = range(200)
     # figure, axis = plt.subplots(2, 3)
+    plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+
     plt.figure(1)
     plt.title("Promedio de fitness por generación")
     plt.xlabel("Número de generación")
     plt.ylabel("Promedio de fitness")
     plt.figure(2)
+    plt.title("Máximo fitness por generación")
+    plt.xlabel("Número de generación")
+    plt.ylabel("Máximo fitness")
+    plt.figure(3)
+    plt.title("Mínimo de fitness por generación")
+    plt.xlabel("Número de generación")
+    plt.ylabel("Mínimo de fitness")
+    plt.figure(4)
     plt.title("Diversidad genética por generación")
     plt.xlabel("Número de generación")
     plt.ylabel("Diversidad genética")
-    plt.figure(3)
+    plt.figure(5)
     plt.title("Diversidad de fitness por generación")
     plt.xlabel("Número de generación")
     plt.ylabel("Diversidad de fitness")
- 
-
-    for sel, idx in parent_selection_labels:
-        fn = f"output/average/0_{get_file_base(selection, 'generation_count', cross, 'uniform', sel)}_avg.csv"
+    idx = 0
+    for sel in parent_selection_labels:
+        fn = f"output/average/0_{get_file_base(selection, 'generation_count', cross, mutation, sel)}_avg.csv"
         f = open(fn)
         r = list(csv.reader(f))
         for i in range(len(r[0])):
-            data = [r[x][i] for x in range(len(r))]
+            data = [float(r[x][i]) for x in range(len(r))]
             plt.figure(i+1)
             plt.plot(gen_axis, data, color=colors[idx], label=f"{sel}")
+        idx+=1
 
     plt.figure(1)
+    plt.legend(parent_selection_labels, loc="best")
     plt.savefig(f"{out_file}_avg.png")
     plt.figure(2)
-    plt.savefig(f"{out_file}_gen-div.png")
+    plt.legend(parent_selection_labels, loc="best")
+    plt.savefig(f"{out_file}_max.png")
     plt.figure(3)
+    plt.legend(parent_selection_labels, loc="best")
+    plt.savefig(f"{out_file}_min.png")
+    plt.figure(4)
+    plt.legend(parent_selection_labels, loc="best")
+    plt.savefig(f"{out_file}_gen-div.png")
+    plt.figure(5)
+    plt.legend(parent_selection_labels, loc="best")
     plt.savefig(f"{out_file}_fit-div.png")
     plt.show()
 
 def compare_breaks(selection, cross, parent_selection):
     mutation = 'uniform'
     out_file = f"output/cmp/cmp_breaks_{selection}_{cross}_{mutation}_{parent_selection}"
-    gen_axis = range(100)
+    gen_axis = range(200)
     # figure, axis = plt.subplots(2, 3)
     plt.figure(1)
     plt.title("Promedio de fitness por generación")
@@ -285,5 +360,9 @@ def generate_comparison_files():
             compare_selection(parent_sel, cr)    
 
 
-# generate_comparison_files()
-# generate_graph("elite_generation_count_multiple_uniform", 5)
+# compare_selection("random", "simple")
+# # # gener
+# # generate_graph("elite_generation_count_multiple_uniform", 5)
+# compare_parent_selection("tournament", "simple")
+# compare_mutation("roulette", "random", "simple")
+# compare_cross("random", "tournament")
