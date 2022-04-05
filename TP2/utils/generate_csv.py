@@ -18,7 +18,6 @@ def average_csv_files(files_for_avg, file_count, generation_count):
     for i in range(file_count):
         files[i] = open(f"output/raw/{files_for_avg}_{i}.csv")
         readers[i] = list(csv.reader(files[i], delimiter=","))
-    print(generation_count)
     for row in range(generation_count):
         sums = [0]*(len(readers[0][0])-1)
         for j in range(len(readers)):
@@ -28,10 +27,22 @@ def average_csv_files(files_for_avg, file_count, generation_count):
 
         for t in range(len(sums)):
             print(type(sums[t]))
-        new_list = map(lambda x: x/generation_count, sums)
+        new_list = map(lambda x: x/len(readers), sums)
         writer.writerow(list(new_list))
     for i in range(0, file_count):
         files[i].close()
     output_file.close()
 
 
+
+def insert_best_individual(file_base, execution_count, variation_count, current_population):
+    #Open file best_individuals.txt or create it if doesnt exist
+    file_name = "best_individuals.csv"
+    file = open(file_name, "a")
+    #Get best individual
+    best_individual = max(current_population, key=lambda individual: individual.fitness)
+    #Write best individual to file
+    writer = csv.writer(file)
+    identifier = f"{variation_count}_{file_base}_{execution_count}"
+    writer.writerow([identifier, best_individual.genotype, best_individual.fitness])
+    file.close()

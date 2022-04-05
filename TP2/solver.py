@@ -1,6 +1,7 @@
 
 from results import generate_graph
-from utils.generate_csv import average_csv_files, generate_csv_file
+from utils.file_utils import get_file_base
+from utils.generate_csv import average_csv_files, generate_csv_file, insert_best_individual
 from classes.genotype import Individual
 import random 
 import sys
@@ -92,12 +93,16 @@ def main():
                 a  = GenerationMetrics(generation_count, current_population)
                 current_gen_metrics = a
                 generation_metrics[execution_count].append(a)
-            file_base = f"{config_parser.config.selection.method_name}_{config_parser.config.break_condition.method_name}_{config_parser.config.cross_method.method_name}_{config_parser.config.mutation.method_name}"
+            file_base = get_file_base(config_parser.config.selection.method_name, config_parser.config.break_condition.method_name, config_parser.config.cross_method.method_name, config_parser.config.mutation.method_name, config_parser.config.parent_selection_method.method_name)
             generate_csv_file(f"output/raw/{variation_count}_{file_base}_{execution_count}.csv", generation_metrics[execution_count])
+            insert_best_individual(file_base, execution_count, variation_count, current_population)
             execution_count += 1
         average_csv_files(f"{variation_count}_{file_base}", config_parser.config.execution_count, config_parser.config.break_condition.generation_count)
         variation_count+=1
     generate_graph(file_base, config_parser.config.execution_variants)
+
+
+
 
 
 # P: int = 100

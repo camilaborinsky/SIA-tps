@@ -2,8 +2,8 @@
   "population_size": 300,
   "parent_selection_method": "random",
   "precision_degree": 15,
-  "execution_count": 5,
-  "execution_variants": 5,
+  "execution_count": 3,
+  "execution_variants": 3,
 
   "break": {
     "end_criteria": "generation_count",
@@ -13,7 +13,7 @@
   },
 
   "crossbreeding": {
-    "cross_method": "multiple",
+    "cross_method": "uniform",
     "multiple_method_n": 3
   },
 
