@@ -67,7 +67,7 @@ def main():
                 new_population = []
                 new_population_size = 0
                 i = 0
-                parents = match_genotypes(current_population)
+                parents = config_parser.config.parent_selection_method.select(current_population)
                 while new_population_size < config_parser.config.population_size:
                     # cruza
                     child_1, child_2 = config_parser.config.cross_method.cross(parents[i][0], parents[i][1])

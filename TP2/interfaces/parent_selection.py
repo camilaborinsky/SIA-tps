@@ -38,3 +38,12 @@ class BalancedSelection(ParentSelection):
             list_of_pairs.append((targets[i],targets[length-1-i]))
         return list_of_pairs
 
+def CreateParentSelection(method_name):
+    if method_name == "random":
+        return RandomSelection(method_name)
+    elif method_name == "sorted":
+        return SortedSelection(method_name)
+    elif method_name == "balanced":
+        return BalancedSelection(method_name)
+    else:
+        raise Exception("Unknown parent selection method: " + method_name)

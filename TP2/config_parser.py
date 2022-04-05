@@ -3,6 +3,7 @@ from interfaces.breaks import CreateBreak
 from interfaces.cross import CreateCross
 
 from interfaces.mutations import CreateMutation
+from interfaces.parent_selection import CreateParentSelection
 from interfaces.selection import CreateSelection
 
 class Config: 
@@ -30,7 +31,7 @@ def import_config(config_file_path: str)-> Config:
     
     config = json.load(file)
     population_size = config["population_size"]
-    parent_selection_method = config["parent_selection_method"]
+    parent_selection_method = CreateParentSelection(config["parent_selection_method"])
     precision_degree = config["precision_degree"]
     execution_count = config["execution_count"]
     execution_variants = config["execution_variants"]
