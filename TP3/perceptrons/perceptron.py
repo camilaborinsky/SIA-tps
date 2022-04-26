@@ -17,7 +17,7 @@ class Perceptron:
         # w = random.uniform(-1, 1, len(self.training_set[0]))
         error = 1
         self.error_min = 2*p
-        while error > 0 and i < iteration_limit:
+        while error > 0 or i < iteration_limit:
             idx = random.randint(0, len(self.training_set))
             cop = insert(copy(self.training_set[idx]), 0, -1)
             print("=================")
@@ -33,6 +33,7 @@ class Perceptron:
                 self.error_min = error
                 self.w_min = w
             i+=1
+            #call lambda function to save iteration number, w and error 
         print("W min"+ str(self.w_min))
         return self.w_min
 
