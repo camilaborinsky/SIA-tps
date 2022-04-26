@@ -26,7 +26,7 @@ class Perceptron:
             h = dot(cop, w, out=None)
             print(h)
             o = self.activation(h)
-            w_diff = multiply(cop, self.learn_rate*(self.expected_output[idx]-o))
+            w_diff = multiply(cop, self.learn_rate*(self.expected_output[idx]-o))*self.activation_derivative(h)
             w += w_diff
             error = self.calculate_error(self.training_set, self.expected_output, w, p)
             if error < self.error_min:
@@ -43,5 +43,15 @@ class Perceptron:
 
     @abstractmethod
     def calculate_error(self, real, expected, weights, p):
-        pass
+        sum = 0
+        for i in range(len(real)):
+            cop = insert(copy(real[i]), 0, -1)
+            o = self.activation(dot(cop, weights))
+            sum += (o - expected[i])**2
+
+        return sum/2
+
+    @abstractmethod
+    def activation_derivative(self,h):
+        return 1
 

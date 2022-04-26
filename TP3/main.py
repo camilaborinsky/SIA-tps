@@ -1,12 +1,15 @@
 from matplotlib import pyplot as plt
 from numpy import multiply
 from perceptrons.simple_step_perceptron import SimpleStepPerceptron
-
+from perceptrons.simple_linear_perceptron import SimpleLinearPerceptron
+from perceptrons.non_linear_perceptron import NonLinearPerceptron
 
 def main():
     training_set = [[-1, 1], [1, -1], [-1, -1], [1, 1]]
     expected_output = [-1, -1, -1, 1]
     p = SimpleStepPerceptron(expected_output, training_set, 0.1)
+    #p = SimpleLinearPerceptron(expected_output, training_set, 0.1)
+    #p = NonLinearPerceptron(expected_output, training_set, 0.1)
     w_min = p.learn(20)
     plot_decision_boundary(training_set, w_min, expected_output)
 
