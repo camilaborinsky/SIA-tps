@@ -13,6 +13,6 @@ def minimize_gd(ind: Individual, expected_output, reagents):
 def minimize_cg(ind: Individual, expected_output, reagents):
     return minimize(error, ind.genotype, args=(expected_output, reagents), method='CG')
 
-def minimize_adam(ind:Individual, expected_output, reagents):
+def minimize_adam(ind:Individual, expected_output, reagents, step):
     wrapper = ErrorWrapper(reagents, expected_output)
-    return adam(nd.Gradient(wrapper.apply_function),ind.genotype,step_size=0.80085)
+    return adam(nd.Gradient(wrapper.apply_function),ind.genotype, step_size=step)
