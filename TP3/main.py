@@ -10,7 +10,7 @@ def main():
     p = SimpleStepPerceptron(expected_output, training_set, 0.1)
     #p = SimpleLinearPerceptron(expected_output, training_set, 0.1)
     #p = NonLinearPerceptron(expected_output, training_set, 0.1)
-    w_min = p.learn(20)
+    w_min = p.learn(20, lambda i, error, weights: print("Iteration: {}, Error: {}, Weights:{}".format(i, error, weights)))
     plot_decision_boundary(training_set, w_min, expected_output)
 
 def plot_decision_boundary(X, w, ex):
