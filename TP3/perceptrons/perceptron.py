@@ -17,13 +17,13 @@ class Perceptron:
         # w = random.uniform(-1, 1, len(self.training_set[0]))
         error = 1
         self.error_min = 2*p
-        while error > 0.4 and i < iteration_limit:
-            print(error>0.4)
+        while error > 0.0001 and i < iteration_limit:
+            # print(error>0.4)
             idx = random.randint(0, len(self.training_set))
             cop = insert(copy(self.training_set[idx]), 0, -1)
             h = dot(cop, w, out=None)
             o = self.activation(h)
-            w_diff = multiply(cop, self.learn_rate*(self.expected_output[idx]-o))*self.activation_derivative(h)
+            w_diff = multiply(cop, self.learn_rate*(self.expected_output[idx][0]-o)*self.activation_derivative(h))
             w += w_diff
             error = self.calculate_error(self.training_set, self.expected_output, w, p)
             if error < self.error_min:
@@ -46,7 +46,7 @@ class Perceptron:
         for i in range(len(real)):
             cop = insert(copy(real[i]), 0, -1)
             o = self.activation(dot(cop, weights))
-            sum += (o - expected[i])**2
+            sum += (o - expected[i][0])**2
 
         return sum/2
 

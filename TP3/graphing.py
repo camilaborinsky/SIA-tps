@@ -64,8 +64,30 @@ def iterations_vs_learning_rate():
         plt.show()
 
 
-
+def error_vs_iteration(file_path, exp):
+    #error_vs_iteration.txt has following format: iteration \t error 
+    with open(file_path+ "/error_vs_iteration.txt", "r") as f:
+        lines = f.readlines()
+        iterations = []
+        errors = []
+        for line in lines:
+            split = line.split(",")
+            iteration = float(split[0])
+            iterations.append(iteration)
+            error = float(split[1])
+            errors.append(error)
+        f.close()
+        plt.scatter(iterations, errors)
+        #if exp is true then set logarithmic scale for y axis
+        if exp:
+            plt.yscale('log')
+        # set axis labels
+        plt.xlabel("Iteration")
+        plt.ylabel("Error")
+        # set title
+        plt.title("Error vs iteration")
+        plt.show()
 
 
 #w_evolution()
-iterations_vs_learning_rate()
+# iterations_vs_learning_rate()
