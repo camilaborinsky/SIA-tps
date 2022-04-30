@@ -29,11 +29,12 @@ class Perceptron:
             if error < self.error_min:
                 self.error_min = error
                 self.w_min = w
+            #call lambda function to save iteration number, w and error 
             callback(i, error, w)
             i+=1
-            #call lambda function to save iteration number, w and error 
+            
         print("W min"+ str(self.w_min))
-        return self.w_min
+        return self.w_min, i
 
     @abstractmethod
     def activation(self, h):

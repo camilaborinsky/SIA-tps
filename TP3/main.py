@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 from numpy import multiply
+import numpy as np 
 from perceptrons.simple_step_perceptron import SimpleStepPerceptron
 from perceptrons.simple_linear_perceptron import SimpleLinearPerceptron
 from perceptrons.non_linear_perceptron import NonLinearPerceptron
@@ -11,13 +12,38 @@ def main():
     #p = SimpleLinearPerceptron(expected_output, training_set, 0.1)
     #p = NonLinearPerceptron(expected_output, training_set, 0.1)
     #w_min = p.learn(20, lambda i, error, weights: print("Iteration: {}, Error: {}, Weights:{}".format(i, error, weights)))
+    
     #w_min with lambda function that saves the values to a file
     #clear the file
     with open("resources/perceptron_data.txt", "w") as f:
         f.write("")
         f.close()
-    w_min = p.learn(20, lambda i, error, weights: open("resources/perceptron_data.txt", "a").write("{}\t{}\t{}\n".format(i, error, weights)))
+    w_min, i = p.learn(20, lambda i, error, weights: open("resources/perceptron_data.txt", "a").write("{}\t{}\t{}\n".format(i, error, weights)))
     plot_decision_boundary(training_set, w_min, expected_output)
+
+
+
+def main_iteration_vs_learning_rate():
+    training_set = [[-1, 1], [1, -1], [-1, -1], [1, 1]]
+    expected_output = [-1, -1, -1, 1]
+    learn_rate = 0.9
+    p = SimpleStepPerceptron(expected_output, training_set, learn_rate)
+
+    iterations = []
+    for count in range(5):
+        w_min, i = p.learn(20, lambda i, error, weights: print("Iteration: {}, Error: {}, Weights:{}".format(i, error, weights)))
+        print("W min"+ str(w_min) + " iteration: "+ str(i))
+
+        iterations.append(i)
+    #TODO: a chequear esto, no estoy super segura que lo de desviacion estandar sea asi y con el avg... 
+    error = np.std(iterations)
+    #where iterations is centered
+    avg_iterations = np.mean(iterations)
+    open("resources/learning_rates.txt", "a").write("{},{},{}\n".format(learn_rate, avg_iterations, error))
+
+    #plot_decision_boundary(training_set, w_min, expected_output)
+
+
 
 def plot_decision_boundary(X, w, ex):
     
@@ -44,4 +70,5 @@ def plot_decision_boundary(X, w, ex):
     plt.show()
 
 
-main()
+#main()
+main_iteration_vs_learning_rate()

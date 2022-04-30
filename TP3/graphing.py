@@ -42,5 +42,30 @@ def w_evolution():
         plt.clf()
         i += 1
 
+def iterations_vs_learning_rate():
+    #learning_rates.txt has following format: learning_rate \t iteration_ammount \t error (for it is an avarage of multiple runs)
+    with open("resources/learning_rates.txt", "r") as f:
+        lines = f.readlines()
+        learning_rates = []
+        iterations = []
+        errors = []
+        for line in lines:
+            split = line.split(",")
+            learning_rate = float(split[0])
+            learning_rates.append(learning_rate)
+            iteration = float(split[1])
+            iterations.append(iteration)
+            error = float(split[2])
+            errors.append(error)
+            #error bar is the standard deviation of the error
+            #plt.plot(learning_rate, error, err = error, fmt="bo")
+            plt.errorbar(learning_rate, error, yerr=error, fmt="bo")
+        f.close()
+        plt.show()
 
-w_evolution()
+
+
+
+
+#w_evolution()
+iterations_vs_learning_rate()
