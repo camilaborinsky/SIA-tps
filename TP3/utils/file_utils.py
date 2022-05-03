@@ -37,5 +37,16 @@ def write_error_vs_iteration(file_path, error, iteration):
         f.write(str(iteration)+","+str(error)+"\n")
     f.close()
     
+def generate_parity_output(file_path ):
+    with open(file_path + "/training.txt", "r") as f1:
+        with open(file_path + "/expected.txt", "w") as f2:
+            for line in f1:
+                if line.strip().split()[-1] == 0:
+                    parity = 1
+                else:
+                    parity = -1
+                f2.write("\t"+str(parity)+"\t\n")
+            f2.close()
+        f1.close()
 
     
