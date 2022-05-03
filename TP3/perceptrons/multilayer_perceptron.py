@@ -16,13 +16,9 @@ class MultiLayerPerceptron:
 
     def initialize_weights(self):
         self.weights = {}
-        for i in range(len(self.hidden_layers) + 1):
-            if i == 0:
-                self.weights[i] = np.random.uniform(-1, 1, size=(self.input_dim+1, self.hidden_layers[i] ) )
-            elif i == len(self.hidden_layers):
-                self.weights[i] = (np.random.uniform(-1, 1, size=(self.hidden_layers[i-1]+1, self.output_dim ) ) )
-            else: 
-                self.weights[i] = (np.random.uniform(-1, 1, size=(self.hidden_layers[i-1]+1, self.hidden_layers[i] ) ) )
+        self.layers = [self.input_dim] + self.hidden_layers + [self.output_dim]
+        for i in range(len(self.layers)-1):
+            self.weights[i] = np.random.uniform(-1, 1, size=(self.layers[i]+1, self.layers[i+1]))
 
         return self.weights
 
@@ -68,13 +64,21 @@ class MultiLayerPerceptron:
             self.weights[i] += self.learning_rate * self.weights_diff[i]
         return self.weights
 
-    def train(self, training_set, expected_output, iteration_limit, callback):
+    def train(self, training_set, expected_output, epoch_limit, callback):
         i = 0
+        e = -1
+        epoch_set = set()
         error = 1
         self.error_min = None
+
+
         self.weights = self.initialize_weights()
-        while error > 0.0001 and i < iteration_limit:
-            idx = random.randint(0, len(training_set)-1)
+        while error > 0.0001 and e < epoch_limit:
+            if len(epoch_set) == 0:
+                e+=1
+                epoch_set = set(range(len(training_set)))
+            idx = random.choice(tuple(epoch_set))
+            epoch_set.remove(idx)
             self.output = self.forward_propagation(training_set[idx])
             self.weights_diff = self.back_propagation(expected_output[idx])
             self.weights = self.update_weights()
@@ -92,4 +96,4 @@ class MultiLayerPerceptron:
             output = self.forward_propagation(training_set[i])
             for j in range(self.output_dim):
                 error += (expected_output[i][j] - output[j])**2
-        return error/2
+        return error/len(training_set)
