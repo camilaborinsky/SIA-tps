@@ -77,7 +77,7 @@ def error_vs_iteration(file_path, exp):
             error = float(split[1])
             errors.append(error)
         f.close()
-        plt.scatter(iterations, errors)
+        plt.plot(iterations, errors)
         #if exp is true then set logarithmic scale for y axis
         if exp:
             plt.yscale('log')

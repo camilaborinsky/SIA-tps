@@ -1,5 +1,6 @@
 #multi layer perceptron class
 import random
+from matplotlib.pyplot import axis
 
 import numpy as np
 
@@ -30,14 +31,18 @@ class MultiLayerPerceptron:
         if(len(input) != self.input_dim):
             print("Input dimension is not correct")
             return
-        self.input = np.insert(input, 0, 1)
         self.hidden_outputs = {}
+        self.input = np.insert(input, 0, 1)
+        self.hidden_outputs[0] = self.input
         self.output = []
         for i in range(len(self.hidden_layers) + 1):
-            self.hidden_outputs[i] = np.matmul(self.input, self.weights[i])
-            self.input = list(map(lambda h: self.activation(h), self.hidden_outputs[i]))
-            self.input = np.insert(self.input, 0, 1)
-        self.output = list(map(lambda h: self.activation(h), self.hidden_outputs[len(self.hidden_layers)]))
+            if(i == len(self.hidden_layers)):
+                self.hidden_outputs[i+1] = np.matmul(self.input, self.weights[i])
+            else:
+                self.hidden_outputs[i+1] = np.insert(np.matmul(self.input, self.weights[i]), 0, 1)
+                self.input = list(map(lambda h: self.activation(h), self.hidden_outputs[i+1][1:]))
+                self.input = np.insert(self.input, 0, 1)
+        self.output = list(map(lambda h: self.activation(h), self.hidden_outputs[len(self.hidden_layers)+1]))
         return self.output
     
     #back propagate delta to adjust weights and return weights diff
@@ -46,10 +51,13 @@ class MultiLayerPerceptron:
         weights_diff = {}
         for i in range(len(self.weights)-1, -1, -1):
             if i == len(self.weights)-1:
-                self.errors[i] = np.multiply(np.subtract(expected, self.output), self.activation_derivative(self.hidden_outputs[i]))
+                self.errors[i] = np.multiply(np.subtract(expected, self.output), self.activation_derivative(self.hidden_outputs[i+1]))
             else:
-                self.errors[i] = np.matmul( self.weights[i+1][1:, :], np.transpose(self.errors[i+1])) * self.activation_derivative(self.hidden_outputs[i])
-            weights_diff[i] = np.dot(self.hidden_outputs[i], self.errors[i])
+                self.errors[i] = np.matmul( self.weights[i+1], np.transpose(self.errors[i+1])) * self.activation_derivative(self.hidden_outputs[i+1])
+                self.errors[i] = self.errors[i][1:]
+
+            weights_diff[i] = np.matmul(np.transpose(np.matrix(self.hidden_outputs[i])), np.matrix(self.errors[i]))
+            
 
         return weights_diff
     
@@ -57,7 +65,7 @@ class MultiLayerPerceptron:
     #update weights with saved weights diff and return new weights
     def update_weights(self):
         for i in range(len(self.weights)-1, -1, -1):
-            self.weights[i] -= self.learning_rate * self.weights_diff[i]
+            self.weights[i] += self.learning_rate * self.weights_diff[i]
         return self.weights
 
     def train(self, training_set, expected_output, iteration_limit, callback):
