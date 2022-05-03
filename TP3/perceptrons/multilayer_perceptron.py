@@ -4,15 +4,16 @@ from matplotlib.pyplot import axis
 
 import numpy as np
 
-
 class MultiLayerPerceptron:
-    def __init__(self, learning_rate, hidden_layers, input_dim, output_dim, activation_function, activation_function_derivative):
+    def __init__(self, learning_rate, hidden_layers, input_dim, output_dim, activation_function, activation_function_derivative, update_learn_rate):
         self.learning_rate = learning_rate
         self.hidden_layers = hidden_layers
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.activation = activation_function
         self.activation_derivative = activation_function_derivative
+        self.update_learn_rate = update_learn_rate
+        self.error_k = 0
 
     def initialize_weights(self):
         self.weights = {}
@@ -61,7 +62,7 @@ class MultiLayerPerceptron:
     #update weights with saved weights diff and return new weights
     def update_weights(self):
         for i in range(len(self.weights)-1, -1, -1):
-            self.weights[i] += self.learning_rate * self.weights_diff[i]
+            self.weights[i] += self.get_learning_rate() * self.weights_diff[i]
         return self.weights
 
     def train(self, training_set, expected_output, epoch_limit, callback):
@@ -97,3 +98,18 @@ class MultiLayerPerceptron:
             for j in range(self.output_dim):
                 error += (expected_output[i][j] - output[j])**2
         return error/len(training_set)
+
+    def get_learning_rate(self, error, prev_error):
+        if(self.update_learn_rate is None):
+            return self.learning_rate
+
+        if error > prev_error:    
+            if self.error_k < 0:
+                self.error_k = 0
+            self.error_k+=1
+        elif error < prev_error:
+            if self.error_k > 0:
+                self.error_k = 0
+            self.error_k-=1   
+             
+        return self.update_learn_rate(self.learning_rate, self.error_k)
