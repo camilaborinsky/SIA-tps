@@ -1,11 +1,12 @@
 #multi layer perceptron class
+from collections import Counter
 import random
 from matplotlib.pyplot import axis
 
 import numpy as np
 
 class MultiLayerPerceptron:
-    def __init__(self, learning_rate, hidden_layers, input_dim, output_dim, activation_function, activation_function_derivative, update_learn_rate, scale_output):
+    def __init__(self, learning_rate, hidden_layers, input_dim, output_dim, update_frequency, activation_function, activation_function_derivative, update_learn_rate, scale_output):
         self.learning_rate = learning_rate
         self.hidden_layers = hidden_layers
         self.input_dim = input_dim
@@ -15,6 +16,7 @@ class MultiLayerPerceptron:
         self.update_learn_rate = update_learn_rate
         self.scale_needed = scale_output
         self.error_k = 0
+        self.update_frequency = update_frequency
 
     def initialize_weights(self):
         self.weights = {}
@@ -81,15 +83,37 @@ class MultiLayerPerceptron:
         self.weights = self.initialize_weights()
         self.min_output = min(expected_output)
         self.max_output = max(expected_output)
-        while error > 0.0001 and e < epoch_limit:
+        self.weights_diff = None
+        #while error > 0.0001 and e < epoch_limit:
+        while e < 8:
+            
             if len(epoch_set) == 0:
                 e+=1
                 epoch_set = set(range(len(training_set)))
             idx = random.choice(tuple(epoch_set))
             epoch_set.remove(idx)
             self.forward_propagation(training_set[idx])
-            self.weights_diff = self.back_propagation(expected_output[idx])
-            self.weights = self.update_weights()
+            if self.update_frequency == 0:
+                self.weights_diff = self.back_propagation(expected_output[idx])
+                self.weights = self.update_weights()
+                
+            else:
+                
+                dict1 = self.back_propagation(expected_output[idx])
+                dict2 = self.weights_diff
+                if self.weights_diff is None:
+                    self.weights_diff = self.back_propagation(expected_output[idx])
+                else:
+                    for key,values in dict1.items():
+                        dict1[key] = values + dict2[key]
+                    self.weights_diff = dict1
+                    
+                #self.weights_diff = dict(Counter(self.back_propagation(expected_output[idx])) + Counter(self.weights_diff))
+                if e % self.update_frequency == 1 and len(epoch_set) == 0:
+                    self.weights = self.update_weights()
+                    self.weights_diff = None
+                    
+                    
             error = self.calculate_error(training_set, expected_output)
             if self.error_min is None or error < self.error_min:
                 self.error_min = error
