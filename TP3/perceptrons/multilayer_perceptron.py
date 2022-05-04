@@ -1,28 +1,28 @@
 #multi layer perceptron class
+from collections import Counter
 import random
 from matplotlib.pyplot import axis
 
 import numpy as np
 
-
 class MultiLayerPerceptron:
-    def __init__(self, learning_rate, hidden_layers, input_dim, output_dim, activation_function, activation_function_derivative):
+    def __init__(self, learning_rate, hidden_layers, input_dim, output_dim, update_frequency, activation_function, activation_function_derivative, update_learn_rate, scale_output):
         self.learning_rate = learning_rate
         self.hidden_layers = hidden_layers
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.activation = activation_function
         self.activation_derivative = activation_function_derivative
+        self.update_learn_rate = update_learn_rate
+        self.scale_needed = scale_output
+        self.error_k = 0
+        self.update_frequency = update_frequency
 
     def initialize_weights(self):
         self.weights = {}
-        for i in range(len(self.hidden_layers) + 1):
-            if i == 0:
-                self.weights[i] = np.random.uniform(-1, 1, size=(self.input_dim+1, self.hidden_layers[i] ) )
-            elif i == len(self.hidden_layers):
-                self.weights[i] = (np.random.uniform(-1, 1, size=(self.hidden_layers[i-1]+1, self.output_dim ) ) )
-            else: 
-                self.weights[i] = (np.random.uniform(-1, 1, size=(self.hidden_layers[i-1]+1, self.hidden_layers[i] ) ) )
+        self.layers = [self.input_dim] + self.hidden_layers + [self.output_dim]
+        for i in range(len(self.layers)-1):
+            self.weights[i] = np.random.uniform(-1, 1, size=(self.layers[i]+1, self.layers[i+1]))
 
         return self.weights
 
@@ -43,12 +43,16 @@ class MultiLayerPerceptron:
                 self.input = list(map(lambda h: self.activation(h), self.hidden_outputs[i+1][1:]))
                 self.input = np.insert(self.input, 0, 1)
         self.output = list(map(lambda h: self.activation(h), self.hidden_outputs[len(self.hidden_layers)+1]))
+        if self.scale_needed ==True:
+            return self.scale_output()
         return self.output
     
     #back propagate delta to adjust weights and return weights diff
     def back_propagation(self, expected):
         self.errors = {}
         weights_diff = {}
+        if self.scale_needed == True:
+            expected = self.normalize_output(expected)
         for i in range(len(self.weights)-1, -1, -1):
             if i == len(self.weights)-1:
                 self.errors[i] = np.multiply(np.subtract(expected, self.output), self.activation_derivative(self.hidden_outputs[i+1]))
@@ -68,23 +72,55 @@ class MultiLayerPerceptron:
             self.weights[i] += self.learning_rate * self.weights_diff[i]
         return self.weights
 
-    def train(self, training_set, expected_output, iteration_limit, callback):
+    def train(self, training_set, expected_output, epoch_limit, callback):
         i = 0
+        e = -1
+        epoch_set = set()
         error = 1
         self.error_min = None
+
+
         self.weights = self.initialize_weights()
-        while error > 0.0001 and i < iteration_limit:
-            idx = random.randint(0, len(training_set)-1)
-            self.output = self.forward_propagation(training_set[idx])
-            self.weights_diff = self.back_propagation(expected_output[idx])
-            self.weights = self.update_weights()
+        self.min_output = min(expected_output)
+        self.max_output = max(expected_output)
+        self.weights_diff = None
+        #while error > 0.0001 and e < epoch_limit:
+        while e < 8:
+            
+            if len(epoch_set) == 0:
+                e+=1
+                epoch_set = set(range(len(training_set)))
+            idx = random.choice(tuple(epoch_set))
+            epoch_set.remove(idx)
+            self.forward_propagation(training_set[idx])
+            if self.update_frequency == 0:
+                self.weights_diff = self.back_propagation(expected_output[idx])
+                self.weights = self.update_weights()
+                
+            else:
+                
+                dict1 = self.back_propagation(expected_output[idx])
+                dict2 = self.weights_diff
+                if self.weights_diff is None:
+                    self.weights_diff = self.back_propagation(expected_output[idx])
+                else:
+                    for key,values in dict1.items():
+                        dict1[key] = values + dict2[key]
+                    self.weights_diff = dict1
+                    
+                #self.weights_diff = dict(Counter(self.back_propagation(expected_output[idx])) + Counter(self.weights_diff))
+                if e % self.update_frequency == 1 and len(epoch_set) == 0:
+                    self.weights = self.update_weights()
+                    self.weights_diff = None
+                    
+                    
             error = self.calculate_error(training_set, expected_output)
             if self.error_min is None or error < self.error_min:
                 self.error_min = error
                 self.weights_min = self.weights
             callback(i, error, self.weights, self.output)
             i+=1
-        return self.weights_min
+        return self.weights_min, self.error_min
 
     def calculate_error(self, training_set, expected_output):
         error = 0
@@ -92,4 +128,28 @@ class MultiLayerPerceptron:
             output = self.forward_propagation(training_set[i])
             for j in range(self.output_dim):
                 error += (expected_output[i][j] - output[j])**2
-        return error/2
+        return error/len(training_set)
+
+    def get_learning_rate(self, error, prev_error):
+        if(self.update_learn_rate is None):
+            return self.learning_rate
+
+        if error > prev_error:    
+            if self.error_k < 0:
+                self.error_k = 0
+            self.error_k+=1
+        elif error < prev_error:
+            if self.error_k > 0:
+                self.error_k = 0
+            self.error_k-=1   
+             
+        return self.update_learn_rate(self.learning_rate, self.error_k)
+    
+    def scale_output(self):
+        new_output = list(map(lambda h: h *(self.max_output[0] - self.min_output[0])+ self.min_output[0], self.output) )
+       
+        return new_output
+    
+    def normalize_output(self, expected):
+        new_output = list(map(lambda h: (h- self.min_output[0]) /(self.max_output[0] - self.min_output[0]), expected) )
+        return new_output

@@ -7,7 +7,7 @@ from perceptrons.non_linear_perceptron import NonLinearPerceptron
 
 def main():
     training_set = [[-1, 1], [1, -1], [-1, -1], [1, 1]]
-    expected_output = [-1, -1, -1, 1]
+    expected_output = [[-1], [-1], [-1], [1]]
     p = SimpleStepPerceptron(expected_output, training_set, 0.1)
     #p = SimpleLinearPerceptron(expected_output, training_set, 0.1)
     #p = NonLinearPerceptron(expected_output, training_set, 0.1)
@@ -25,7 +25,7 @@ def main():
 
 def main_iteration_vs_learning_rate():
     training_set = [[-1, 1], [1, -1], [-1, -1], [1, 1]]
-    expected_output = [-1, -1, -1, 1]
+    expected_output = [[-1], [-1], [-1], [1]]
     learn_rate = 0.9
     p = SimpleStepPerceptron(expected_output, training_set, learn_rate)
 
