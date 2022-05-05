@@ -85,7 +85,8 @@ class MultiLayerPerceptron:
         self.max_output = max(expected_output)
         self.weights_diff = None
         #while error > 0.0001 and e < epoch_limit:
-        while e < 8:
+        while error > 0.0001 or e < epoch_limit:
+        #while e < 8:
             
             if len(epoch_set) == 0:
                 e+=1
