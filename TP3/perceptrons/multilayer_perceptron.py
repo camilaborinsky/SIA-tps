@@ -83,9 +83,9 @@ class MultiLayerPerceptron:
         self.weights = self.initialize_weights()
         self.min_output = min(expected_output)
         self.max_output = max(expected_output)
-        self.weights_diff = None
-        #while error > 0.0001 and e < epoch_limit:
-        while error > 0.0001 or e < epoch_limit:
+        self.weights_diff = None  
+
+        while error > 0.0001 and e < epoch_limit:
         #while e < 8:
             
             if len(epoch_set) == 0:
@@ -119,7 +119,7 @@ class MultiLayerPerceptron:
             if self.error_min is None or error < self.error_min:
                 self.error_min = error
                 self.weights_min = self.weights
-            callback(i, error, self.weights, self.output)
+            callback(e, error, self.weights, self.output)
             i+=1
         return self.weights_min, self.error_min
 
