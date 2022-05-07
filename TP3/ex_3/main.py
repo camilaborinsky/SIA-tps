@@ -54,6 +54,29 @@ def parse_ej3(file_path):
         return training_set, expected_output
 
 
+def generate_input_with_noise(file_path, ammount_of_inputs):
+    training_set = parse_training(file_path)
+
+    #for every value in training_set change it to its opposite with probability 0.02 
+    for i in range(len(training_set)):
+        for j in range(len(training_set[i])):
+            if(np.random.rand() < 0.02):
+                training_set[i][j] = (training_set[i][j] + 1) % 2
+
+    #write the new training set to a file, in case it is needed
+    with open(file_path+"/training_with_noise.txt", "w") as f:
+        for number in training_set:
+            for item in number:
+                f.write(str(int(item)) + " ")
+            f.write("\n")
+    f.close()
+
+    return training_set
+
+
+
+
+
 def main():
     training_set, expected_output = parse_ej2("ex_3/resources/training")
     input_dimension = len(training_set[0])
@@ -66,8 +89,10 @@ def main():
 
     print("output: " + str(output))
 
-if __name__ == "__main__":
-     main()
+#if __name__ == "__main__":
+#     main()
+
+generate_input_with_noise("ex_3/resources/training", 10)
 
 #parse_training("ex_3/resources/training")
 
