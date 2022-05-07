@@ -82,7 +82,7 @@ def main():
     input_dimension = len(training_set[0])
     expected_output_dimension = len(expected_output[0])
 
-    multilayer_perceptron = MultiLayerPerceptron(learning_rate=0.1, hidden_layers=[2], input_dim=input_dimension, output_dim=expected_output_dimension, update_frequency= 0, activation_function=np.vectorize(lambda x: np.tanh(x)), activation_function_derivative=np.vectorize(lambda x: 1-(np.tanh(x))**2), update_learn_rate=0.1, scale_output=False)
+    multilayer_perceptron = MultiLayerPerceptron(learning_rate=0.1, hidden_layers=[2], input_dim=input_dimension, output_dim=expected_output_dimension, update_frequency= 0, activation_function=np.vectorize(lambda x: np.tanh(x)), activation_function_derivative=np.vectorize(lambda x: 1-(np.tanh(x))**2), update_learn_rate=0.1, scale_output=False,momentum=False)
     multilayer_perceptron.train(training_set, expected_output, epoch_limit=100, callback=(lambda i, error, weights, output: print("Iteration: {}, Error: {}, Output: {}".format(i, error, str(output)))))
     output = multilayer_perceptron.scale_output()
     #error_vs_iteration("ex_3/resources/xor/training", False)

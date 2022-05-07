@@ -5,8 +5,10 @@ from matplotlib.pyplot import axis
 
 import numpy as np
 
+alpha = 0.8
+
 class MultiLayerPerceptron:
-    def __init__(self, learning_rate, hidden_layers, input_dim, output_dim, update_frequency, activation_function, activation_function_derivative, update_learn_rate, scale_output):
+    def __init__(self, learning_rate, hidden_layers, input_dim, output_dim, update_frequency, activation_function, activation_function_derivative, update_learn_rate, scale_output, momentum):
         self.learning_rate = learning_rate
         self.hidden_layers = hidden_layers
         self.input_dim = input_dim
@@ -17,13 +19,15 @@ class MultiLayerPerceptron:
         self.scale_needed = scale_output
         self.error_k = 0
         self.update_frequency = update_frequency
+        self.momentum = momentum
+        self.old_delta_w = {}
+        
 
     def initialize_weights(self):
         self.weights = {}
         self.layers = [self.input_dim] + self.hidden_layers + [self.output_dim]
         for i in range(len(self.layers)-1):
             self.weights[i] = np.random.uniform(-1, 1, size=(self.layers[i]+1, self.layers[i+1]))
-
         return self.weights
 
     #propagate input through network and get output
@@ -96,6 +100,8 @@ class MultiLayerPerceptron:
             self.forward_propagation(training_set[idx])
             if self.update_frequency == 0:
                 self.weights_diff = self.back_propagation(expected_output[idx])
+                if self.momentum:
+                    self.momentum_variation()
                 self.weights = self.update_weights()
                 
             else:
@@ -108,7 +114,8 @@ class MultiLayerPerceptron:
                     for key,values in dict1.items():
                         dict1[key] = values + dict2[key]
                     self.weights_diff = dict1
-                    
+                if self.momentum:
+                    self.momentum_variation()    
                 #self.weights_diff = dict(Counter(self.back_propagation(expected_output[idx])) + Counter(self.weights_diff))
                 if e % self.update_frequency == 1 and len(epoch_set) == 0:
                     self.weights = self.update_weights()
@@ -154,3 +161,11 @@ class MultiLayerPerceptron:
     def normalize_output(self, expected):
         new_output = list(map(lambda h: (h- self.min_output[0]) /(self.max_output[0] - self.min_output[0]), expected) )
         return new_output
+
+    def momentum_variation(self):
+
+        if len(self.old_delta_w) > 0:
+            for i in range(len(self.weights)-1, -1, -1):
+                self.weights_diff[i] += (alpha/self.learning_rate) * self.old_delta_w[i]
+        self.old_delta_w = self.weights_diff
+        
