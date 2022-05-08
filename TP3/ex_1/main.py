@@ -1,3 +1,4 @@
+import json
 from matplotlib import pyplot as plt
 from numpy import multiply
 import numpy as np 
@@ -61,7 +62,7 @@ def plot_decision_boundary(X, w, ex):
     # Plotting
     fig = plt.figure(figsize=(10,8))
     for idx, item in enumerate(X):
-        color =  "blue" if ex[idx] < 0 else "red"
+        color =  "blue" if ex[idx][0] < 0 else "red"
         plt.scatter(item[0], item[1], color=color)
     plt.xlabel("feature 1")
     plt.ylabel("feature 2")
@@ -69,6 +70,52 @@ def plot_decision_boundary(X, w, ex):
     plt.plot(x1, x2, 'y-')
     plt.show()
 
+def parse_config(file_path):
+    with open(file_path, "r") as f:
+        data = json.load(f)
+        training_set = data["training_set"]
+        expected_output = data["expected_output"]
+        learn_rate = data["learn_rate"]
+        epoch_limit = data["epoch_limit"]
+        execution_count = data["execution_count"]
+        return training_set, expected_output, learn_rate, epoch_limit, execution_count
 
-#main()
-main_iteration_vs_learning_rate()
+
+def parse_results_for_rate(file_path):
+    with open(file_path, "r") as f:
+        iterations = []
+        errors = []
+        lines = f.readlines()
+        for line in lines:
+            i, e = line.strip().split(",")
+            iterations.append(int(i))
+            errors.append(float(e))
+        return np.average(iterations), np.std(iterations), np.average(errors), np.std(errors)
+
+def parse_rates_results(file_path):
+    with open(file_path, "r") as f:
+        lines = f.readlines()
+        learn_rates = []
+        iterations = []
+        it_devs = []
+        errors = []
+        err_devs = []
+        for line in lines:
+            lr, i, i_dev, e, e_dev = line.strip().split(",")
+            learn_rates.append(float(lr))
+            iterations.append(float(i))
+            it_devs.append(float(i_dev))
+            errors.append(float(e))
+            err_devs.append(float(e_dev))
+        return learn_rates, iterations, it_devs, errors, err_devs
+
+def iteration_vs_error(file_path):
+    with open(file_path, "r") as f:
+        lines = f.readlines()
+        iterations = []
+        errors = []
+        for line in lines:
+            i, e, w = line.strip().split("\t")
+            iterations.append(int(i))
+            errors.append(float(e))
+        return iterations, errors

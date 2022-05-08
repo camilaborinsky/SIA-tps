@@ -13,8 +13,7 @@ class Perceptron:
     def learn(self, iteration_limit, callback):
         i = 0 #nro de iteracion
         p = len(self.training_set[0])
-        w = zeros(p+1)
-        # w = random.uniform(-1, 1, len(self.training_set[0]))
+        w = random.uniform(-1, 1, p+1)
         error = 1
         self.error_min = 2*p
         while error > 0.0001 and i < iteration_limit:
@@ -34,7 +33,7 @@ class Perceptron:
             i+=1
             
         print("W min"+ str(self.w_min))
-        return self.w_min, i
+        return self.w_min, self.error_min, i
 
     @abstractmethod
     def activation(self, h):

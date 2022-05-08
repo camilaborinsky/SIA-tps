@@ -1,0 +1,12 @@
+{
+  "learn_rate": 0.9,
+  "training_set": [
+    [1, 1],
+    [-1, -1],
+    [1, -1],
+    [-1, 1]
+  ],
+  "epoch_limit": 100,
+  "execution_count": 20,
+  "expected_output": [[1], [-1], [-1], [-1]]
+}
