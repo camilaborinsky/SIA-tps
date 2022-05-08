@@ -2,6 +2,7 @@ from audioop import mul
 from math import tanh
 import numpy as np
 from parso import parse
+from metrics import ConfusionMatrix, accuracy, precision, recall, f1_score, tp_rate, fp_rate
 #from graphing import error_vs_iteration
 from perceptrons.multilayer_perceptron import MultiLayerPerceptron
 #from utils.file_utils import write_error_vs_iteration
@@ -75,7 +76,40 @@ def generate_input_with_noise(file_path, ammount_of_inputs):
     return training_set
 
 
+def metrics_ej2(real, expected):
+    matrix = ConfusionMatrix(real,expected,0) # Sets even as positive
+    total_accuracy = accuracy(matrix)
+    total_precision = precision(matrix)
+    total_recall = recall(matrix)
+    total_f1 = f1_score(matrix)
+    total_tp_rate = tp_rate(matrix)
+    total_fp_rate = fp_rate(matrix)
+    return total_accuracy,total_precision,total_recall,total_f1,total_tp_rate,total_fp_rate
 
+
+def metrics_ej3(real, expected):
+    dim = 10
+    total_accuracy = 0
+    total_precision = 0
+    total_recall = 0
+    total_f1 = 0
+    total_tp_rate = 0
+    total_fp_rate = 0
+    
+    # Real should be in the form [1,2,3]
+    matrix: ConfusionMatrix = None
+    for i in range(1,dim+1):
+        
+        matrix = ConfusionMatrix(real,expected,i)
+        #print(str(matrix))
+        total_accuracy += accuracy(matrix)
+        total_precision += precision(matrix)
+        total_recall += recall(matrix)
+        total_f1 += f1_score(matrix)
+        total_tp_rate += tp_rate(matrix)
+        total_fp_rate += fp_rate(matrix)
+    #avg_accuracy,avg_precision,avg_recall,avg_f1,avg_tp_rate,avg_fp_rate /= 10
+    return total_accuracy/dim,total_precision/dim,total_recall/dim,total_f1/dim,total_tp_rate/dim,total_fp_rate/dim
 
 
 def main():
