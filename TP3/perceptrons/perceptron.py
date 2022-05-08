@@ -10,15 +10,24 @@ class Perceptron:
         self.training_set = training_set
         self.learn_rate = learn_rate
     
-    def learn(self, iteration_limit, callback):
+    def learn(self, iteration_limit, callback, random_weights=True):
         i = 0 #nro de iteracion
         p = len(self.training_set[0])
-        w = random.uniform(-1, 1, p+1)
+        epoch_set = set()
+        e=-1
+        if random_weights:
+            w = random.uniform(-1, 1, p+1)
+        else:
+            w = zeros(p+1)
         error = 1
         self.error_min = 2*p
         while error > 0.0001 and i < iteration_limit:
             # print(error>0.4)
-            idx = random.randint(0, len(self.training_set))
+            if len(epoch_set) == 0:
+                e+=1
+                epoch_set = set(range(len(self.training_set)))
+            idx = random.choice(tuple(epoch_set))
+            epoch_set.remove(idx)
             cop = insert(copy(self.training_set[idx]), 0, -1)
             h = dot(cop, w, out=None)
             o = self.activation(h)

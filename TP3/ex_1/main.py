@@ -64,8 +64,8 @@ def plot_decision_boundary(X, w, ex):
     for idx, item in enumerate(X):
         color =  "blue" if ex[idx][0] < 0 else "red"
         plt.scatter(item[0], item[1], color=color)
-    plt.xlabel("feature 1")
-    plt.ylabel("feature 2")
+    plt.xlabel("x")
+    plt.ylabel("y")
     plt.title("Perceptron Algorithm")
     plt.plot(x1, x2, 'y-')
     plt.show()
@@ -77,8 +77,9 @@ def parse_config(file_path):
         expected_output = data["expected_output"]
         learn_rate = data["learn_rate"]
         epoch_limit = data["epoch_limit"]
+        random_weights = bool(data["random_initial_weights"])
         execution_count = data["execution_count"]
-        return training_set, expected_output, learn_rate, epoch_limit, execution_count
+        return training_set, expected_output, learn_rate, epoch_limit, execution_count, random_weights
 
 
 def parse_results_for_rate(file_path):

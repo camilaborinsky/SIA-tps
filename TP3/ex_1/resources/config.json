@@ -6,6 +6,7 @@
     [1, -1],
     [-1, 1]
   ],
+  "random_initial_weights": false,
   "epoch_limit": 100,
   "execution_count": 20,
   "expected_output": [[1], [-1], [-1], [-1]]
