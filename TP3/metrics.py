@@ -7,7 +7,7 @@ from perceptrons.non_linear_perceptron import NonLinearPerceptron
 BIAS : float = 0.1
 
 class ConfusionMatrix:
-    def __init__(self, real, expected):
+    def __init__(self, real, expected, positive_value):
         tp = 0
         tn = 0
         fp = 0
@@ -15,15 +15,16 @@ class ConfusionMatrix:
 
         for i in range(0,len(real)):
             if (abs(real[i] - expected[i]) < BIAS):
-                if expected[i] == 1:
+                if expected[i] == positive_value:
                     tp += 1
                 else:
                     tn += 1
             else:
-                if expected[i] == 1:
-                    fn += 1
-                else:
+                if real[i] == positive_value:
                     fp += 1
+                else:
+                    fn += 1
+                    
         self.tp = tp
         self.tn = tn
         self.fp = fp
@@ -32,26 +33,44 @@ class ConfusionMatrix:
      return "{}\t{}\n{}\t{}".format(self.tp,self.fn,self.fp,self.tn)   
 
 def accuracy(confusion_matrix: ConfusionMatrix):
-    return (confusion_matrix.tp + confusion_matrix.tn) / (confusion_matrix.tp + confusion_matrix.tn + confusion_matrix.fp + confusion_matrix.fn)
+    try:
+        return (confusion_matrix.tp + confusion_matrix.tn) / (confusion_matrix.tp + confusion_matrix.tn + confusion_matrix.fp + confusion_matrix.fn)
+    except ZeroDivisionError:
+        return 0
 
 def precision(confusion_matrix: ConfusionMatrix):
-    return confusion_matrix.tp / (confusion_matrix.tp + confusion_matrix.fp)
+    try:
+        return confusion_matrix.tp / (confusion_matrix.tp + confusion_matrix.fp)
+    except ZeroDivisionError:
+        return 0
 
 def recall(confusion_matrix: ConfusionMatrix):
-    return confusion_matrix.tp / (confusion_matrix.tp + confusion_matrix.fn)
+    try:
+        return confusion_matrix.tp / (confusion_matrix.tp + confusion_matrix.fn)
+    except ZeroDivisionError:
+        return 0
 
 def f1_score(confusion_matrix: ConfusionMatrix):
     p = precision(confusion_matrix)
     r = recall(confusion_matrix)
-    return (2*p*r) / (p+r)
+    try:
+        return (2*p*r) / (p+r)
+    except ZeroDivisionError:
+        return 0
 
 def tp_rate(confusion_matrix: ConfusionMatrix):
-    return recall(confusion_matrix)
+    try:
+        return recall(confusion_matrix)
+    except ZeroDivisionError:
+        return 0
 
 def fp_rate(confusion_matrix: ConfusionMatrix):
-    return confusion_matrix.fp / (confusion_matrix.fp + confusion_matrix.tn)
+    try:
+        return confusion_matrix.fp / (confusion_matrix.fp + confusion_matrix.tn)
+    except ZeroDivisionError:
+        return 0
 
-def cross_validation(p_class,training_set,k,iterations,expected):
+def cross_validation(p_class,training_set,k,iterations,expected,positive_value):
     # Shuffle and subdivide training set in k parts
     
     indexes = list(range(0,len(expected)))
@@ -81,7 +100,7 @@ def cross_validation(p_class,training_set,k,iterations,expected):
         perceptron = p_class(expected,training_set,0.1)
         w = perceptron.learn(iterations, lambda i, error, weights: print("Iteration: {}, Error: {}, Weights:{}".format(i, error, weights)))
         min_ws.append(w)
-        matrix = ConfusionMatrix(w,expected)
+        matrix = ConfusionMatrix(w,expected,positive_value)
         print("Matrix")
         print(str(matrix))
         acc = accuracy(matrix)
@@ -90,12 +109,28 @@ def cross_validation(p_class,training_set,k,iterations,expected):
     # Test
     #test(perceptron, shuffled_sets[k-1])
 
-# k= 3
-# iterations = 20
-# training_set = [0,1,2,3,4,5,6,7,8]
-# cross_validation(perceptron,training_set,k,20)
 
-# k = 3
-# training_set = [5,2,3, 4, 1, 6]
-# expected = [2,1, 4, 5, 6, 3]
-# cross_validation(NonLinearPerceptron,training_set,k,20,expected)
+# Error Metrics
+
+def mean_error(errors):
+    total_error = 0
+    for e in errors:
+        total_error += e
+    return total_error/len(errors)
+
+def max_error(errors):
+    return max(errors)
+
+def min_error(errors):
+    return min(errors)
+
+# mean squared error
+def mse(errors):
+    total_error = 0
+    for e in errors:
+        total_error += pow(e,2)
+    return total_error/len(errors)
+
+# root mean square deviation
+def rmsd(errors):
+    return pow(mse(errors),0.5)
