@@ -1,0 +1,10 @@
+{
+  "cross_validation": 0,
+  "momentum": false,
+  "learn_rate": 0.1,
+  "adaptive_learn_rate": false,
+  "activation_function": "linear",
+  "path_to_data": "ex_2/resources/training",
+  "epoch_limit": 100,
+  "execution_count": 20
+}

@@ -1,4 +1,5 @@
 
+import json
 import numpy as np
 
 
@@ -49,4 +50,9 @@ def generate_parity_output(file_path ):
             f2.close()
         f1.close()
 
+def parse_config(file_path):
+    with open(file_path, "r") as f:
+        data = json.load(f)
+        f.close()
+        return data
     
