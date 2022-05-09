@@ -70,7 +70,7 @@ def fp_rate(confusion_matrix: ConfusionMatrix):
     except ZeroDivisionError:
         return 0
 
-def cross_validation(p_class,training_set,k,iterations,expected,positive_value):
+def cross_validation(training_set,k,expected):
     # Shuffle and subdivide training set in k parts
     
     indexes = list(range(0,len(expected)))
@@ -90,8 +90,9 @@ def cross_validation(p_class,training_set,k,iterations,expected,positive_value):
             #shuffled_entry_set[j].append(training_set[k*i:(k*(i+1))])
         shuffled_entry_set.append(aux_entry)
         shuffled_expected.append(aux_expected)
-    print(shuffled_entry_set)
-    print(shuffled_expected)
+    return shuffled_entry_set,shuffled_expected
+    # print(shuffled_entry_set)
+    # print(shuffled_expected)
 
     # Training
     min_ws = []

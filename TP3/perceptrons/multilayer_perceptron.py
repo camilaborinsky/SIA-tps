@@ -126,7 +126,8 @@ class MultiLayerPerceptron:
             if self.error_min is None or error < self.error_min:
                 self.error_min = error
                 self.weights_min = self.weights
-            callback(e, error, self.weights, self.output)
+            if callback is not None:
+                callback(i, error, self.weights, self.output)
             i+=1
         return self.weights_min, self.error_min
 
