@@ -1,6 +1,7 @@
 #multi layer perceptron class
 from collections import Counter
 import random
+import time
 from matplotlib.pyplot import axis
 
 import numpy as np
@@ -44,9 +45,9 @@ class MultiLayerPerceptron:
                 self.hidden_outputs[i+1] = np.matmul(self.input, self.weights[i])
             else:
                 self.hidden_outputs[i+1] = np.insert(np.matmul(self.input, self.weights[i]), 0, 1)
-                self.input = list(map(lambda h: self.activation(h), self.hidden_outputs[i+1][1:]))
                 self.input = np.insert(self.input, 0, 1)
-        self.output = list(map(lambda h: self.activation(h), self.hidden_outputs[len(self.hidden_layers)+1]))
+        self.output = self.activation(self.hidden_outputs[len(self.hidden_layers) +1])
+        # self.output = list(map(lambda h: self.activation(h), self.hidden_outputs[len(self.hidden_layers)+1]))
         if self.scale_needed ==True:
             return self.scale_output()
         return self.output
@@ -78,11 +79,10 @@ class MultiLayerPerceptron:
 
     def train(self, training_set, expected_output, epoch_limit, callback):
         i = 0
-        e = -1
+        e = 0
         epoch_set = set()
         error = 1
         self.error_min = None
-
 
         self.weights = self.initialize_weights()
         self.min_output = min(expected_output)
@@ -91,44 +91,40 @@ class MultiLayerPerceptron:
 
         while error > 0.0001 and e < epoch_limit:
         #while e < 8:
-            
-            if len(epoch_set) == 0:
-                e+=1
-                epoch_set = set(range(len(training_set)))
-            idx = random.choice(tuple(epoch_set))
-            epoch_set.remove(idx)
-            self.forward_propagation(training_set[idx])
-            if self.update_frequency == 0:
-                self.weights_diff = self.back_propagation(expected_output[idx])
-                if self.momentum:
-                    self.momentum_variation()
-                self.weights = self.update_weights()
-                
-            else:
-                
-                dict1 = self.back_propagation(expected_output[idx])
-                dict2 = self.weights_diff
-                if self.weights_diff is None:
+            indexes = list(range(len(training_set)))
+            np.random.shuffle(indexes)
+            for idx in indexes:
+                self.forward_propagation(training_set[idx])
+                if self.update_frequency == 0:
                     self.weights_diff = self.back_propagation(expected_output[idx])
+                    if self.momentum:
+                        self.momentum_variation()
+                    self.weights = self.update_weights()      
                 else:
-                    for key,values in dict1.items():
-                        dict1[key] = values + dict2[key]
-                    self.weights_diff = dict1
-                if self.momentum:
-                    self.momentum_variation()    
-                #self.weights_diff = dict(Counter(self.back_propagation(expected_output[idx])) + Counter(self.weights_diff))
-                if e % self.update_frequency == 1 and len(epoch_set) == 0:
-                    self.weights = self.update_weights()
-                    self.weights_diff = None
                     
-                    
+                    dict1 = self.back_propagation(expected_output[idx])
+                    dict2 = self.weights_diff
+                    if self.weights_diff is None:
+                        self.weights_diff = self.back_propagation(expected_output[idx])
+                    else:
+                        for key,values in dict1.items():
+                            dict1[key] = values + dict2[key]
+                        self.weights_diff = dict1
+                    if self.momentum:
+                        self.momentum_variation()    
+                    #self.weights_diff = dict(Counter(self.back_propagation(expected_output[idx])) + Counter(self.weights_diff))
+                    if e % self.update_frequency == 1 and len(epoch_set) == 0:
+                        self.weights = self.update_weights()
+                        self.weights_diff = None
+                i+=1
             error = self.calculate_error(training_set, expected_output)
             if self.error_min is None or error < self.error_min:
                 self.error_min = error
                 self.weights_min = self.weights
             if callback is not None:
-                callback(i, error, self.weights, self.output)
-            i+=1
+                callback(e, error, self.weights, self.output)
+
+            e+=1
         return self.weights_min, self.error_min
 
     def calculate_error(self, training_set, expected_output):
@@ -160,8 +156,10 @@ class MultiLayerPerceptron:
         return new_output
     
     def normalize_output(self, expected):
-        new_output = list(map(lambda h: (h- self.min_output[0]) /(self.max_output[0] - self.min_output[0]), expected) )
-        return new_output
+ 
+            new_output = list(map(lambda h: (h- self.min_output[0]) /(self.max_output[0] - self.min_output[0]), expected) )
+            return new_output
+           
 
     def momentum_variation(self):
 

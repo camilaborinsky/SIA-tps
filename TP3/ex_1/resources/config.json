@@ -1,12 +1,12 @@
 {
-  "learn_rate": 0.9,
+  "learn_rate": 0.6,
   "training_set": [
     [1, 1],
     [-1, -1],
     [1, -1],
     [-1, 1]
   ],
-  "random_initial_weights": false,
+  "random_initial_weights": true,
   "epoch_limit": 100,
   "execution_count": 20,
   "expected_output": [[1], [-1], [-1], [-1]]

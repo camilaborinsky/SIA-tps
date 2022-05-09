@@ -1,0 +1,103 @@
+Timer unit: 1 s
+
+Total time: 0.419145 s
+File: /home/camila/Documents/SIA/SIA-20221Q/TP3/ex_2/main.py
+Function: main at line 11
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    11                                           def main():
+    12                                               # training, expected = parse_training_set_from_file("ex_2/resources/training")
+    13                                               # multilayer_perceptron = MultiLayerPerceptron(learning_rate=0.2, hidden_layers=[], input_dim=len(training[0]), output_dim=len(expected[0]),update_frequency=0, activation_function=(lambda x: 1/(1+np.exp(-2*x))), activation_function_derivative=(lambda x: 2*(1/(1+np.exp(-2*x)))*(1-(1/(1+np.exp(-2*x)))) ), update_learn_rate=None, scale_output=True,momentum=False)
+    14                                               # weights, error = multilayer_perceptron.train(training, expected, epoch_limit=5, callback=(lambda i, error, weights, output: write_error_vs_iteration("ex_2/resources/training", error, i) if i%10 == 0 else None))
+    15                                               # # linear_perceptron  = SimpleLinearPerceptron(expected, training,  learn_rate=0.1)
+    16                                               # # try:
+    17                                               # #     linear_perceptron.learn(iteration_limit=1000, callback=(lambda i, error, weights : write_error_vs_iteration("resources/ex_2/training", error, i) if i%10 == 0 else None))
+    18                                               # # except Exception as e:
+    19                                               # #     print(e)
+    20                                               # print(weights)
+    21                                               # print(error)
+    22                                               # error_vs_iteration("ex_2/resources/training", False)
+    23         1          0.0      0.0      0.0      config_file_path = "ex_2/resources/config.json"
+    24         1          0.0      0.0      0.0      config_file = fu.parse_config(config_file_path)
+    25                                           
+    26         1          0.0      0.0      0.0      path_to_data = config_file["path_to_data"]
+    27         1          0.0      0.0      0.0      epoch_limit = int(config_file["epoch_limit"])
+    28         1          0.0      0.0      0.0      execution_count = int(config_file["execution_count"])
+    29         1          0.0      0.0      0.0      momentum = bool(config_file["momentum"])
+    30         1          0.0      0.0      0.0      cross_validation_k = int(config_file["cross_validation"])
+    31         1          0.0      0.0      0.0      learn_rate = float(config_file["learn_rate"])
+    32         1          0.0      0.0      0.0      adaptive_learn_rate = bool(config_file["adaptive_learn_rate"])
+    33         1          0.0      0.0      0.0      if adaptive_learn_rate:
+    34                                                   update_learn_rate = (lambda lr, k: lr + 0.3 if k >= 3 else (lr - lr*0.1 if k <=-3 else 0)) 
+    35                                               else:
+    36         1          0.0      0.0      0.0          update_learn_rate = None
+    37         1          0.0      0.0      0.0      if config_file["activation_function"] == "linear":
+    38                                                   activation_function = (lambda x: x)
+    39                                                   activation_derivative = (lambda x: 1)
+    40         1          0.0      0.0      0.0      elif config_file["activation_function"] == "sigmoid":
+    41         1          0.0      0.0      0.0          activation_function = (lambda x: 1/(1+np.exp(-2*x)))
+    42         1          0.0      0.0      0.0          activation_derivative = (lambda x: 2*(1/(1+np.exp(-2*x)))*(1-(1/(1+np.exp(-2*x)))) )
+    43                                           
+    44         1          0.0      0.0      0.2      training, expected = fu.parse_training_set_from_file(path_to_data)
+    45         1          0.0      0.0      0.0      p = mlp.MultiLayerPerceptron(learning_rate=learn_rate, hidden_layers=[], input_dim=len(training[0]), output_dim=len(expected[0]), update_frequency=0, activation_function=activation_function, activation_function_derivative=activation_derivative, update_learn_rate=update_learn_rate, scale_output=True,momentum=momentum)
+    46         1          0.4      0.4     99.8      p.train(training, expected, epoch_limit, callback=None)
+
+Total time: 0.402088 s
+File: /home/camila/Documents/SIA/SIA-20221Q/TP3/perceptrons/multilayer_perceptron.py
+Function: train at line 80
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    80                                               def train(self, training_set, expected_output, epoch_limit, callback):
+    81         1          0.0      0.0      0.0          i = 0
+    82         1          0.0      0.0      0.0          e = 0
+    83         1          0.0      0.0      0.0          epoch_set = set()
+    84         1          0.0      0.0      0.0          error = 1
+    85         1          0.0      0.0      0.0          self.error_min = None
+    86                                           
+    87         1          0.0      0.0      0.0          self.weights = self.initialize_weights()
+    88         1          0.0      0.0      0.0          self.min_output = min(expected_output)
+    89         1          0.0      0.0      0.0          self.max_output = max(expected_output)
+    90         1          0.0      0.0      0.0          if self.scale_needed == True:
+    91         1          0.0      0.0      0.1              expected_output = self.normalize_output(expected_output)
+    92         1          0.0      0.0      0.0          self.weights_diff = None  
+    93                                           
+    94        21          0.0      0.0      0.0          while error > 0.0001 and e < epoch_limit:
+    95                                                   #while e < 8:
+    96        20          0.0      0.0      0.0              indexes = list(range(len(training_set)))
+    97        20          0.0      0.0      0.0              np.random.shuffle(indexes)
+    98      4020          0.0      0.0      0.5              for idx in indexes:
+    99      4000          0.1      0.0     19.3                  self.forward_propagation(training_set[idx])
+   100      4000          0.0      0.0      0.7                  if self.update_frequency == 0:
+   101      4000          0.2      0.0     52.0                      self.weights_diff = self.back_propagation(expected_output[idx])
+   102      4000          0.0      0.0      0.8                      if self.momentum:
+   103                                                                   self.momentum_variation()
+   104      4000          0.0      0.0     10.5                      self.weights = self.update_weights()      
+   105                                                           else:
+   106                                                               
+   107                                                               dict1 = self.back_propagation(expected_output[idx])
+   108                                                               dict2 = self.weights_diff
+   109                                                               if self.weights_diff is None:
+   110                                                                   self.weights_diff = self.back_propagation(expected_output[idx])
+   111                                                               else:
+   112                                                                   for key,values in dict1.items():
+   113                                                                       dict1[key] = values + dict2[key]
+   114                                                                   self.weights_diff = dict1
+   115                                                               if self.momentum:
+   116                                                                   self.momentum_variation()    
+   117                                                               #self.weights_diff = dict(Counter(self.back_propagation(expected_output[idx])) + Counter(self.weights_diff))
+   118                                                               if e % self.update_frequency == 1 and len(epoch_set) == 0:
+   119                                                                   self.weights = self.update_weights()
+   120                                                                   self.weights_diff = None
+   121      4000          0.0      0.0      0.8                  i+=1
+   122        20          0.1      0.0     15.2              error = self.calculate_error(training_set, expected_output)
+   123        20          0.0      0.0      0.0              if self.error_min is None or error < self.error_min:
+   124         7          0.0      0.0      0.0                  self.error_min = error
+   125         7          0.0      0.0      0.0                  self.weights_min = self.weights
+   126        20          0.0      0.0      0.0              if callback is not None:
+   127                                                           callback(e, error, self.weights, self.output)
+   128                                           
+   129        20          0.0      0.0      0.0              e+=1
+   130         1          0.0      0.0      0.0          return self.weights_min, self.error_min
+
