@@ -1,14 +1,14 @@
 {
   "cross_validation": 2,
   "momentum": false,
-  "learn_rate": 0.15,
-  "hidden_layers": [15, 15],
+  "learn_rate": 0.1,
+  "hidden_layers": [10, 10],
   "adaptive_learn_rate": false,
   "activation_function": "sigmoid",
   "path_to_data": "ex_2/resources/training",
   "epoch_limit": 100,
-  "execution_count": 1,
-  "subproblem": 2,
+  "execution_count": 20,
+  "subproblem": 3,
   "training_set": [
     [1, 1],
     [-1, -1],

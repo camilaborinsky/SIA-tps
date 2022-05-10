@@ -62,7 +62,8 @@ def generate_input_with_noise(file_path, ammount_of_inputs):
     #for every value in training_set change it to its opposite with probability 0.02 
     for i in range(len(training_set)):
         for j in range(len(training_set[i])):
-            if(np.random.rand() < 0.02):
+            a=np.random.rand()
+            if(a < 0.02):
                 training_set[i][j] = (training_set[i][j] + 1) % 2
 
     #write the new training set to a file, in case it is needed
@@ -98,10 +99,12 @@ def metrics_ej3(real, expected):
     
     # Real should be in the form [1,2,3]
     matrix: ConfusionMatrix = None
-    for i in range(1,dim+1):
+    metrics = dict()
+    for i in range(dim):
         
         matrix = ConfusionMatrix(real,expected,i)
         #print(str(matrix))
+        metrics[i] = [accuracy(matrix), precision(matrix), recall(matrix), f1_score(matrix), tp_rate(matrix), fp_rate(matrix)]
         total_accuracy += accuracy(matrix)
         total_precision += precision(matrix)
         total_recall += recall(matrix)
@@ -109,7 +112,8 @@ def metrics_ej3(real, expected):
         total_tp_rate += tp_rate(matrix)
         total_fp_rate += fp_rate(matrix)
     #avg_accuracy,avg_precision,avg_recall,avg_f1,avg_tp_rate,avg_fp_rate /= 10
-    return total_accuracy/dim,total_precision/dim,total_recall/dim,total_f1/dim,total_tp_rate/dim,total_fp_rate/dim
+    return metrics
+    # return total_accuracy/dim,total_precision/dim,total_recall/dim,total_f1/dim,total_tp_rate/dim,total_fp_rate/dim
 
 
 def main():
