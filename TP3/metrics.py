@@ -135,3 +135,6 @@ def mse(errors):
 # root mean square deviation
 def rmsd(errors):
     return pow(mse(errors),0.5)
+
+
+# test set of elements and calculate error

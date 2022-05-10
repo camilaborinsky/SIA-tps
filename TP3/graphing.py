@@ -82,10 +82,10 @@ def error_vs_iteration(file_path, exp):
         if exp:
             plt.yscale('log')
         # set axis labels
-        plt.xlabel("Iteration")
+        plt.xlabel("Epoch")
         plt.ylabel("Error")
         # set title
-        plt.title("Error vs iteration")
+        # plt.title("Error vs iteration")
         plt.show()
 
 
