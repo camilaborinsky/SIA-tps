@@ -11,7 +11,8 @@ from metrics import rmsd
 alpha = 0.8
 
 class MultiLayerPerceptron:
-    def __init__(self, learning_rate, hidden_layers, input_dim, output_dim, update_frequency, activation_function, activation_function_derivative, update_learn_rate, scale_output, momentum):
+    def __init__(self, learning_rate, hidden_layers, input_dim, output_dim, update_frequency, 
+    activation_function, activation_function_derivative, update_learn_rate, scale_output, momentum):
         self.learning_rate = learning_rate
         self.hidden_layers = hidden_layers
         self.input_dim = input_dim
@@ -47,6 +48,7 @@ class MultiLayerPerceptron:
                 self.hidden_outputs[i+1] = np.matmul(self.input, self.weights[i])
             else:
                 self.hidden_outputs[i+1] = np.insert(np.matmul(self.input, self.weights[i]), 0, 1)
+                self.input = self.activation(self.hidden_outputs[i+1][1:])
                 self.input = np.insert(self.input, 0, 1)
         self.output = self.activation(self.hidden_outputs[len(self.hidden_layers) +1])
         # self.output = list(map(lambda h: self.activation(h), self.hidden_outputs[len(self.hidden_layers)+1]))
@@ -177,6 +179,10 @@ class MultiLayerPerceptron:
         errors = []
         for i in range(len(test_set)):
             out = self.forward_propagation(test_set[i])
-            errors.append(np.abs(np.subtract(self.normalize_output(expected_output[i]), out)))
+            if self.scale_needed:
+                exp = self.normalize_output(expected_output[i])
+            else:
+                exp = expected_output[i]
+            errors.append(np.abs(np.subtract(exp, out)))
         return rmsd(errors)
         

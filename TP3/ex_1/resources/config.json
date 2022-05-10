@@ -8,6 +8,6 @@
   ],
   "random_initial_weights": true,
   "epoch_limit": 100,
-  "execution_count": 20,
+  "execution_count": 100,
   "expected_output": [[1], [-1], [-1], [-1]]
 }
