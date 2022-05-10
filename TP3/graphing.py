@@ -5,7 +5,7 @@ from numpy import multiply
 #function that reads i, error and w[] from resources/perceptron_data.txt and animates the different weights
 def w_evolution():
     training_set = [[-1, 1], [1, -1], [-1, -1], [1, 1]]
-    expected_output = [-1, -1, -1, 1]
+    expected_output = [1, 1, -1, -1]
     with open("resources/perceptron_data.txt", "r") as f:
         lines = f.readlines()
         i = []
@@ -15,10 +15,12 @@ def w_evolution():
             split = line.split("\t")
             i.append(int(split[0]))
             error.append(float(split[1]))
-            split[2] = split[2].replace("\n", "").replace("[", "").replace("]", "")
+            split[2] = split[2].replace("\n", "").replace("[", "").replace("]", "").replace("  ", " ")
             print("split[2] = " + split[2])
             aux = []
-            for item in split[2].split("  "):
+            print("line = " + str(line))
+            for item in split[2].replace(" ", ",").replace("  ",",").split(","):
+                print("item = " + str(item))
                 aux.append(float(item))
             w.append(aux)
         f.close()
@@ -89,5 +91,5 @@ def error_vs_iteration(file_path, exp):
         plt.show()
 
 
-#w_evolution()
-# iterations_vs_learning_rate()
+w_evolution()
+#iterations_vs_learning_rate()

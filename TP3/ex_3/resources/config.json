@@ -7,7 +7,7 @@
   "activation_function": "sigmoid",
   "path_to_data": "ex_2/resources/training",
   "epoch_limit": 100,
-  "execution_count": 20,
+  "execution_count": 1,
   "subproblem": 3,
   "training_set": [
     [1, 1],
