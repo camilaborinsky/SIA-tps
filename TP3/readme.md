@@ -26,5 +26,6 @@ En cuanto al archivo de configuración, tenemos una variable booleana que indica
 
 
 ## Ejercicio 3
+Para el ejercicio 3, la manera ideal de conseguir los resultados es mediante el cuaderno "results_3". Anteriormente se debe cambiar el config.json dentro de la carpeta de ex_3 para indicar si el subejercicio a correr es el 2 o el 3 y cualquier otro parámetro. 
 
 
