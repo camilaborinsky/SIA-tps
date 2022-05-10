@@ -6,9 +6,9 @@ from perceptrons.simple_step_perceptron import SimpleStepPerceptron
 from perceptrons.simple_linear_perceptron import SimpleLinearPerceptron
 from perceptrons.non_linear_perceptron import NonLinearPerceptron
 
-def main():
+""" def main():
     training_set = [[-1, 1], [1, -1], [-1, -1], [1, 1]]
-    expected_output = [[-1], [-1], [-1], [1]]
+    expected_output = [[1], [1], [-1], [-1]]
     p = SimpleStepPerceptron(expected_output, training_set, 0.1)
     #p = SimpleLinearPerceptron(expected_output, training_set, 0.1)
     #p = NonLinearPerceptron(expected_output, training_set, 0.1)
@@ -19,9 +19,20 @@ def main():
     with open("resources/perceptron_data.txt", "w") as f:
         f.write("")
         f.close()
-    w_min, i = p.learn(20, lambda i, error, weights: open("resources/perceptron_data.txt", "a").write("{}\t{}\t{}\n".format(i, error, weights)))
-    plot_decision_boundary(training_set, w_min, expected_output)
+    w_min, error, i = p.learn(20, lambda i, error, weights: open("resources/perceptron_data.txt", "a").write("{}\t{}\t{}\n".format(i, error, weights)))
+    plot_decision_boundary(training_set, w_min, expected_output) """
 
+def main():
+    config_file_path = "ex_1/resources/config.json"
+    results_file_path = "ex_1/resources/perceptron_data.txt"
+    learning_rates_results = "ex_1/resources/learning_rates.txt"
+    open(results_file_path, "w").close()
+
+    training_set, expected_output, learn_rate, epoch_limit, execution_count, random_weights = main.parse_config(config_file_path)
+    p = SimpleStepPerceptron(expected_output, training_set, learn_rate)
+    w_min, error_min, i = p.learn(epoch_limit*len(training_set), lambda i, error, weights: open(results_file_path, "a").write("{}\t{}\t{}\n".format(i, error, weights)), random_weights=random_weights)
+    main.plot_decision_boundary(training_set, w_min, expected_output)
+    
 
 
 def main_iteration_vs_learning_rate():
@@ -36,14 +47,10 @@ def main_iteration_vs_learning_rate():
         print("W min"+ str(w_min) + " iteration: "+ str(i))
 
         iterations.append(i)
-    #TODO: a chequear esto, no estoy super segura que lo de desviacion estandar sea asi y con el avg... 
     error = np.std(iterations)
     #where iterations is centered
     avg_iterations = np.mean(iterations)
     open("resources/learning_rates.txt", "a").write("{},{},{}\n".format(learn_rate, avg_iterations, error))
-
-    #plot_decision_boundary(training_set, w_min, expected_output)
-
 
 
 def plot_decision_boundary(X, w, ex):
@@ -120,3 +127,4 @@ def iteration_vs_error(file_path):
             iterations.append(int(i))
             errors.append(float(e))
         return iterations, errors
+
