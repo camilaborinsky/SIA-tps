@@ -6,20 +6,26 @@ import numpy as np
 
 
 class KohonenNetwork:
-    def __init__(self, input_dimension, output_dimension, initial_learning_rate):
+    def __init__(self, input_dimension, output_dimension, initial_learning_rate, initial_radius, update_radius, update_learn_rate, random_weights):
         self.input_dimension = input_dimension
         self.output_dimension = output_dimension
-        self.initial_radius = output_dimension/2
+        self.initial_radius = initial_radius
         self.initial_learning_rate = initial_learning_rate
         self.learning_rate = initial_learning_rate
-        self.radius = self.initial_radius
+        self.radius = initial_radius
+        self.update_learn_rate_function = update_learn_rate
+        self.update_radius_function = update_radius
+        self.random_weights = random_weights
     
     def initialize_grid(self, training_set):
         self.weights = [[None for l in range(self.output_dimension)] for k in range(self.output_dimension)]
         for row in range(self.output_dimension):
             for col in range(self.output_dimension):
-                idx = np.random.randint(0, len(training_set))
-                self.weights[row][col] = training_set[idx].copy()
+                if self.random_weights:
+                    self.weights[row][col] = np.random.rand(self.input_dimension)
+                else:
+                    idx = np.random.randint(0, len(training_set))
+                    self.weights[row][col] = training_set[idx].copy()
 
     
     def get_activated_neuron(self, _input):
@@ -63,7 +69,8 @@ class KohonenNetwork:
                 self.update_weights(i, j, _input[1])               
                 self.update_learn_rate(e, k)
                 k+=1
-            callback(e, self.get_quantization_error(training_set))
+            if callback is not None:
+                callback(e, self.get_quantization_error(training_set))
             e+=1
             self.update_radius(e, k)
 
