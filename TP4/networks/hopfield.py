@@ -39,9 +39,7 @@ class Hopfield:
             previous_state = current_state.copy()
             energy_values.append(self.calculate_energy(current_state))
             h = np.matmul(current_state, self.weights)
-            print(h)
             current_state = np.sign(h)
-            print(current_state)
             for j,s in enumerate(current_state):
                 current_state[j] = s if s != 0 else previous_state[j]
             

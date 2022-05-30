@@ -50,6 +50,7 @@ def main():
     #función de actualización de radio
     update_radius = update_radius_exp
     q_errors = [None]*execution_count
+    u_matrix_avg = [None]*execution_count
     for output_dimension in output_dim_values:
         # radio inicial
         initial_radius = np.ceil(output_dimension*output_dimension/2)
@@ -60,6 +61,7 @@ def main():
             kohonen.train(std, countries, epoch_limit, callback=None)
             q_error = kohonen.get_quantization_error(std)
             q_errors[j].append(q_error)
+            u_matrix_avg[j] = np.mean(kohonen.u_matrix())
             print(f"output_dimension: {output_dimension}, execution: {j}, q_error: {q_error}")
     
     plt.plot(output_dim_values, np.mean(q_errors, axis=0))
