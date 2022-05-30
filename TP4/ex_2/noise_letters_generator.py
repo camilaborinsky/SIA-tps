@@ -1,6 +1,6 @@
 import random
-from TP4.ex_2.visualize_letters import parser_letters
-from TP4.ex_2.visualize_letters import letters_with_asterisks
+from ex_2.visualize_letters import parser_letters
+from ex_2.visualize_letters import letters_with_asterisks
 
 def generate_letters_with_noise(all_letters_matrix, noise_percentage, path_to_noise_file):
     new_letters = []

@@ -4,16 +4,19 @@ import numpy as np
 class Hopfield:
 
     def __init__(self, stored_inputs):
-        self.stored_inputs = stored_inputs
+        self.stored_inputs = np.array(stored_inputs)
         self.input_dim = len(stored_inputs[0])
     
     def initialize_weights(self):
-        self.weights = np.zeros((self.input_dim, self.input_dim))
-        for i in range(len(self.input_dim)):
-            for j in range(i+1, len(self.input_dim)):
-                w = self.calculate_weight(i, j)
-                self.weights[i][j] = w
-                self.weights[j][i] = w
+        weights = np.dot(self.stored_inputs.T, self.stored_inputs)
+        np.fill_diagonal(weights, 0)
+        return weights/self.input_dim
+        # self.weights = np.zeros((self.input_dim, self.input_dim))
+        # for i in range(len(self.input_dim)):
+        #     for j in range(i+1, len(self.input_dim)):
+        #         w = self.calculate_weight(i, j)
+        #         self.weights[i][j] = w
+        #         self.weights[j][i] = w
     
     def calculate_weight(self, i, j):
         weight = 0
@@ -26,15 +29,29 @@ class Hopfield:
 
 
     def train(self, input_value, iterations):
-        self.initialize_weights()
+        self.weights = self.initialize_weights()
         i=0
+
+        energy_values = []
         current_state = input_value.copy()
-        while i < iterations:
+        while i < iterations and not np.array_equal(current_state, previous_state):
+            previous_state = current_state.copy()
+            energy_values.append(self.calculate_energy(current_state))
             h = np.matmul(current_state, self.weights)
             current_state = np.sign(h)
+            for j,s in current_state:
+                current_state[j] = s if s != 0 else previous_state[j]
+            
             i+=1
         
         for val in self.stored_inputs:
             if np.array_equal(val, current_state):
                 return current_state, val
         return current_state, None
+
+    def calculate_energy(self, state):
+        energy = 0
+        for i in range(self.input_dim):
+            for j in range(i, self.input_dim):
+                energy += self.weights[i][j]*state[i]*state[j]
+        return -energy

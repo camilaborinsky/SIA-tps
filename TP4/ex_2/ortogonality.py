@@ -1,4 +1,4 @@
-from TP4.ex_2.letters import alphabet
+from ex_2.letters import alphabet
 import itertools
 import numpy as np
 import sys
