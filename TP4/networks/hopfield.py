@@ -33,13 +33,16 @@ class Hopfield:
         i=0
 
         energy_values = []
+        previous_state = np.zeros(self.input_dim)
         current_state = input_value.copy()
         while i < iterations and not np.array_equal(current_state, previous_state):
             previous_state = current_state.copy()
             energy_values.append(self.calculate_energy(current_state))
             h = np.matmul(current_state, self.weights)
+            print(h)
             current_state = np.sign(h)
-            for j,s in current_state:
+            print(current_state)
+            for j,s in enumerate(current_state):
                 current_state[j] = s if s != 0 else previous_state[j]
             
             i+=1
