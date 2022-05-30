@@ -193,7 +193,6 @@ def get_noise_patterns(patterns, noise_prob):
 def print_with_asterisks(letters):
     for letter in letters: 
         pattern = get_patterns([letter])[0]
-        print(pattern)
         count = 1
         for item in pattern: 
             if item == 1:
@@ -204,4 +203,18 @@ def print_with_asterisks(letters):
                 print("") #Muevo a una nueva linea pero sin un enter de mas
             count += 1
         print("\n")
+
+def print_patterns_with_asterisks(patterns):
+    for pattern in patterns:
+        count = 1
+        for item in pattern: 
+            if item == 1:
+                print(' * ', end='')
+            else:
+                print('   ', end='')
+            if count % 5 == 0:
+                print("") #Muevo a una nueva linea pero sin un enter de mas
+            count += 1
+        print("\n")
+
 
