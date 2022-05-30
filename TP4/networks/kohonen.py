@@ -67,20 +67,13 @@ class KohonenNetwork:
                 self.learning_rate_values.append(self.learning_rate)
                 i, j, d = self.get_activated_neuron(_input[1])
                 self.update_weights(i, j, _input[1])               
-                self.update_learn_rate(e, k)
+                self.learning_rate = self.update_learn_rate_function(self.initial_learning_rate, k, epochs)
+                self.radius = self.update_radius_function(self.initial_radius, k, epochs)
                 k+=1
             if callback is not None:
                 callback(e, self.get_quantization_error(training_set))
             e+=1
-            self.update_radius(e, k)
-
-    def update_learn_rate(self, e, k):
-        self.learning_rate = self.initial_learning_rate*np.exp(-2*k/((self.epochs)*self.p))
-        # self.learning_rate = self.initial_learning_rate * (1- (k) / ((self.epochs)*self.p))
-    
-    def update_radius(self, e, k):
-        self.radius = self.initial_radius*np.exp(-5*k/((self.epochs)*self.p)) + 1
-        # self.radius = self.initial_radius/2 * (2- (k+1) / ((self.epochs)*self.p))
+            
 
 
     def u_matrix(self):

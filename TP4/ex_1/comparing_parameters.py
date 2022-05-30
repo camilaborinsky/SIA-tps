@@ -64,7 +64,7 @@ def main():
     
     plt.plot(output_dim_values, np.mean(q_errors, axis=0))
     
-main()
+# main()
 
             
 
