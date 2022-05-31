@@ -31,7 +31,7 @@ class Hopfield:
     def train(self, input_value, iterations):
         self.weights = self.initialize_weights()
         i=0
-
+        vector_of_states = []
         energy_values = []
         previous_state = np.zeros(self.input_dim)
         current_state = input_value.copy()
@@ -42,13 +42,13 @@ class Hopfield:
             current_state = np.sign(h)
             for j,s in enumerate(current_state):
                 current_state[j] = s if s != 0 else previous_state[j]
-            
+            vector_of_states.append(current_state)
             i+=1
         
         for val in self.stored_inputs:
             if np.array_equal(val, current_state):
-                return current_state, val
-        return current_state, None
+                return current_state, val, i, vector_of_states, energy_values
+        return current_state, None, i, vector_of_states, energy_values
 
     def calculate_energy(self, state):
         energy = 0
