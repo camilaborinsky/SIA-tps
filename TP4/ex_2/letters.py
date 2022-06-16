@@ -181,13 +181,14 @@ def get_patterns(letters):
 def get_noise_patterns(patterns, noise_prob):
     noise_patterns = []
     for pattern in patterns:
-        noise_patterns.append([])
+        aux = []
         for value in pattern:
             p = random.random()
             if(p >= noise_prob):
-                noise_patterns[-1].append(value)
+                aux.append(value)
             else:
-                noise_patterns[-1].append(math.copysign(1,value) * -1)
+                aux.append(math.copysign(1,value) * -1)
+        noise_patterns.append(aux)
     return noise_patterns
 
 def print_with_asterisks(letters):
