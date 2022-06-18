@@ -99,6 +99,7 @@ class MultiLayerPerceptron:
     def update_weights(self):
         for i in range(len(self.weights)-1, -1, -1):
             self.weights[i] += self.learning_rate * self.weights_diff[i]
+            self.old_delta_w[i] = self.learning_rate * self.weights_diff[i]
         return self.weights
 
     def train(self, training_set, expected_output, epoch_limit, callback):
@@ -194,7 +195,7 @@ class MultiLayerPerceptron:
         if len(self.old_delta_w) > 0:
             for i in range(len(self.weights)-1, -1, -1):
                 self.weights_diff[i] += (alpha/self.learning_rate) * self.old_delta_w[i]
-        self.old_delta_w = self.weights_diff
+        
 
     # def test_network(self, test_set, expected_output):
     #     errors = []
