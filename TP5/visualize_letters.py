@@ -39,7 +39,7 @@ def letters_with_asterisks(all_letters_matrix):
 
 
 def print_letter(letter_as_binary_matrix):
-    plt.figure(figsize=(7,7))
+    plt.figure(figsize=(1,1))
     plt.imshow(letter_as_binary_matrix, cmap='Greys')
     plt.show()
 

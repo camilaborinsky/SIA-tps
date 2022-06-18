@@ -1,12 +1,14 @@
 #multi layer perceptron class
+from cmath import sqrt
 from collections import Counter
+import math
 import random
 import time
 from matplotlib.pyplot import axis
 
 import numpy as np
 
-from metrics import rmsd
+# from metrics import rmsd
 
 alpha = 0.8
 
@@ -55,6 +57,24 @@ class MultiLayerPerceptron:
         # if self.scale_needed ==True:
         #     return self.scale_output()
         return self.output
+
+    def propagate(self, input_val,start, end):
+        hidden_outputs = {}
+        input_val = np.insert(input_val, 0, 1)
+        hidden_outputs[0] = input_val
+        output = []
+        for i in range(start, end + 1):
+            if(i == end):
+                hidden_outputs[i+1] = np.matmul(input_val, self.weights[i])
+            else:
+                hidden_outputs[i+1] = np.insert(np.matmul(input_val, self.weights[i]), 0, 1)
+                input_val = self.activation(self.hidden_outputs[i+1][1:])
+                input_val = np.insert(input_val, 0, 1)
+        output = self.activation(hidden_outputs[end+1])
+        # self.output = list(map(lambda h: self.activation(h), self.hidden_outputs[len(self.hidden_layers)+1]))
+        # if self.scale_needed ==True:
+        #     return self.scale_output()
+        return output
     
     #back propagate delta to adjust weights and return weights diff
     def back_propagation(self, expected):
@@ -89,8 +109,8 @@ class MultiLayerPerceptron:
         self.error_min = None
 
         self.weights = self.initialize_weights()
-        self.min_output = min(expected_output)
-        self.max_output = max(expected_output)
+        # self.min_output = min(expected_output)
+        # self.max_output = max(expected_output)
         self.weights_diff = None  
 
         while error > 0.000001 and e < epoch_limit:
@@ -132,15 +152,16 @@ class MultiLayerPerceptron:
         return self.weights_min, self.error_min
 
     def calculate_error(self, training_set, expected_output):
-        error = 0
         for i in range(len(expected_output)):
             output = self.forward_propagation(training_set[i])
             if self.scale_needed:
                 expected = self.normalize_output(expected_output[i])
             else:
                 expected = expected_output[i]
+            error = 0
             for j in range(self.output_dim):
                 error += (expected[j] - output[j])**2
+            
         return error/len(training_set)
 
     def get_learning_rate(self, error, prev_error):
@@ -175,14 +196,14 @@ class MultiLayerPerceptron:
                 self.weights_diff[i] += (alpha/self.learning_rate) * self.old_delta_w[i]
         self.old_delta_w = self.weights_diff
 
-    def test_network(self, test_set, expected_output):
-        errors = []
-        for i in range(len(test_set)):
-            out = self.forward_propagation(test_set[i])
-            if self.scale_needed:
-                exp = self.normalize_output(expected_output[i])
-            else:
-                exp = expected_output[i]
-            errors.append(np.abs(np.subtract(exp, out)))
-        return rmsd(errors)
+    # def test_network(self, test_set, expected_output):
+    #     errors = []
+    #     for i in range(len(test_set)):
+    #         out = self.forward_propagation(test_set[i])
+    #         if self.scale_needed:
+    #             exp = self.normalize_output(expected_output[i])
+    #         else:
+    #             exp = expected_output[i]
+    #         errors.append(np.abs(np.subtract(exp, out)))
+    #     return rmsd(errors)
         

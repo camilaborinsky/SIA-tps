@@ -11,7 +11,7 @@ def data_converter(file_path):
             values = []
             values = current_line.split(',')
             binaries = []
-            print(str(values))
+            # print(str(values))
             for h in values:
                 bins = bin(int(h, 16))[2:].zfill(5)
                 binaries.append([int(b) for b in bins])
@@ -19,9 +19,6 @@ def data_converter(file_path):
             characters.append(binaries)
     f.close()
 
-    for letter in characters:
-        print(str(letter))
-        # print_letter(letter)
-
-    print_letter(characters[4])
-data_converter("resources")
+    return characters
+    # print_letter(characters[4])
+# data_converter("resources")
