@@ -68,7 +68,7 @@ class MultiLayerPerceptron:
                 hidden_outputs[i+1] = np.matmul(input_val, self.weights[i])
             else:
                 hidden_outputs[i+1] = np.insert(np.matmul(input_val, self.weights[i]), 0, 1)
-                input_val = self.activation(self.hidden_outputs[i+1][1:])
+                input_val = self.activation(hidden_outputs[i+1][1:])
                 input_val = np.insert(input_val, 0, 1)
         output = self.activation(hidden_outputs[end+1])
         # self.output = list(map(lambda h: self.activation(h), self.hidden_outputs[len(self.hidden_layers)+1]))
