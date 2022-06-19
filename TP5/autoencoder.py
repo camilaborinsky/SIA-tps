@@ -13,7 +13,10 @@ class Autoencoder:
     activation_function, 
     activation_function_derivative, 
     update_learn_rate,
-    learning_rate):
+    learning_rate,
+    update_frequency,
+    momentum,
+    use_adam):
         self.learning_rate = learning_rate
         decoder_layers = hidden_layers.copy()
         decoder_layers.reverse()
@@ -24,15 +27,17 @@ class Autoencoder:
         self.activation = activation_function
         self.activation_derivative = activation_function_derivative
         self.update_learn_rate = update_learn_rate
+        self.update_frequency = update_frequency
+        self.momentum = momentum
+        self.use_adam = use_adam
         self.init_multilayer()
-        # self.update_frequency = update_frequency
-        # self.momentum = momentum
+
     
     def init_multilayer(self):
         self.multilayer_perceptron = MultiLayerPerceptron(self.learning_rate, self.hidden_layers, 
-        self.input_dim, self.output_dim, update_frequency=0, activation_function=self.activation, 
+        self.input_dim, self.output_dim, update_frequency=self.update_frequency, activation_function=self.activation, 
         activation_function_derivative=self.activation_derivative, update_learn_rate=self.update_learn_rate, 
-        scale_output=False, momentum=False)
+        scale_output=False, momentum=self.momentum, use_adam=self.use_adam)
 
     
     def train(self, training_set, expected_output, epoch_limit, callback):

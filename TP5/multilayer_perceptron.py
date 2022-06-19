@@ -5,16 +5,21 @@ import math
 import random
 import time
 from matplotlib.pyplot import axis
+import numpy as np
 
 import numpy as np
 
 # from metrics import rmsd
 
 alpha = 0.8
+beta_1 = 0.9
+beta_2 =0.999
+epsilon = 1e-8
+adam_alpha = 0.001
 
 class MultiLayerPerceptron:
     def __init__(self, learning_rate, hidden_layers, input_dim, output_dim, update_frequency, 
-    activation_function, activation_function_derivative, update_learn_rate, scale_output, momentum):
+    activation_function, activation_function_derivative, update_learn_rate, scale_output, momentum, use_adam):
         self.learning_rate = learning_rate
         self.hidden_layers = hidden_layers
         self.input_dim = input_dim
@@ -26,7 +31,10 @@ class MultiLayerPerceptron:
         self.error_k = 0
         self.update_frequency = update_frequency
         self.momentum = momentum
+        self.use_adam = use_adam
         self.old_delta_w = {}
+        self.m={}
+        self.v={}
         
 
     def initialize_weights(self):
@@ -34,6 +42,9 @@ class MultiLayerPerceptron:
         self.layers = [self.input_dim] + self.hidden_layers + [self.output_dim]
         for i in range(len(self.layers)-1):
             self.weights[i] = np.random.uniform(-1, 1, size=(self.layers[i]+1, self.layers[i+1]))
+            if self.use_adam:
+                self.m[i] = np.zeros((self.layers[i]+1, self.layers[i+1]))
+                self.v[i] = np.zeros((self.layers[i]+1, self.layers[i+1]))
         return self.weights
 
     #propagate input through network and get output
@@ -93,6 +104,40 @@ class MultiLayerPerceptron:
             
 
         return weights_diff
+
+    def square_items_in_matrix(matrix):
+        for(i,j) in matrix:
+            matrix[i][j] = matrix[i][j]**2
+        return matrix
+
+    def adam(self, expected, t):
+        self.errors = {}
+        weights_diff = {}
+        for i in range(len(self.weights)-1, -1, -1):
+            if i == len(self.weights)-1:
+                self.errors[i] = np.multiply(np.subtract(expected, self.output), self.activation_derivative(self.hidden_outputs[i+1]))
+            else:
+                self.errors[i] = np.matmul( self.weights[i+1], np.transpose(self.errors[i+1])) * self.activation_derivative(self.hidden_outputs[i+1])
+                self.errors[i] = self.errors[i][1:]
+
+            g = np.matmul(np.transpose(np.matrix(self.hidden_outputs[i])), np.matrix(self.errors[i]))  
+        
+            m_t = beta_1*self.m[i] + (1-beta_1)*g
+            v_t = beta_2*self.v[i] + (1-beta_2)*np.square(g)
+            if t!= 0:
+                m_t_hat = m_t/(1-beta_1**t)
+                v_t_hat = v_t/(1-beta_2**t)
+            else:
+                m_t_hat = m_t
+                v_t_hat = v_t
+
+            self.m[i] = m_t
+            self.v[i] = v_t
+            #wt - w(t-1)
+            weights_diff[i] = -(alpha/self.learning_rate)*adam_alpha/(np.sqrt(v_t_hat)+epsilon)
+        return weights_diff
+
+   
     
 
     #update weights with saved weights diff and return new weights
@@ -121,13 +166,19 @@ class MultiLayerPerceptron:
             for idx in indexes:
                 self.forward_propagation(training_set[idx])
                 if self.update_frequency == 0:
-                    self.weights_diff = self.back_propagation(expected_output[idx])
+                    if not self.use_adam:
+                        self.weights_diff = self.back_propagation(expected_output[idx])
+                    else:
+                        self.weights_diff = self.adam(expected_output[idx], i)
                     if self.momentum:
                         self.momentum_variation()
-                    self.weights = self.update_weights()      
+                    self.weights = self.update_weights()     #cambiar a self learning rate = get_learning_rate(). guardarme valores previos para graficar a futuro
                 else:
                     
-                    dict1 = self.back_propagation(expected_output[idx])
+                    if not self.use_adam:
+                        dict1 = self.back_propagation(expected_output[idx])
+                    else:
+                        dict1 = self.adam(expected_output[idx], i)
                     dict2 = self.weights_diff
                     if self.weights_diff is None:
                         self.weights_diff = self.back_propagation(expected_output[idx])
@@ -173,12 +224,12 @@ class MultiLayerPerceptron:
             if self.error_k < 0:
                 self.error_k = 0
             self.error_k+=1
-        elif error < prev_error:
-            if self.error_k > 0:
+        elif error < prev_error: # el error actual es menor
+            if self.error_k > 0: #pero previamente el error venia aumentando
                 self.error_k = 0
             self.error_k-=1   
              
-        return self.update_learn_rate(self.learning_rate, self.error_k)
+        return self.update_learn_rate(self.learning_rate, self.error_k) #tengo que poder no pasarle esta funcion y que funcione igual dejando el eta cte. 
     
     def scale_output(self):
         new_output = list(map(lambda h: h *(self.max_output[0] - self.min_output[0])+ self.min_output[0], self.output) )
