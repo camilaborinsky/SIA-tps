@@ -186,10 +186,11 @@ class MultiLayerPerceptron:
                         for key,values in dict1.items():
                             dict1[key] = values + dict2[key]
                         self.weights_diff = dict1
-                    if self.momentum:
-                        self.momentum_variation()    
+                        
                     #self.weights_diff = dict(Counter(self.back_propagation(expected_output[idx])) + Counter(self.weights_diff))
                     if e % self.update_frequency == 1 and len(epoch_set) == 0:
+                        if self.momentum:
+                            self.momentum_variation()
                         self.weights = self.update_weights()
                         self.weights_diff = None
                 i+=1
