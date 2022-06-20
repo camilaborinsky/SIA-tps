@@ -14,14 +14,13 @@ class Autoencoder:
     activation_function_derivative, 
     update_learn_rate,
     learning_rate,
-    update_frequency,
-    momentum,
-    use_adam):
+    update_frequency=0,
+    momentum=False,
+    use_adam=False):
         self.learning_rate = learning_rate
         decoder_layers = hidden_layers.copy()
         decoder_layers.reverse()
         self.hidden_layers = hidden_layers+[latent_dim] + decoder_layers
-        print(len(self.hidden_layers))
         self.input_dim = input_dim
         self.output_dim = input_dim
         self.activation = activation_function
@@ -57,6 +56,17 @@ class Autoencoder:
         return self.multilayer_perceptron.propagate(input_val, int(ceil(len(self.hidden_layers)/2)), int(len(self.hidden_layers)))
 
 
+    def get_latent_space(self, testing_set):
+        x_values = []
+        y_values = []
+        labels = []
+        for i in testing_set:
+            labels.append(i[0])
+            aux = self.encode(i[1])
+            x_values.append(aux[0])
+            y_values.append(aux[1])
+        return labels, x_values, y_values
+
     def graph_latent_space(self, training_set):
         plt.figure(figsize=(6,6))
         for i in training_set:
@@ -65,3 +75,9 @@ class Autoencoder:
             plt.scatter(aux[0], aux[1], cmap='viridis')
         plt.show()
             
+    def test_autoencoder(self, testing_set):
+        avg_err = 0
+        for val1, val2 in testing_set:
+            out, err = self.reconstruct(val2)
+            avg_err += err
+        return avg_err/len(testing_set)

@@ -1,0 +1,16 @@
+{
+  "font_numbers": [1, 2, 3],
+  "training_sample": 1,
+  "architectures": [
+    [],
+    [17],
+    [17, 8],
+    [17, 8, 4],
+    [25, 17, 8],
+    [25, 17, 8, 4],
+    [25, 17]
+  ],
+  "momentum": true,
+  "epoch_limit": 5,
+  "learning_rate": 0.001
+}
