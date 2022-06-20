@@ -17,7 +17,13 @@ beta_2 =0.999
 epsilon = 1e-8
 adam_alpha = 0.001
 
+
+
+
 class MultiLayerPerceptron:
+
+
+
     def __init__(self, learning_rate, hidden_layers, input_dim, output_dim, update_frequency, 
     activation_function, activation_function_derivative, update_learn_rate, scale_output, momentum, use_adam):
         self.learning_rate = learning_rate
@@ -36,6 +42,21 @@ class MultiLayerPerceptron:
         self.m={}
         self.v={}
         
+
+    def get_learning_rate(self, error, prev_error):
+        if(self.update_learn_rate is None):
+            return self.learning_rate
+
+        if error > prev_error:   #delta > 0 --> error_k ++ --> error_k > 3 para hacer cambios
+            if self.error_k < 0:
+                self.error_k = 0
+            self.error_k+=1
+        elif error < prev_error: # el error actual es menor, delta < 0 --> error_k -- --> error_k < -3
+            if self.error_k > 0: #pero previamente el error venia aumentando
+                self.error_k = 0
+            self.error_k-=1     
+        return self.update_learn_rate(self.learning_rate, self.error_k) #tengo que poder no pasarle esta funcion y que funcione igual dejando el eta cte. 
+
 
     def initialize_weights(self):
         self.weights = {}
@@ -147,6 +168,9 @@ class MultiLayerPerceptron:
             self.old_delta_w[i] = self.learning_rate * self.weights_diff[i]
         return self.weights
 
+
+
+
     def train(self, training_set, expected_output, epoch_limit, callback):
         i = 0
         e = 0
@@ -158,6 +182,7 @@ class MultiLayerPerceptron:
         # self.min_output = min(expected_output)
         # self.max_output = max(expected_output)
         self.weights_diff = None  
+        previous_error = error
 
         while error > 0.000001 and e < epoch_limit:
         #while e < 8:
@@ -172,7 +197,9 @@ class MultiLayerPerceptron:
                         self.weights_diff = self.adam(expected_output[idx], i)
                     if self.momentum:
                         self.momentum_variation()
-                    self.weights = self.update_weights()     #cambiar a self learning rate = get_learning_rate(). guardarme valores previos para graficar a futuro
+                    self.weights = self.update_weights() 
+                    #adding reasignation of learning rate for adaptive eta
+                    self.learning_rate = self.get_learning_rate(error, previous_error)    #cambiar a self learning rate = get_learning_rate(). guardarme valores previos para graficar a futuro
                 else:
                     
                     if not self.use_adam:
@@ -191,8 +218,11 @@ class MultiLayerPerceptron:
                     #self.weights_diff = dict(Counter(self.back_propagation(expected_output[idx])) + Counter(self.weights_diff))
                     if e % self.update_frequency == 1 and len(epoch_set) == 0:
                         self.weights = self.update_weights()
+                        #adding reasignation of learning rate for adaptive eta
+                        self.learning_rate = self.get_learning_rate(error, previous_error)
                         self.weights_diff = None
                 i+=1
+            previous_error = error
             error = self.calculate_error(training_set, expected_output)
             if self.error_min is None or error < self.error_min:
                 self.error_min = error
@@ -216,20 +246,9 @@ class MultiLayerPerceptron:
             
         return error/len(training_set)
 
-    def get_learning_rate(self, error, prev_error):
-        if(self.update_learn_rate is None):
-            return self.learning_rate
+    
+    
 
-        if error > prev_error:    
-            if self.error_k < 0:
-                self.error_k = 0
-            self.error_k+=1
-        elif error < prev_error: # el error actual es menor
-            if self.error_k > 0: #pero previamente el error venia aumentando
-                self.error_k = 0
-            self.error_k-=1   
-             
-        return self.update_learn_rate(self.learning_rate, self.error_k) #tengo que poder no pasarle esta funcion y que funcione igual dejando el eta cte. 
     
     def scale_output(self):
         new_output = list(map(lambda h: h *(self.max_output[0] - self.min_output[0])+ self.min_output[0], self.output) )
