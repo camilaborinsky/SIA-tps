@@ -11,6 +11,7 @@
     [25, 17, 8, 4]
   ],
   "momentum": false,
+  "update_learn_rate": false,
   "epoch_limit": 150,
   "learning_rate": 0.005,
   "optimizer": "powell",

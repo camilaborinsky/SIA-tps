@@ -25,7 +25,10 @@ class Autoencoder:
         self.output_dim = input_dim
         self.activation = activation_function
         self.activation_derivative = activation_function_derivative
-        self.update_learn_rate = update_learn_rate
+        if update_learn_rate:
+            self.update_learn_rate = adaptive_eta
+        else:
+            self.update_learn_rate = no_adaptive_eta
         self.update_frequency = update_frequency
         self.momentum = momentum
         self.use_adam = use_adam
@@ -81,3 +84,24 @@ class Autoencoder:
             out, err = self.reconstruct(val2)
             avg_err += err
         return avg_err/len(testing_set)
+
+
+def adaptive_eta(eta, error_k):
+    consistent = 3 # La cantidad de epocas a partir de las cuales considero que el error crece o decrese _consistentemente_ 
+    a = 0.01 # Constante de ajuste si el error crece
+    b = 0.03 #Ajuste si el error decrece 
+    if error_k > consistent and error_k % consistent == 0: 
+        #print("Error was increasing, adapt eta. Error_k: ", error_k) 
+      return eta - b*eta 
+        
+        
+        
+    elif error_k < -consistent and error_k % consistent == 0:
+        #print("Error was decreasing, adapt eta, Error_k: ", error_k) 
+        return eta + a
+
+    else:
+        return eta
+
+def no_adaptive_eta(eta, error_k):
+    return eta

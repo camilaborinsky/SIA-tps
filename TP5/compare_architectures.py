@@ -30,7 +30,7 @@ def compare_architectures():
     input_dimension = len(training_set[0])
     activation_function = (lambda x: 1/(1+np.exp(-2*x)))
     activation_derivative = (lambda x: 2*(1/(1+np.exp(-2*x)))*(1-(1/(1+np.exp(-2*x)))) )
-    update_learn_rate=None
+    update_learn_rate=bool(config_json["update_learn_rate"])
 
 
     for arch in config_json["architectures"]:
