@@ -5,12 +5,14 @@
     [],
     [17],
     [17, 8],
+    [25, 17],
     [17, 8, 4],
     [25, 17, 8],
-    [25, 17, 8, 4],
-    [25, 17]
+    [25, 17, 8, 4]
   ],
-  "momentum": true,
-  "epoch_limit": 5,
-  "learning_rate": 0.001
+  "momentum": false,
+  "epoch_limit": 150,
+  "learning_rate": 0.005,
+  "optimizer": "powell",
+  "architecture": [25, 17]
 }

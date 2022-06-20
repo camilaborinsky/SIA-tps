@@ -204,15 +204,17 @@ class MultiLayerPerceptron:
         return self.weights_min, self.error_min
 
     def calculate_error(self, training_set, expected_output):
+        error = 0
         for i in range(len(expected_output)):
             output = self.forward_propagation(training_set[i])
             if self.scale_needed:
                 expected = self.normalize_output(expected_output[i])
             else:
                 expected = expected_output[i]
-            error = 0
-            for j in range(self.output_dim):
-                error += (expected[j] - output[j])**2
+            
+            error += np.linalg.norm(np.subtract(output, expected))**2
+            # for j in range(self.output_dim):
+            #     error += (expected[j] - output[j])**2
             
         return error/len(training_set)
 

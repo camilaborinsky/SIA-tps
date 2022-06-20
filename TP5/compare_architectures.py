@@ -4,8 +4,9 @@ from matplotlib import pyplot as plt
 from autoencoder import Autoencoder
 import numpy as np
 
-
+base_output_path = "output/architectures/3/"
 def compare_architectures():
+    
     #Parse config file
     config_json = parse_config("resources/config.json")
 
@@ -25,7 +26,7 @@ def compare_architectures():
         testing_set.append(list(zip(labels, flattened_input)))
     latent_dimension = 2
     update_frequency = 0
-    execution_count = 2
+    execution_count = 5
     input_dimension = len(training_set[0])
     activation_function = (lambda x: 1/(1+np.exp(-2*x)))
     activation_derivative = (lambda x: 2*(1/(1+np.exp(-2*x)))*(1-(1/(1+np.exp(-2*x)))) )
@@ -46,26 +47,26 @@ def compare_architectures():
             ae.train(training_set, training_set, config_json["epoch_limit"], (lambda e, error, w, o: callback_function(e, error, str(arch), i)))
             for j in range(len(testing_set)):
                 labels, x_values, y_values = ae.get_latent_space(testing_set[j])
-                with open(f"output/latent_{arch}_{i}.txt", 'w') as f:
+                with open(f"{base_output_path}latent_{arch}_{i}.txt", 'a') as f:
                     for l, x, y in zip(labels, x_values, y_values):
                         f.write(f"{l},{x},{y},{j}\n")
                 f.close()
 
                 test_error = ae.test_autoencoder(testing_set[j])
-                with open(f"output/avg_error_{arch}.txt", 'a') as f:
+                with open(f"{base_output_path}avg_error_{arch}.txt", 'a') as f:
                     f.write(f"{i},{test_error},{j}\n")
 
 
 
 def callback_function(epoch, error, _input, execution):
-    f = open(f"output/log_{_input}_{execution}.txt", "a")
+    f = open(f"{base_output_path}log_{_input}_{execution}.txt", "a")
     f.write(f"{epoch},{error}\n")
     f.close()
 
 
 def graph_evolution(execution_number, input_values, comparing_attribute):
     for _in in input_values:
-        f = open(f"output/log_{_in}_{execution_number}.txt", "r")
+        f = open(f"{base_output_path}log_{_in}_{execution_number}.txt", "r")
         epochs = list()
         errors = list()
         for line in f.readlines():
@@ -78,11 +79,11 @@ def graph_evolution(execution_number, input_values, comparing_attribute):
     plt.ylabel("Error")
     plt.legend()
     #save figure
-    plt.savefig(f"output/err_evolution_{comparing_attribute}_{execution_number}.png")
+    plt.savefig(f"{base_output_path}err_evolution_{comparing_attribute}_{execution_number}.png")
 
 def graph_latent_space(execution_number, input_values, comparing_attribute):
     for _in in input_values:
-        f = open(f"output/latent_{_in}_{execution_number}.txt", "r")
+        f = open(f"{base_output_path}latent_{_in}_{execution_number}.txt", "r")
         labels = list()
         x_values = list()
         y_values = list()
@@ -101,13 +102,13 @@ def graph_latent_space(execution_number, input_values, comparing_attribute):
     plt.xlabel("dim 1")
     plt.ylabel("dim 2")
     #save figure
-    plt.savefig(f"output/final_latent_{comparing_attribute}_{execution_number}.png")
+    plt.savefig(f"{base_output_path}final_latent_{comparing_attribute}_{execution_number}.png")
 
 def graph_comp_error(input_values, comparing_attribute, execution_count):
     avg_errors = list()
     deviations = list()
     for val in input_values:
-        f = open(f"output/avg_error_{val}.txt", "r")
+        f = open(f"{base_output_path}avg_error_{val}.txt", "r")
         errors = list()
         for line in f.readlines():
             epoch, error, c = line.split(",")
@@ -122,4 +123,4 @@ def graph_comp_error(input_values, comparing_attribute, execution_count):
     plt.ylabel("Error")
     plt.legend()
     #save figure
-    plt.savefig(f"output/compare_avg_error_{comparing_attribute}.png")
+    plt.savefig(f"{base_output_path}compare_avg_error_{comparing_attribute}.png")
