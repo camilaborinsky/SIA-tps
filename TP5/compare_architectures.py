@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 from autoencoder import Autoencoder
 import numpy as np
 
-base_output_path = "output/architectures/3/"
+base_output_path = "output/sin_nada/"
 def compare_architectures():
     
     #Parse config file
@@ -107,6 +107,7 @@ def graph_latent_space(execution_number, input_values, comparing_attribute):
 def graph_comp_error(input_values, comparing_attribute, execution_count):
     avg_errors = list()
     deviations = list()
+    ax = plt.axes()
     for val in input_values:
         f = open(f"{base_output_path}avg_error_{val}.txt", "r")
         errors = list()
@@ -117,7 +118,8 @@ def graph_comp_error(input_values, comparing_attribute, execution_count):
         avg_errors.append(np.mean(errors))
         deviations.append(np.std(errors))
     plt.scatter(range(len(input_values)), avg_errors)
-    plt.errorbar(range(len(input_values)), avg_errors, deviations)
+    plt.errorbar(range(len(input_values)), avg_errors, deviations, marker=".", capsize=5, ecolor='black', elinewidth=1)
+    plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
     plt.xticks(range(len(input_values)), input_values)
     plt.xlabel("Architecture")
     plt.ylabel("Error")
