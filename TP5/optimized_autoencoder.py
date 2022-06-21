@@ -2,6 +2,8 @@ from math import ceil
 import numpy as np
 from scipy.optimize import minimize
 
+from visualize_letters import print_letter
+
 class OptimizedAutoencoder:
     def __init__(self, optimizer, input_dim, latent_dim, hidden_layers, activation, activation_derivative):
         self.optimizer = optimizer
@@ -66,6 +68,7 @@ class OptimizedAutoencoder:
         return output
 
     def minimizer_callback(self, xk):
+        print("callback")
         error = self.calculate_error(self._input, self.output)
         self.errors.append(error)
 
@@ -75,17 +78,16 @@ class OptimizedAutoencoder:
         self.initialize_weights()
         self._input = np.array(_input)
         self.output = np.array(output)
-        
+      
+
         flattened_weights = self.flatten_weights()
         res = minimize(fun=self.calculate_flattened_error, x0=flattened_weights,
         args=(0), method=self.optimizer, options={
-
-            'maxiter': max_iterations,
-            'adaptive': True,
             'disp': True,
+            'maxiter': max_iterations,
         }, callback=self.minimizer_callback)
 
-        self.unpack_weights(flattened_weights)
+        self.unpack_weights(res.x)
 
         error = res.fun
         return error, self.errors
@@ -101,9 +103,9 @@ class OptimizedAutoencoder:
         return error/len(training_set)
 
 
-    def reconstruct(self, input_val):
+    def reconstruct(self, input_val, expected):
         output= self.propagate(input_val, 0, len(self.layers)-2)
-        error = np.linalg.norm(np.subtract(input_val, output), 2)
+        error = np.linalg.norm(np.subtract(expected, output), 2)
         return output, error 
         
     def calculate_flattened_error(self, flattened_weights, step=None):
