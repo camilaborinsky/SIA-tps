@@ -1,5 +1,4 @@
 from parser import parse_config, data_converter, sample_set
-from platform import architecture
 from matplotlib import pyplot as plt
 
 import numpy as np
@@ -46,8 +45,8 @@ def compare_optimizer():
                     final_error, errors = optimized_autoencoder.train(training_set, training_set, epoch_limit)
 
                     with open(f"{base_output_path}log_{o}_{i}.txt", "w") as f:
-                        for i in range(len(errors)):
-                            f.write(f"{i},{errors[i]}\n")
+                        for k in range(len(errors)):
+                            f.write(f"{k},{errors[k]}\n")
                     f.close()
                     error_f.write(f"{i},{final_error}")
 
@@ -66,4 +65,108 @@ def compare_optimizer():
             test_error_f.close()
         error_f.close()
 
-            
+
+def graph_evolution(execution_number, input_values, comparing_attribute):
+    for _in in input_values:
+        f = open(f"{base_output_path}log_{_in}_{execution_number}.txt", "r")
+        epochs = list()
+        errors = list()
+        for line in f.readlines():
+            epoch, error = line.split(",")
+            epochs.append(int(epoch))
+            errors.append(float(error))
+        f.close()
+        plt.plot(epochs, errors, label=_in)
+    plt.xlabel("Epoch")
+    plt.ylabel("Error")
+    plt.legend()
+    #save figure
+    plt.savefig(f"{base_output_path}err_evolution_{comparing_attribute}_{execution_number}.png")
+
+
+def graph_latent_space(execution_number, input_values, comparing_attribute):
+    #which_font should be -1 if we want to graph all fonts, otherwise it should be the index of the font we want to graph
+    for _in in input_values:
+        f = open(f"{base_output_path}latent_{_in}_{execution_number}.txt", "r")
+        labels = list()
+        x_values = list()
+        y_values = list()
+        classes = list()
+
+        for line in f.readlines():
+            l, x, y, c = line.split(",")
+            x_values.append(float(x))
+            y_values.append(float(y))
+            classes.append(int(c))
+            labels.append(str(l))
+        f.close()
+        plt.scatter(x_values, y_values, label=_in)
+        #plt.text(x_values, y_values, str(labels))
+    plt.legend()
+    plt.xlabel("dim 1")
+    plt.ylabel("dim 2")
+    #save figure
+    plt.savefig(f"{base_output_path}final_latent_{comparing_attribute}_{execution_number}.png")
+
+
+def graph_latent_space_BFGS(execution_number, input_values, comparing_attribute):
+    f = open(f"{base_output_path}latent_BFGS_{execution_number}.txt", "r")
+    labels = list()
+    x_values = list()
+    y_values = list()
+    classes = list()
+
+    for line in f.readlines():
+        l, x, y, c = line.split(",")
+        x_values.append(float(x))
+        y_values.append(float(y))
+        classes.append(int(c))
+        labels.append(str(l))
+    f.close()
+    #scatterplot with orange color
+    plt.scatter(x_values, y_values, c="orange", label="BFGS")
+    #plt.text(x_values, y_values, str(labels))
+    plt.legend()
+    plt.xlabel("dim 1")
+    plt.ylabel("dim 2")
+    #save figure
+    plt.savefig(f"{base_output_path}final_latent_{comparing_attribute}_{execution_number}.png")
+
+
+def graph_comp_error_test(input_values, comparing_attribute, execution_count):
+    avg_errors = list()
+    deviations = list()
+
+    ax = plt.axes()
+    for val in input_values:
+        print("val: ", str(val))
+        f = open(f"{base_output_path}avg_test_error_{val}.txt", "r")
+        g = open(f"{base_output_path}avg_train_error_{val}.txt", "r")
+        errors = list()
+        train_errors = list()
+        for line in f.readlines():
+            epoch, error, last = line.split(",")
+            errors.append(float(error))
+        f.close()
+        for line in g.readlines():
+            epoch, error, last = line.split(",")
+            train_errors.append(float(error))
+        g.close()
+
+        avg_errors.append(np.mean(errors))
+        deviations.append(np.std(errors))
+
+        avg_errors_train = np.mean(train_errors)
+        deviations_train = np.std(train_errors)
+
+    plt.scatter(range(len(input_values)), avg_errors, label=comparing_attribute)
+    plt.errorbar(range(len(input_values)), avg_errors, deviations)
+    plt.scatter(range(len(input_values)), avg_errors_train, label="Training")
+    plt.errorbar(range(len(input_values)), avg_errors_train, deviations_train)
+
+    plt.legend()
+    plt.xlabel("Optimizer")
+    plt.get_xaxis().set_visible(False)
+    plt.ylabel("Average Error")
+    #save figure
+    plt.savefig(f"{base_output_path}avg_train_error_{comparing_attribute}.png")

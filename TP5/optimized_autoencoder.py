@@ -85,7 +85,7 @@ class OptimizedAutoencoder:
             'disp': True,
         }, callback=self.minimizer_callback)
 
-        self.unpack_weights(flattened_weights)
+        self.unpack_weights(res.x)
 
         error = res.fun
         return error, self.errors

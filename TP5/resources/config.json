@@ -15,6 +15,6 @@
   "epoch_limit": 100,
   "learning_rate": 0.05,
   "optimizer": "BFGS",
-  "optimizers": ["powell", "BFGS", "CG", "L-BFGS-B"],
+  "optimizers": ["powell", "BFGS", "CG"],
   "architecture": [25, 17]
 }
