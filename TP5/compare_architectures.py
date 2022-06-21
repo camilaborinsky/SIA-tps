@@ -25,7 +25,7 @@ def compare_architectures():
         training_set.extend(sample_set(flattened_input, config_json["training_sample"]))
         testing_set.append(list(zip(labels, flattened_input)))
     latent_dimension = 2
-    update_frequency = 0
+    update_frequency = len(training_set)
     execution_count = 5
     input_dimension = len(training_set[0])
     activation_function = (lambda x: 1/(1+np.exp(-2*x)))

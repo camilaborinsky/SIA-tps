@@ -1,6 +1,6 @@
 {
   "font_numbers": [1, 2, 3],
-  "training_sample": 1,
+  "training_sample": 0.5,
   "architectures": [
     [],
     [17],
@@ -11,9 +11,10 @@
     [25, 17, 8, 4]
   ],
   "momentum": false,
-  "update_learn_rate": false,
-  "epoch_limit": 150,
-  "learning_rate": 0.005,
-  "optimizer": "powell",
+  "update_learn_rate": true,
+  "epoch_limit": 100,
+  "learning_rate": 0.05,
+  "optimizer": "BFGS",
+  "optimizers": ["powell", "BFGS", "CG", "L-BFGS-B"],
   "architecture": [25, 17]
 }
