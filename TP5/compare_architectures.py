@@ -81,7 +81,8 @@ def graph_evolution(execution_number, input_values, comparing_attribute):
     #save figure
     plt.savefig(f"{base_output_path}err_evolution_{comparing_attribute}_{execution_number}.png")
 
-def graph_latent_space(execution_number, input_values, comparing_attribute):
+def graph_latent_space(execution_number, input_values, comparing_attribute, which_font, show_labels):
+    #which_font should be -1 if we want to graph all fonts, otherwise it should be the index of the font we want to graph
     for _in in input_values:
         f = open(f"{base_output_path}latent_{_in}_{execution_number}.txt", "r")
         labels = list()
@@ -91,18 +92,53 @@ def graph_latent_space(execution_number, input_values, comparing_attribute):
 
         for line in f.readlines():
             l, x, y, c = line.split(",")
-            labels.append(l)
-            x_values.append(float(x))
-            y_values.append(float(y))
-            classes.append(int(c))
+            
+            if(which_font == -1) or (int(c) == which_font):
+                x_values.append(float(x))
+                y_values.append(float(y))
+                classes.append(int(c))
+                labels.append(str(l))
         f.close()
         plt.scatter(x_values, y_values, label=_in)
-        # plt.text(x_values, y_values, labels)
+        #plt.text(x_values, y_values, str(labels))
+        if show_labels:
+            for i, txt in enumerate(labels):
+                plt.annotate(txt, (x_values[i], y_values[i]))
     plt.legend()
     plt.xlabel("dim 1")
     plt.ylabel("dim 2")
     #save figure
     plt.savefig(f"{base_output_path}final_latent_{comparing_attribute}_{execution_number}.png")
+
+def graph_latent_space_by_font(execution_number, input_values, comparing_attribute, show_labels, which_fonts):
+    for _in in input_values:
+        f = open(f"{base_output_path}latent_{_in}_{execution_number}.txt", "r")
+        labels = list()
+        x_values = list()
+        y_values = list()
+        classes = list()
+
+        for line in f.readlines():
+            l, x, y, c = line.split(",")
+            if int(c) in which_fonts:
+                x_values.append(float(x))
+                y_values.append(float(y))
+                classes.append(int(c))
+                labels.append(str(l))
+        f.close()
+        plt.scatter(x_values, y_values, c=classes)
+    
+        #labeling each dot in space
+        if show_labels:
+            for i, txt in enumerate(labels):
+                plt.annotate(txt, (x_values[i], y_values[i]))
+        plt.legend()
+        plt.xlabel("dim 1")
+        plt.ylabel("dim 2")
+        plt.title(f"Architecture: {_in}")
+        #save figure
+        plt.savefig(f"{base_output_path}final_latent_{comparing_attribute}_{execution_number}.png")
+
 
 def graph_comp_error(input_values, comparing_attribute, execution_count):
     avg_errors = list()
@@ -122,7 +158,7 @@ def graph_comp_error(input_values, comparing_attribute, execution_count):
     plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
     plt.xticks(range(len(input_values)), input_values)
     plt.xlabel("Architecture")
-    plt.ylabel("Error")
+    plt.ylabel("Avarage error")
     plt.legend()
     #save figure
     plt.savefig(f"{base_output_path}compare_avg_error_{comparing_attribute}.png")
