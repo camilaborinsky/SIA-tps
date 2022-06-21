@@ -140,21 +140,66 @@ def graph_latent_space_by_font(execution_number, input_values, comparing_attribu
         plt.savefig(f"{base_output_path}final_latent_{comparing_attribute}_{execution_number}.png")
 
 
-def graph_comp_error(input_values, comparing_attribute, execution_count):
-    avg_errors = list()
-    deviations = list()
+def graph_comp_error(input_values, comparing_attribute, execution_count, separate_by_font):
+    avg_errors0 = list()
+    avg_errors1 = list()
+    avg_errors2 = list()
+    deviations0 = list()
+    deviations1 = list()
+    deviations2 = list()
+
+    input_0 = list()
+    input_1 = list()
+    input_2 = list()
+
     ax = plt.axes()
     for val in input_values:
         f = open(f"{base_output_path}avg_error_{val}.txt", "r")
-        errors = list()
+        errors0 = list()
+        errors1 = list()
+        errors2 = list()
         for line in f.readlines():
             epoch, error, c = line.split(",")
-            errors.append(float(error))
+            if int(c) == 0:
+                errors0.append(float(error))
+                input_0.append(val)
+            elif int(c) == 1:
+                errors1.append(float(error))
+                input_1.append(val)
+            elif int(c) == 2:
+                errors2.append(float(error))
+                input_2.append(val)
         f.close()
-        avg_errors.append(np.mean(errors))
-        deviations.append(np.std(errors))
-    plt.scatter(range(len(input_values)), avg_errors)
-    plt.errorbar(range(len(input_values)), avg_errors, deviations, marker=".", capsize=5, ecolor='black', elinewidth=1)
+
+        if(separate_by_font):
+            avg_errors0.append(np.mean(errors0))
+            deviations0.append(np.std(errors0))
+            avg_errors1.append(np.mean(errors1))
+            deviations1.append(np.std(errors1))
+            avg_errors2.append(np.mean(errors2))
+            deviations2.append(np.std(errors2))
+        else:
+            errors = list()
+            for i in range(len(errors0)):
+                errors.append(errors0[i] + errors1[i] + errors2[i])
+            avg_errors0.append(np.mean(errors))
+            deviations0.append(np.std(errors))
+
+
+    plt.scatter(range(len(input_values)), avg_errors0)
+
+
+    if separate_by_font:
+        plt.plot(range(len(input_values)), avg_errors0, label="Font 0")
+        plt.scatter(range(len(input_values)), avg_errors1, )
+        plt.plot(range(len(input_values)), avg_errors1, label="Font 1")
+        plt.scatter(range(len(input_values)), avg_errors2)
+        plt.plot(range(len(input_values)), avg_errors2, label="Font 2")
+    if not separate_by_font:
+        plt.errorbar(range(len(input_values)), avg_errors0, deviations0, marker=".", capsize=5, ecolor='black', elinewidth=1)
+        #plt.errorbar(range(len(input_values)), avg_errors0, deviations0, marker=".", capsize=5, ecolor='black', elinewidth=1)
+        #plt.errorbar(range(len(input_values)), avg_errors1, deviations1, marker=".", capsize=5, ecolor='black', elinewidth=1)
+    
     plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
     plt.xticks(range(len(input_values)), input_values)
     plt.xlabel("Architecture")
@@ -162,3 +207,4 @@ def graph_comp_error(input_values, comparing_attribute, execution_count):
     plt.legend()
     #save figure
     plt.savefig(f"{base_output_path}compare_avg_error_{comparing_attribute}.png")
+
