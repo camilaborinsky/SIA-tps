@@ -133,6 +133,37 @@ def graph_latent_space_BFGS(execution_number, input_values, comparing_attribute)
     plt.savefig(f"{base_output_path}final_latent_{comparing_attribute}_{execution_number}.png")
 
 
+def graph_comp_error_train(input_values, comparing_attribute, execution_count):
+    avg_errors = list()
+    deviations = list()
+
+    ax = plt.axes()
+    for val in input_values:
+        print("val: ", str(val))
+        f = open(f"{base_output_path}avg_train_error_{val}.txt", "r")
+        errors = list()
+        train_errors = list()
+        for line in f.readlines():
+            epoch, error = line.split(",")
+            errors.append(float(error))
+        f.close()
+
+
+        avg_errors.append(np.mean(errors))
+        deviations.append(np.std(errors))
+
+
+    print("avg_errors size: ", len(avg_errors), " len input values: ", len(input_values))
+    plt.scatter(range(len(input_values)), avg_errors, label=comparing_attribute)
+    plt.errorbar(range(len(input_values)), avg_errors, deviations)
+
+    plt.legend()
+    plt.xlabel("Optimizer")
+    plt.ylabel("Average Error")
+    #save figure
+    plt.savefig(f"{base_output_path}avg_train_error_{comparing_attribute}.png")
+
+
 def graph_comp_error_test(input_values, comparing_attribute, execution_count):
     avg_errors = list()
     deviations = list()
@@ -141,32 +172,25 @@ def graph_comp_error_test(input_values, comparing_attribute, execution_count):
     for val in input_values:
         print("val: ", str(val))
         f = open(f"{base_output_path}avg_test_error_{val}.txt", "r")
-        g = open(f"{base_output_path}avg_train_error_{val}.txt", "r")
+
         errors = list()
-        train_errors = list()
+
         for line in f.readlines():
             epoch, error, last = line.split(",")
             errors.append(float(error))
         f.close()
-        for line in g.readlines():
-            epoch, error, last = line.split(",")
-            train_errors.append(float(error))
-        g.close()
 
         avg_errors.append(np.mean(errors))
         deviations.append(np.std(errors))
 
-        avg_errors_train = np.mean(train_errors)
-        deviations_train = np.std(train_errors)
 
+    print("avg_errors size: ", len(avg_errors), " len input values: ", len(input_values))
     plt.scatter(range(len(input_values)), avg_errors, label=comparing_attribute)
     plt.errorbar(range(len(input_values)), avg_errors, deviations)
-    plt.scatter(range(len(input_values)), avg_errors_train, label="Training")
-    plt.errorbar(range(len(input_values)), avg_errors_train, deviations_train)
+
 
     plt.legend()
     plt.xlabel("Optimizer")
-    plt.get_xaxis().set_visible(False)
     plt.ylabel("Average Error")
     #save figure
     plt.savefig(f"{base_output_path}avg_train_error_{comparing_attribute}.png")
